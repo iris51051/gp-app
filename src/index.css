@@ -1,0 +1,334 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+/************************ Header**********************************/
+.Logo {
+  align-items: center;
+  display: flex;
+  background-color: white;
+}
+.light-logo {
+  width: 50px;
+}
+.light-text {
+  width: 150px;
+}
+
+/*********************************** Sider *****************************************/
+.sider-selector {
+  margin: 10px;
+}
+
+/* **********************************Main **********************************/
+.active-title {
+  display: flex;
+  align-items: center;
+}
+.title-icon {
+  font-size: 24px;
+}
+.title-text {
+  font-size: 24px;
+  margin-left: 8px;
+}
+.title-Row {
+  padding: 15px 10px 9px 10px;
+}
+/* MainTab1 */
+/* 세부 디자인 추가 */
+.selectedDateDescription {
+  border: 1px solid rgba(120, 130, 140, 0.13);
+  border-left: 3px solid #ffdc29 !important;
+  padding: 10px 20px;
+  margin: 0 0 20px;
+  font-size: 12px;
+  background-color: #fffcee;
+}
+.ant-space-item .ant-input {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.ant-select .ant-select-selector {
+  height: 34.42px !important;
+  align-items: center;
+}
+
+.ant-select-selector .ant-select-selection-item {
+  font-size: 13px;
+}
+
+.ant-select .ant-select-selector {
+  padding: 6px 12px !important;
+}
+
+.rs-picker .rs-picker-toggle {
+  padding: 6px 12px !important;
+}
+
+.rs-picker-toggle .rs-btn .rs-btn-default .rs-btn-sm {
+  padding: 7px 12px;
+}
+
+.rs-stack-item {
+  font-size: 13px !important;
+  font-weight: 600;
+}
+
+.rs-picker-toggle {
+  height: 34.42px;
+}
+
+/* 선택한 분석 대상 */
+.selected-analysis-targer {
+  font-weight: 600;
+  font-size: 18px !important;
+  line-height: 22px !important;
+  margin: 10px 0;
+  font-family: "Rubik", sans-serif;
+  color: black;
+}
+
+.selected-analysis-targer-div {
+  border: 1px solid rgba(120, 130, 140, 0.13);
+  border-left: 3px solid #ffdc29 !important;
+  padding: 10px 20px;
+  margin: 0 0 20px;
+  font-size: 17.5px;
+}
+
+.selected-analysis-targer-p {
+  line-height: 1.6;
+  margin: 0 0 10px;
+  font-weight: 600;
+  font-size: 13px !important;
+  color: black;
+}
+
+.selected-analysis-targer-span {
+  background-color: rgb(122, 206, 76);
+  color: #fff;
+  border-radius: 60px !important;
+  padding: 4px 12px 3px;
+  font-weight: 600;
+  text-align: center;
+  font-size: 11px;
+}
+
+/* 선택 광고주 input */
+.ant-dropdown-menu-title-content .Searcher {
+  border: none;
+  border-bottom: 1px solid #eee;
+  width: 180px !important;
+  margin-right: -10px;
+  font-size: 12px;
+}
+
+.ant-dropdown-menu-title-content .Searcher::placeholder {
+  color: black;
+}
+
+.ant-dropdown-menu .ant-dropdown-menu-item {
+  padding-left: 30px !important;
+  padding: 8px !important;
+  border-bottom: #eee;
+}
+
+.ant-checkbox-wrapper {
+  font-size: 12px !important;
+}
+
+.ant-checkbox-group .ant-checkbox-wrapper {
+  padding: 8px !important;
+  border-bottom: 1px solid #eee;
+}
+
+.FilterDiv {
+  border: 1px solid #eee;
+  max-height: 300px !important;
+  overflow: auto;
+  color: #263238;
+}
+.Filterdisp {
+  width: 210px;
+  cursor: pointer;
+}
+
+/************************************************** Content ************************************/
+.ant-layout-content {
+  padding: 0px 25px 15px 25px !important;
+}
+
+/*************************************************** Drawer 스타일 ************************************/
+.ant-drawer-content-wrapper {
+  box-shadow: none !important;
+  margin-top: 88px;
+  height: 300px;
+  /* 경계선 구분을 위한 임시 테두리*/
+  border: 1px solid;
+}
+.ant-drawer-header,
+.ant-drawer-body,
+.ant-drawer-footer {
+  background: #f5f5f5;
+}
+.FilterAdd {
+  background: #fff;
+}
+.DrawerContent {
+  background: #fff;
+}
+
+/********************************************** Calendar*********************************************/
+/* 달력 스타일 */
+.rs-picker-daterange-header {
+  visibility: hidden;
+  padding: 0px 0px !important;
+  height: 0;
+}
+.rs-picker-daterange-predefined {
+  height: 330px !important;
+}
+.rs-picker-daterange {
+  width: 235px;
+}
+.rs-picker-toolbar {
+  justify-content: flex-end;
+}
+/**
+  ************************
+  AdPerformanceRange
+  ********************************
+  *
+  *
+  */
+.AdPerformanceDiv .AdPerformanceTable {
+  border: 1px solid #e4e7ea;
+  font-size: 12px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.AdPerformanceDiv .AdPerformanceTable > tr > th {
+  border: 1px solid #e4e7ea;
+  background-color: #f7fafc !important;
+  padding: 8px;
+  width: 130px;
+}
+
+.AdPerformanceDiv .AdPerformanceTable > tr > td {
+  border: 1px solid #e4e7ea;
+  padding: 8px;
+}
+
+/* ScoreCard */
+.ScoreCardTable,
+.ScoreCardRow,
+.ScoreCardCol {
+  border: 1px solid #dbdbdb;
+  border-collapse: collapse;
+  text-align: center;
+}
+.ScoreCardTable {
+  width: 80%;
+  height: 100px;
+  background-color: #f4f4f4;
+}
+/* ScoreCard */
+.ScoreCardTable,
+.ScoreCardRow,
+.ScoreCardCol {
+  border: 1px solid #dbdbdb;
+  border-collapse: collapse;
+  text-align: center;
+}
+.ScoreCardTable {
+  width: 80%;
+  height: 100px;
+  background-color: #f4f4f4;
+}
+/* ScoreCardChart */
+.ScoreChartDiv {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.ScoreChart {
+  height: 100px !important;
+  vertical-align: top;
+}
+.ScoreChartCol {
+  direction: vertical;
+  margin-bottom: 50px;
+  margin-right: 4px;
+  padding: 25px;
+  border: 1px solid #ccc;
+  height: 178px;
+  width: 16%;
+}
+.ScoreChartTitle {
+  margin: 0;
+}
+.ScoreChartValueDiv {
+  text-align: right;
+}
+.ScoreChartValue {
+  text-align: right;
+  font-size: 30px;
+}
+.ScoreChartPercent {
+  text-align: right;
+  font-size: 11px;
+}
+.ArrowUp {
+  color: red;
+}
+.ArrowDown {
+  color: blue;
+}
+.ScoreChartAdd {
+  border: 1px solid #ccc;
+  margin-bottom: 50px;
+  margin-right: 4px;
+  padding: 25px;
+  height: 178px;
+  width: 16%;
+  justify-content: center;
+}
+.ChartAdder {
+  color: blue;
+  font-size: xxx-large;
+}
+.ScoreChartAddContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.DropDownLayer {
+  border: 1px solid #ccc;
+  background-color: white;
+}
+.DropDownHeader {
+  padding: 5px;
+  background-color: #e1e3ec;
+  display: flex;
+  justify-content: space-between;
+}
+
+.DropDownCloseContainer {
+  display: flex;
+  align-items: center;
+}
