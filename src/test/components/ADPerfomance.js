@@ -2,8 +2,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Radio } from "antd";
 import ECharts from "echarts-for-react";
 
-const AdPerformanceRange = ({ colors }) => {
-  //선택된 기간에 대한 x축 data값 생성(일, 주, 월)
+const AdPerformanceRange = ({ colors}) => {
+   //선택된 기간에 대한 x축 data값 생성(일, 주, 월)
   const generateDates = (start, end, interval) => {
     const dates = [];
     const current = new Date(start);
@@ -137,12 +137,12 @@ const AdPerformanceRange = ({ colors }) => {
       tooltip: {
         trigger: "axis",
       },
-      grid: {
-        left: 50,
-        right: 50,
-        top: 10,
-        bottom: 50,
-      },
+      // grid: {
+      //   left: 50,
+      //   right: 300,
+      //   top: 10,
+      //   bottom: 50,
+      // },
       color: colors,
       legend: {
         data: category,
@@ -162,8 +162,13 @@ const AdPerformanceRange = ({ colors }) => {
           type: "value",
           name: category[0],
           position: "left",
-          alignTicks: true,
+          splitLine :{
+            show : false,
+          },
           axisLine: {
+            show: true,
+          },
+          axisTick:{
             show: true,
           },
         },
@@ -174,6 +179,9 @@ const AdPerformanceRange = ({ colors }) => {
           alignTicks: true,
           axisLine: {
             show: true,
+          },
+          splitLine :{
+            show : false,
           },
         },
       ],
@@ -263,19 +271,8 @@ const AdPerformanceRange = ({ colors }) => {
   );
 };
 
-const AdPerformance = () => {
-  const colors = [
-    "#4180ec",
-    "#4fd9bc",
-    "#494e5f",
-    "#30c7e9",
-    "#6269e9",
-    "#00aaaa",
-    "#42c360",
-    "#b5cf14",
-    "#eaab2f",
-    "#bababa",
-  ].slice(0, 10);
+const AdPerformance = ({colors }) => {
+
   return (
     <>
       <AdPerformanceRange colors={colors} />

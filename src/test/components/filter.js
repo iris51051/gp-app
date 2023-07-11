@@ -5,10 +5,10 @@ import { DownOutlined } from "@ant-design/icons";
 const CheckboxGroup = Checkbox.Group;
 
 const DropdownFilter = ({ name, options, onValueChange }) => {
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([...options.map(option => option.value),"selectAll"]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-
+  console.log("selectedOptions: ",selectedOptions);
   useEffect(() => {
     onValueChange(selectedOptions);
   }, [selectedOptions, onValueChange]);
@@ -60,15 +60,14 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
     }
   };
 
-  const handleSelectAll = (e) => {
-    const { checked } = e.target;
-    if (checked) {
-      setSelectedOptions([
-        ...options.map((option) => option.value),
-        "selectAll",
-      ]);
-    } else {
+  const handleSelectAll = () => {
+    const allOptionValues = options.map((option) => option.value);
+    const allSelected = selectedOptions.includes("selectAll");
+  
+    if (allSelected) {
       setSelectedOptions([]);
+    } else {
+      setSelectedOptions([...allOptionValues, "selectAll"]);
     }
   };
 
@@ -89,7 +88,8 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
           />
         </Menu.Item>
         {!searchValue && (
-          <Menu.Item key="selectAll">
+          // <Menu.Item key="selectAll" onClick={handleSelectAll}>
+          <Menu.Item key="selectAll" >
             <Checkbox
               checked={selectedOptions.length === options.length + 1}
               indeterminate={
@@ -98,7 +98,7 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
               }
               onChange={handleSelectAll}
             >
-              전체 선택
+           전체 선택
             </Checkbox>
           </Menu.Item>
         )}
@@ -107,16 +107,16 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
           <div style={{ marginLeft: 10 }}>검색 결과 없음.</div>
         ) : (
           <CheckboxGroup
-            style={{
-              display: "flex",
-              flexDirection: "column",
-            }}
-            className="adCheckboxGroup"
-            options={filteredOptions}
-            value={selectedOptions.filter((value) => value !== "selectAll")}
-            onChange={handleCheckboxChange}
-            onClick={setSelect}
-          />
+          style={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+          className="adCheckboxGroup"
+          options={filteredOptions}
+          value={selectedOptions.filter((value) => value !== "selectAll")}
+          onChange={handleCheckboxChange}
+          onClick={setSelect}
+        />
         )}
       </Menu>
     </div>

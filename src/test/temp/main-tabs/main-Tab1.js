@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Space, Typography, Row } from "antd";
+import { Space, Typography, Row,Button } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { isEqual } from "lodash";
@@ -20,21 +20,53 @@ const MainTad1 = () => {
 
   // 광고주 선택 옵션
   const adoptions = [
-    { label: "롯데푸드몰-PeopleDB", value: "롯데푸드몰-PeopleDB" },
-    { label: "모바일미샤", value: "모바일미샤" },
-    { label: "비즈스프링_대행사", value: "비즈스프링_대행사" },
-    { label: "A 비즈스프링", value: "A 비즈스프링" },
+    { label: "롯데푸드몰-PeopleDB", value: "롯데푸드몰-PeopleDB",children: [
+      { name: "총 광고비", value : 130000},
+      { name: "매출액",value :  230000}
+    ]},
+    { label: "모바일미샤", value: "모바일미샤",children: [
+      { name: "총 광고비", value : 100000},
+      { name: "매출액",value : 210000 }
+    ]},
+    { label: "비즈스프링_대행사", value: "비즈스프링_대행사",children: [
+      { name: "총 광고비", value : 100000},
+      { name: "매출액",value : 130000 }
+    ]},
+    { label: "A 비즈스프링", value: "A 비즈스프링",children: [
+      { name: "총 광고비", value : 103000},
+      { name: "매출액",value : 120000 }
+    ]},
     {
       label: "옥경화_네스프레소_광고주 생성",
-      value: "옥경화_네스프레소_광고주 생성",
-    },
-    { label: "옥경화_라이프하우스", value: "옥경화_라이프하우스" },
-    { label: "진실 테스트 220726", value: "진실 테스트 220726" },
+      value: "옥경화_네스프레소_광고주 생성",children: [
+        { name: "총 광고비", value : 200000},
+        { name: "매출액",value : 340000 }
+      ]},
+    { label: "옥경화_라이프하우스", value: "옥경화_라이프하우스",children: [
+      { name: "총 광고비", value : 300000},
+      { name: "매출액",value : 230000 }
+    ]},
+    { label: "진실 테스트 220726", value: "진실 테스트 220726" ,children: [
+      { name: "총 광고비", value : 180000},
+      { name: "매출액",value : 300000 }
+    ]},
     { label: "국가대표광고", value: "국가대표광고" },
-    { label: "재홍 테스트 230103", value: "재홍 테스트 230103" },
-    { label: "oniontest", value: "oniontest" },
-    { label: "(주)교육지대", value: "(주)교육지대" },
-    { label: "미샤 에이블씨엔씨", value: "미샤 에이블씨엔씨" },
+    { label: "재홍 테스트 230103", value: "재홍 테스트 230103" ,children: [
+      { name: "총 광고비", value : 210000},
+      { name: "매출액",value : 450000 }
+    ]},
+    { label: "oniontest", value: "oniontest" ,children: [
+      { name: "총 광고비", value : 600000},
+      { name: "매출액",value : 1000000 }
+    ]},
+    { label: "(주)교육지대", value: "(주)교육지대" ,children: [
+      { name: "총 광고비", value : 324500},
+      { name: "매출액",value : 543000 }
+    ]},
+    { label: "미샤 에이블씨엔씨", value: "미샤 에이블씨엔씨" ,children: [
+      { name: "총 광고비", value : 203000},
+      { name: "매출액",value : 452000 }
+    ]},
   ];
   // 광고 사이트 옵션
   const adsiteoptions = [
@@ -96,7 +128,18 @@ const MainTad1 = () => {
       setAdStieList(AdSitefilteredValue);
     }
   };
-
+  const colors = [
+    "#4180ec",
+    "#4fd9bc",
+    "#494e5f",
+    "#30c7e9",
+    "#6269e9",
+    "#00aaaa",
+    "#42c360",
+    "#b5cf14",
+    "#eaab2f",
+    "#bababa",
+  ].slice(0, 10);
   return (
     <>
       <div
@@ -117,6 +160,7 @@ const MainTad1 = () => {
           <Adfilter options={adoptions} onValueChange={adChange} />
           <AdSitefilter options={adsiteoptions} onValueChange={adsiteChange} />
           <Mdfilter options={mdoptions} onValueChange={mdChange} />
+          <Button type="primary">확인</Button>
         </Space>
       </div>
       <div>
@@ -151,11 +195,11 @@ const MainTad1 = () => {
       </div>
       <div className="AdPerformancediv">
         <h4>기간별 광고 성과</h4>
-        <AdPerformance style={{ height: 350 }} />
+        <AdPerformance colors={colors} adList={adList} style={{ height: 350 }} />
       </div>
       <div className="MultipleBarChartDiv">
         <h4>광고주별 광고 성과</h4>
-        <MultipleBarChart />
+        <MultipleBarChart colors={colors} adoptions={adoptions} adList={adList}/>
       </div>
     </>
   );
