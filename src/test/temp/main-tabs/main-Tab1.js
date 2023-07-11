@@ -20,6 +20,13 @@ const MainTad1 = () => {
 
   // 광고주 선택 옵션
   const adoptions = [
+    { label: "광고비 없음", value: "광고비 없음", children: [
+      { name: "매출액",value :  230000}
+    ]},
+    { label: "매출액 없음", value: "매출액 없음", children: [
+      { name: "광고비",value :  230000}
+    ]},
+    { label: "둘 다 없음", value: "둘 다 없음" },
     { label: "롯데푸드몰-PeopleDB", value: "롯데푸드몰-PeopleDB",children: [
       { name: "총 광고비", value : 130000},
       { name: "매출액",value :  230000}
@@ -50,7 +57,6 @@ const MainTad1 = () => {
       { name: "총 광고비", value : 180000},
       { name: "매출액",value : 300000 }
     ]},
-    { label: "국가대표광고", value: "국가대표광고" },
     { label: "재홍 테스트 230103", value: "재홍 테스트 230103" ,children: [
       { name: "총 광고비", value : 210000},
       { name: "매출액",value : 450000 }
@@ -99,6 +105,25 @@ const MainTad1 = () => {
     { label: "모비온", value: "모비온" },
     { label: "구글", value: "트구글위터" },
     { label: "FACEBOOK", value: "FACEBOOK" },
+  ];
+
+  const chartdata = [
+    {
+      name: "총 노출수",
+      value: [600, 501, 210, 580, 950, 707, 100],
+    },
+    {
+      name: "총 클릭수",
+      value: [10, 20, 81, 38, 95, 17, 81],
+    },
+    {
+      name: "CTR",
+      value: [40, 60, 84, 38, 55, 77, 40],
+    },
+    {
+      name: "CPC",
+      value: [50, 30, 24, 18, 35, 47, 60],
+    },
   ];
 
   const adChange = (value) => {
@@ -195,7 +220,7 @@ const MainTad1 = () => {
       </div>
       <div className="AdPerformancediv">
         <h4>기간별 광고 성과</h4>
-        <AdPerformance colors={colors} adList={adList} style={{ height: 350 }} />
+        <AdPerformance colors={colors} chartdata={chartdata} style={{ height: 350 }} />
       </div>
       <div className="MultipleBarChartDiv">
         <h4>광고주별 광고 성과</h4>

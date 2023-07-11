@@ -1,7 +1,7 @@
 import React from "react";
 import ECharts from "echarts-for-react";
 
-const MultipleBarChart = ({ colors, adList, adoptions }) => {
+export const MultipleBarChart = ({ colors, adList, adoptions }) => {
   console.log("colors.multipleBarChart",colors)
   console.log("adList.multipleBarChart"+adList)
   console.log("adoptions.multipleBarChart",adoptions)
@@ -16,7 +16,6 @@ filteredAdoptions.forEach((adoption) => {
   if (children) {
     const totalAdSpendChild = children.find((child) => child.name === "총 광고비");
     const revenueChild = children.find((child) => child.name === "매출액");
-
     if (totalAdSpendChild && revenueChild) {
       const totalAdSpend = totalAdSpendChild.value;
       const revenue = revenueChild.value;
@@ -30,7 +29,10 @@ console.log("sourceArray",sourceArray)
     legend: {
       data: ['총 광고비', '매출액', 'ROAS'],
       bottom: -5,
+      icon: "circle",
+      itemGap: 25,
     },
+    color : colors,
     tooltip: {
       trigger: "axis",
     },
@@ -115,11 +117,76 @@ series: [
 ],
   };
   return (
+    <>
+    {adList.length >0 && sourceArray.length >1?
     <ECharts
-      style={{ height: "350px", width: "100%" }}
+      style={{ height: "350px", width: '100%' }}
       option={options}
       colors={colors}
     ></ECharts>
+      :
+      <EmpryChart/>
+  }
+    </>
   );
 };
+export const EmpryChart =()=>{
+  const option = {
+    silent: true,
+    xAxis: {
+      show: false,
+      type: 'category',
+      boundaryGap: false,
+      data: ['Mon', 'Tue']
+    },
+    yAxis: {
+      type: 'value'
+    },
+    graphic: [
+      {
+        type: 'text',
+        left: 'center',
+        top: 'center',
+        style: {
+          text: '데이터가 없습니다.',
+          fill: 'black',
+          fontSize: 18,
+          fontWeight: 'bold',
+        },
+        silent: true,
+      },
+      {
+        type: 'rect',
+        left: '10%',
+        right: '10%',
+        top: '10%',
+        bottom: '10%',
+        style: {
+          fill: 'gray',
+        },
+      },
+    ],
+    series: [
+      {
+        symbol: 'none',
+        color: 'grey',
+        data: [1, 1],
+        type: 'line',
+        areaStyle: {},
+        lineStyle: {
+          width: 0
+        },
+      }
+    ]
+  };
+  
+  return (
+    <>
+    <ECharts
+    style={{ height: "350px", width: '100%' }} option={option}
+  ></ECharts>
+  </>
+  )
+}
+
 export default MultipleBarChart;

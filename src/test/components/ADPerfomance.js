@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Radio } from "antd";
 import ECharts from "echarts-for-react";
 
-const AdPerformanceRange = ({ colors}) => {
+const AdPerformanceRange = ({ colors , chartdata}) => {
    //선택된 기간에 대한 x축 data값 생성(일, 주, 월)
   const generateDates = (start, end, interval) => {
     const dates = [];
@@ -27,24 +27,7 @@ const AdPerformanceRange = ({ colors}) => {
   const [selectedBar, setSelectedBar] = useState(["총 노출수", "기준지표"]);
   const [selectedLine, setSelectedLine] = useState(["총 클릭수", "비교지표"]);
   //데이터
-  const chartdata = [
-    {
-      name: "총 노출수",
-      value: [600, 501, 210, 580, 950, 707, 100],
-    },
-    {
-      name: "총 클릭수",
-      value: [10, 20, 81, 38, 95, 17, 81],
-    },
-    {
-      name: "CTR",
-      value: [40, 60, 84, 38, 55, 77, 40],
-    },
-    {
-      name: "CPC",
-      value: [50, 30, 24, 18, 35, 47, 60],
-    },
-  ];
+
   console.log("xdata", xdata);
   const category = ["기준지표", "비교지표"];
 
@@ -241,10 +224,15 @@ const AdPerformanceRange = ({ colors}) => {
                   defaultValue="총 노출수"
                   onChange={handleBarChange}
                 >
-                  <Radio.Button value="총 노출수">총 노출수</Radio.Button>
-                  <Radio.Button value="총 클릭수">총 클릭수</Radio.Button>
-                  <Radio.Button value="CTR">CTR</Radio.Button>
-                  <Radio.Button value="CPC">CPC</Radio.Button>
+                  <Radio.Button value="총 노출수" style={selectedBar[0] === '총 노출수' ? { background: colors[0] } : {}}
+        >
+                    총 노출수</Radio.Button>
+                  <Radio.Button value="총 클릭수"  style={selectedBar[0] === '총 클릭수' ? { background: colors[0] } : {}}
+        >총 클릭수</Radio.Button>
+                  <Radio.Button value="CTR"  style={selectedBar[0] === 'CTR' ? { background: colors[0] } : {}}
+        >CTR</Radio.Button>
+                  <Radio.Button value="CPC" style={selectedBar[0] === 'CPC' ? { background: colors[0] } : {}}
+        >CPC</Radio.Button>
                 </Radio.Group>
               </td>
             </tr>
@@ -266,17 +254,16 @@ const AdPerformanceRange = ({ colors}) => {
           </table>
         </div>
       </div>
-      <ECharts style={{ height: 350 }} option={options} notMerge={true} />
+      <ECharts style={{ height: 350, width: '90%'}} option={options} notMerge={true} />
     </div>
   );
 };
 
-const AdPerformance = ({colors }) => {
+const AdPerformance = ({ colors,chartdata }) => {
 
   return (
     <>
-      <AdPerformanceRange colors={colors} />
-      {/* <LineChart colors={colors} /> */}
+      <AdPerformanceRange colors={colors} chartdata={chartdata} />
     </>
   );
 };

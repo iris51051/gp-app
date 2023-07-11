@@ -122,7 +122,9 @@ const ScoreCardChart = (colors) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [chartCardList, setChartCardList] = useState([]);
   const defaultCheckedKeys = [0, 5, 9, 11];
-
+  const defaultCheckedValues = defaultCheckedKeys.filter(
+    (key) => !score[key].disabled
+  );
   const FilterOptions = score
     .filter(({ key }) => key >= 1)
     .map(({ key, title }) => ({
@@ -146,8 +148,8 @@ const ScoreCardChart = (colors) => {
     setDropdownVisible(false);
   };
   const reset = () => {
-    setChartCardList([]);
-    HandleChangeValue([]);
+    setChartCardList(defaultCheckedValues);
+    HandleChangeValue(defaultCheckedValues);
   };
   console.log("CharCardList", chartCardList);
   return (
@@ -163,7 +165,7 @@ const ScoreCardChart = (colors) => {
                 <div className="DropDownLayer">
                   <div className="DropDownHeader">
                     <span className="DropdownHeaderText">표현 항목</span>
-                    <Button onClick={reset}>초기화</Button>
+                    <Button className="ResetButton" onClick={reset}>초기화</Button>
                     <div className="DropDownCloseContainer">
                       <CloseOutlined
                         className="DropDownClose"
