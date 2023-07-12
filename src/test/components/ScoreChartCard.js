@@ -120,11 +120,9 @@ const ScoreCardChart = (colors) => {
   ];
 
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [chartCardList, setChartCardList] = useState([]);
   const defaultCheckedKeys = [0, 5, 9, 11];
-  const defaultCheckedValues = defaultCheckedKeys.filter(
-    (key) => !score[key].disabled
-  );
+  const [chartCardList, setChartCardList] = useState(defaultCheckedKeys);
+
   const FilterOptions = score
     .filter(({ key }) => key >= 1)
     .map(({ key, title }) => ({
@@ -137,19 +135,18 @@ const ScoreCardChart = (colors) => {
     setDropdownVisible(!dropdownVisible);
   };
   const HandleChangeValue = (checkedValues) => {
-    const newValue = checkedValues.filter(
-      (key) => !defaultCheckedKeys.includes(key)
-    );
-    // setChartCardList([...defaultCheckedKeys, ...newValue]);
-    setChartCardList([...newValue]);
-    console.log("chartCardList", chartCardList);
+    if(checkedValues.length > 0) {
+    const newValue = checkedValues
+    setChartCardList([0,...newValue]);
+    }else{
+      setChartCardList([0, 5, 9, 11]);
+    }
   };
   const closeDropdown = () => {
     setDropdownVisible(false);
   };
   const reset = () => {
-    setChartCardList(defaultCheckedValues);
-    HandleChangeValue(defaultCheckedValues);
+    HandleChangeValue([]);
   };
   console.log("CharCardList", chartCardList);
   return (
@@ -165,7 +162,7 @@ const ScoreCardChart = (colors) => {
                 <div className="DropDownLayer">
                   <div className="DropDownHeader">
                     <span className="DropdownHeaderText">표현 항목</span>
-                    <Button className="ResetButton" onClick={reset}>초기화</Button>
+                    <Button className="ResetButton" size="small" onClick={reset}>초기화</Button>
                     <div className="DropDownCloseContainer">
                       <CloseOutlined
                         className="DropDownClose"
@@ -179,6 +176,7 @@ const ScoreCardChart = (colors) => {
                     }}
                     defaultValue={defaultCheckedKeys}
                     onChange={HandleChangeValue}
+                    value={chartCardList}
                   >
                     <Row className="">
                       {FilterOptions.filter((option) => option.value >= 1).map(
@@ -204,7 +202,7 @@ const ScoreCardChart = (colors) => {
         </div>
       </Space>
       {score
-        .filter((item) => defaultCheckedKeys.includes(item.key))
+        .filter((item) => chartCardList.includes(item.key))
         .map((item) => (
           <Space.Compact
             key={item.key}
@@ -230,7 +228,7 @@ const ScoreCardChart = (colors) => {
             </div>
           </Space.Compact>
         ))}
-      {chartCardList.length > 0
+      {/* {chartCardList.length > 0
         ? score
             .filter((item) => chartCardList.includes(item.key))
             .map((item) => (
@@ -258,7 +256,7 @@ const ScoreCardChart = (colors) => {
                 </div>
               </Space.Compact>
             ))
-        : null}
+        : null} */}
     </div>
   );
 };

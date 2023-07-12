@@ -63,7 +63,6 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
   const handleSelectAll = () => {
     const allOptionValues = options.map((option) => option.value);
     const allSelected = selectedOptions.includes("selectAll");
-  
     if (allSelected) {
       setSelectedOptions([]);
     } else {
