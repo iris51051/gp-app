@@ -61,7 +61,8 @@ npm install xlsx
 
 npm install react-router-dome
 
-===========================================
+## 플러그인 추가
+
 npm install react-scripts
 npm i -g lodash
 npm install antd
@@ -73,3 +74,4 @@ npm install highcharts-react-official
 npm i echarts-for-react
 npm install xlsx
 npm install react-router-dome
+
