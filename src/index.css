@@ -17,17 +17,28 @@ code {
   display: flex;
   background-color: white;
 }
+.top-left-part{
+  width : 240px;
+  float: left;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  align-self: center;
+
+}
 .light-logo {
-  width: 50px;
+  width: 33px;
+  margin-left: 15px;
 }
 .light-text {
-  width: 150px;
+  padding-left:10px;
+  width: 152px;
 }
-
 /*********************************** Sider *****************************************/
+
 .sider-selector {
   margin: 10px;
 }
+
+/************************************Content*****/
 
 /* **********************************Main **********************************/
 .active-title {

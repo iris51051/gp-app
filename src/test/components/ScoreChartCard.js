@@ -6,6 +6,7 @@ import {
   CaretUpOutlined,
   PlusCircleFilled,
   CloseOutlined,
+  CaretDownOutlined
 } from "@ant-design/icons";
 
 const ScoreCardChart = (colors) => {

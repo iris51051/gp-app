@@ -1,22 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Space, Typography, Row,Button } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { isEqual } from "lodash";
-import { Datashow } from "../../components/Datashow";
 import Calendar from "../../components/calendar.js";
 import { Adfilter, Mdfilter, AdSitefilter } from "../../components/filter.js";
 import AdPerformance from "../../components/ADPerfomance";
-import { BarChartVertical } from "../../components/ChartComponent";
 import ScoreCardChartComp from "../../components/ScoreChartCard";
 import MultipleBarChart from "../../components/MuiltiBarChart";
 const { Text } = Typography;
 
-const MainTad1 = () => {
+const MainTab1 = () => {
   const dispop = 10;
   const [adList, setAdList] = useState([]);
-  const [mdList, setMdList] = useState([]);
   const [adsiteList, setAdStieList] = useState([]);
+  const [mdList, setMdList] = useState([]);
+  
+  const [filterOptions, setFilterOptions] = useState([]);
+
+  //모든 필터 선택된 상태로 초기 로딩.
+  useEffect(() => {
+    
+    setFilterOptions([adoptions.map((item)=>item.value), adsiteoptions.map((item)=>item.value), mdoptions.map((item)=>item.value)]);
+  }, []);
 
   // 광고주 선택 옵션
   const adoptions = [
@@ -74,6 +80,7 @@ const MainTad1 = () => {
       { name: "매출액",value : 452000 }
     ]},
   ];
+  console.log("adoptions.value: ",)
   // 광고 사이트 옵션
   const adsiteoptions = [
     { label: "족보닷컴", value: "족보닷컴" },
@@ -153,6 +160,10 @@ const MainTad1 = () => {
       setAdStieList(AdSitefilteredValue);
     }
   };
+  const updateFilter =()=>{
+    setFilterOptions([adList, adsiteList,mdList ]);
+  }
+  console.log("filterOptionssssssssss",filterOptions[0])
   const colors = [
     "#4180ec",
     "#4fd9bc",
@@ -185,7 +196,7 @@ const MainTad1 = () => {
           <Adfilter options={adoptions} onValueChange={adChange} />
           <AdSitefilter options={adsiteoptions} onValueChange={adsiteChange} />
           <Mdfilter options={mdoptions} onValueChange={mdChange} />
-          <Button type="primary">확인</Button>
+          <Button type="primary" onClick={updateFilter}>확인</Button>
         </Space>
       </div>
       <div>
@@ -240,4 +251,4 @@ const MainTad1 = () => {
     </>
   );
 };
-export default MainTad1;
+export default MainTab1;

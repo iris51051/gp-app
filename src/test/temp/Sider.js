@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import {
   UploadOutlined,
   UserOutlined,
@@ -7,7 +7,7 @@ import {
 import { Link } from "react-router-dom";
 import { SelectPicker } from "rsuite";
 
-import { Layout, Menu, Divider } from "antd";
+import { Layout, Menu, Divider,Affix } from "antd";
 const { Sider } = Layout;
 const Adselect = () => {
   const data = [
@@ -23,13 +23,21 @@ const Adselect = () => {
   return <SelectPicker data={data} style={{ width: 224 }} />;
 };
 const Lnb = ({ collapsed }) => {
+  const [top, setTop] = useState(61);
   return (
+<>
+<Affix offsetTop={top}>
     <Sider
       trigger={null}
       collapsible
       collapsed={collapsed}
-      style={{ height: "100vh" }}
-    >
+      style={{
+        height: "100vh",
+
+      }}
+      width= '240px'
+      collapsedWidth="0"
+      >
       <div className="demo-logo-vertical" />
       <div className="sider-selector">
         <span>광고주 선택</span>
@@ -65,8 +73,8 @@ const Lnb = ({ collapsed }) => {
                 key: "3-1",
                 label: (
                   <Link to="/temp/monitoring/alarm-setting">알람 설정</Link>
-                ),
-              },
+                  ),
+                },
               {
                 key: "3-2",
                 label: (
@@ -93,8 +101,10 @@ const Lnb = ({ collapsed }) => {
             label: <Link to="/temp/media/download">매체 데이터 다운로드</Link>,
           },
         ]}
-      />
+        />
     </Sider>
+    </Affix>
+        </>
   );
 };
 export default Lnb;

@@ -6,8 +6,6 @@ import { useState } from "react";
 import Header from "./test/temp/Header";
 import Sider from "./test/temp/Sider";
 import Dashboard from "./test/temp/dashboard";
-import { PieChart } from "./test/components/ChartComponent";
-import { ChartScoreCard } from "./test/components/ChartComponent";
 import Main from "./test/temp/Main";
 import "./index.css";
 
@@ -24,18 +22,18 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Layout>
-        <Header onValueChange={colChange} />
+      <Layout >
+      <Header onValueChange={colChange} style={{paddingTop: '60px'}}/>
         <Layout>
-          <Sider collapsed={collapse} />
-          <Layout>
+        <Sider collapsed={collapse} />
+          <Layout >
             <Content
               style={{
                 padding: 24,
-                minHeight: 280,
                 background: colorBgContainer,
                 justifyContent: "space-between",
                 alignItems: "center",
+  
               }}
             >
               <Routes>
