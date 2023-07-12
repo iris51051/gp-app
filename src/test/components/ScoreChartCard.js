@@ -124,9 +124,7 @@ const ScoreCardChart = (colors) => {
   const [chartCardList, setChartCardList] = useState(defaultCheckedKeys);
   const [selectAll, setSelectAll] = useState(false);
 
-  const FilterOptions = score
-    .filter(({ key }) => key >= 1)
-    .map(({ key, title }) => ({
+  const FilterOptions = score.map(({ key, title }) => ({
       label: title,
       value: key,
       disabled: defaultCheckedKeys.includes(key),
@@ -137,8 +135,9 @@ const ScoreCardChart = (colors) => {
   };
   const HandleChangeValue = (checkedValues) => {
     if(checkedValues.length > 0) {
+    checkedValues.length === score.length ? setSelectAll(true) : setSelectAll(false);
     const newValue = checkedValues
-    setChartCardList([0,...newValue]);
+    setChartCardList([...newValue]);
     }else{
       setChartCardList([0, 5, 9, 11]);
     }
@@ -188,7 +187,7 @@ const ScoreCardChart = (colors) => {
                     value={chartCardList}
                   >
                     <Row className="">
-                      {FilterOptions.filter((option) => option.value >= 1).map(
+                      {FilterOptions.map(
                         (option) => (
                           <Col span={12}>
                             <Checkbox
