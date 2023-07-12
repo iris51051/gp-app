@@ -4,7 +4,6 @@ import { Row, Col, Dropdown, Checkbox, Space, Button } from "antd";
 import ECharts from "echarts-for-react";
 import {
   CaretUpOutlined,
-  CaretDownOutlined,
   PlusCircleFilled,
   CloseOutlined,
 } from "@ant-design/icons";
@@ -236,35 +235,6 @@ const ScoreCardChart = (colors) => {
             </div>
           </Space.Compact>
         ))}
-      {/* {chartCardList.length > 0
-        ? score
-            .filter((item) => chartCardList.includes(item.key))
-            .map((item) => (
-              <Space.Compact
-                key={item.key}
-                className="ScoreChartCol"
-                direction="vertical"
-              >
-                <h3 className="ScoreChartTitle">{item.title}</h3>
-                <div className="ScoreChartValueDiv">
-                  <span className="ScoreChartValue">{item.value}</span>
-                  <span className="ScoreChartUnit"> {item.unit}</span>
-                </div>
-                <div className="ScoreChartPercent">
-                  ({item.percent}%
-                  {item.percent > 0 ? (
-                    <CaretUpOutlined className="ArrowUp" />
-                  ) : (
-                    <CaretDownOutlined className="ArrowDown" />
-                  )}
-                  )
-                </div>
-                <div>
-                  <AreaLineChart data={item.data} />
-                </div>
-              </Space.Compact>
-            ))
-        : null} */}
     </div>
   );
 };
