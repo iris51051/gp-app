@@ -41,6 +41,7 @@ https://react-icons.github.io/react-icons
 rsuite
 
 npm i rsuite --save
+
 yarn add rsuite
 
 ## Chart
@@ -66,6 +67,7 @@ npm install react-router-dome
 npm install react-scripts
 npm i -g lodash
 npm install antd
+npm i rsuite --save
 npm i --save @fortawesome/free-solid-svg-icons
 npm i --save @fortawesome/free-regular-svg-icons
 npm i --save @fortawesome/react-fontawesome@latest
