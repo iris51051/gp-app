@@ -224,15 +224,14 @@ const AdPerformanceRange = ({ colors , chartdata}) => {
                   defaultValue="총 노출수"
                   onChange={handleBarChange}
                 >
-                  <Radio.Button value="총 노출수" style={selectedBar[0] === '총 노출수' ? { background: colors[0] } : {}}
-        >
-                    총 노출수</Radio.Button>
-                  <Radio.Button value="총 클릭수"  style={selectedBar[0] === '총 클릭수' ? { background: colors[0] } : {}}
-        >총 클릭수</Radio.Button>
-                  <Radio.Button value="CTR"  style={selectedBar[0] === 'CTR' ? { background: colors[0] } : {}}
-        >CTR</Radio.Button>
-                  <Radio.Button value="CPC" style={selectedBar[0] === 'CPC' ? { background: colors[0] } : {}}
-        >CPC</Radio.Button>
+                  <Radio.Button value="총 노출수" style={selectedBar[0] === '총 노출수' ? { background: colors[0],color:'white' } : {}}>
+                  총 노출수</Radio.Button>
+                  <Radio.Button value="총 클릭수"  style={selectedBar[0] === '총 클릭수' ? { background: colors[0],color:'white' } : {}}>
+                  총 클릭수</Radio.Button>
+                  <Radio.Button value="CTR"  style={selectedBar[0] === 'CTR' ? { background: colors[0],color:'white' } : {}}>
+                  CTR</Radio.Button>
+                  <Radio.Button value="CPC" style={selectedBar[0] === 'CPC' ? { background: colors[0],color:'white' } : {}}>
+                  CPC</Radio.Button>
                 </Radio.Group>
               </td>
             </tr>
@@ -244,10 +243,10 @@ const AdPerformanceRange = ({ colors , chartdata}) => {
                   defaultValue="총 클릭수"
                   onChange={handleLineChange}
                 >
-                  <Radio.Button value="총 노출수">총 노출수</Radio.Button>
-                  <Radio.Button value="총 클릭수">총 클릭수</Radio.Button>
-                  <Radio.Button value="CTR">CTR</Radio.Button>
-                  <Radio.Button value="CPC">CPC</Radio.Button>
+                  <Radio.Button value="총 노출수" style={selectedLine[0] === '총 노출수' ? { background: colors[1],borderColor:colors[1],color:'white' } : {}}>총 노출수</Radio.Button>
+                  <Radio.Button value="총 클릭수" style={selectedLine[0] === '총 클릭수' ? { background: colors[1],borderColor:colors[1],color:'white' } : {}}>총 클릭수</Radio.Button>
+                  <Radio.Button value="CTR" style={selectedLine[0] === 'CTR' ? { background: colors[1],borderColor:colors[1],color:'white' } : {}}>CTR</Radio.Button>
+                  <Radio.Button value="CPC" style={selectedLine[0] === 'CPC' ? { background: colors[1],borderColor:colors[1],color:'white' } : {}}>CPC</Radio.Button>
                 </Radio.Group>
               </td>
             </tr>

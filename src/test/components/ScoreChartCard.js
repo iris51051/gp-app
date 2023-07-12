@@ -122,6 +122,7 @@ const ScoreCardChart = (colors) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const defaultCheckedKeys = [0, 5, 9, 11];
   const [chartCardList, setChartCardList] = useState(defaultCheckedKeys);
+  const [selectAll, setSelectAll] = useState(false);
 
   const FilterOptions = score
     .filter(({ key }) => key >= 1)
@@ -145,8 +146,16 @@ const ScoreCardChart = (colors) => {
   const closeDropdown = () => {
     setDropdownVisible(false);
   };
-  const reset = () => {
-    HandleChangeValue([]);
+  const SelectedAll = (value) => {
+    if(value){
+      setSelectAll(value);
+      const keyArray = score.map((item) => item.key);
+      console.log("keyArray",keyArray)
+      HandleChangeValue(keyArray)
+    }else{
+      setSelectAll(value);
+      HandleChangeValue([]);
+    }
   };
   console.log("CharCardList", chartCardList);
   return (
@@ -162,7 +171,7 @@ const ScoreCardChart = (colors) => {
                 <div className="DropDownLayer">
                   <div className="DropDownHeader">
                     <span className="DropdownHeaderText">표현 항목</span>
-                    <Button className="ResetButton" size="small" onClick={reset}>초기화</Button>
+                    <Button className="ResetButton" size="small" onClick={() => SelectedAll(!selectAll)}>전체 선택/해제</Button>
                     <div className="DropDownCloseContainer">
                       <CloseOutlined
                         className="DropDownClose"

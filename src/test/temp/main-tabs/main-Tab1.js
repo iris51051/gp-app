@@ -189,15 +189,26 @@ const MainTad1 = () => {
         </Space>
       </div>
       <div>
+        
         <br />
         <h4 className="selected-analysis-targer">선택한 분석 대상</h4>
         <div className="selected-analysis-targer-div">
+          <span className="selected-analysis-targer-span">광고사 </span>
+          {adList.length <= dispop ? (
+            <p className="selected-analysis-targer-p">{adList.join(", ")}</p>
+          ) : (
+            <>
+              <p className="selected-analysis-targer-p">{`${adList.slice(0, dispop).join(" / ")} 외 ${
+                adList.length - dispop
+              }개`}</p>
+            </>
+          )}
           <span className="selected-analysis-targer-span">매체사 </span>
           {mdList.length <= dispop ? (
             <p className="selected-analysis-targer-p">{mdList.join(", ")}</p>
           ) : (
             <>
-              <p>{`${mdList.slice(0, dispop).join(" / ")} 외 ${
+              <p  className="selected-analysis-targer-p">{`${mdList.slice(0, dispop).join(" / ")} 외 ${
                 mdList.length - dispop
               }개`}</p>
             </>
