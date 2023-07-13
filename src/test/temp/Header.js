@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Layout, Button, theme, Affix} from "antd";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
+import { Layout, Button, theme, Affix, Menu,Tag} from "antd";
+import { MenuUnfoldOutlined, MenuFoldOutlined,BellFilled,AppstoreFilled,UserOutlined,CrownOutlined,PoweroffOutlined} from "@ant-design/icons";
+import {MdOutlineApps} from 'react-icons/md'
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const { Header } = Layout;
 
 const Gnb = ({ onValueChange }) => {
@@ -21,10 +23,72 @@ const Gnb = ({ onValueChange }) => {
       } else {
         lightTextRef.current.style.width = "auto";
         leftpartRef.current.style.width = "auto";
-        leftpartRef.current.style.paddingRight= "30px";
+        leftpartRef.current.style.paddingRight= "34px";
       }
   }, [collapsed]);
 
+
+  const gnbItems = [
+    {
+      label :(
+        <a
+          href="https://docs.google.com/document/d/1MekkUblxY_1wMOBO78BKGx7QckOBiFhT/edit?usp=sharing&ouid=107943518726383742638&rtpof=true&sd=true"
+          target="_blank"
+          rel="noopener noreferrer"
+        ><Tag color="geekblue">Guide</Tag>
+        </a>
+      ),
+      key : 'guide',
+    },
+    {
+      label: '',
+      key: 'mail',
+      icon: <BellFilled />,
+      children: [
+        {
+          label: 'item 1'
+        },
+        {
+          label: 'item 2'
+        },
+      ],
+    },
+    {
+      label: '',
+      key: 'SubMenu',
+      icon: <AppstoreFilled />,
+      children: [
+        {
+          label: 'Item 1',
+        },
+        {
+          label: 'item 2'
+        },
+      ],
+    },
+    {
+      icon: <UserOutlined />,
+      label: '{Name}',
+      key: 'user',
+      children: [
+        {
+          icon: <UserOutlined/>,
+          label: 'my account',
+          key: 'myAccount',
+        },
+        {
+          icon: <CrownOutlined />,
+          label: 'admin',
+          key: 'admin',
+        },
+        {
+          icon: <PoweroffOutlined />,
+          label: 'Log Out',
+          key: 'logout'
+        }
+      ]
+    },
+];
   const handleChange = () => {
     setCollapsed(!collapsed);
   };
@@ -76,6 +140,10 @@ const Gnb = ({ onValueChange }) => {
               height: 64,
             }}
           />
+          <div className="top-right-part">
+          < Menu mode="horizontal" items={gnbItems} style={{height:'60px', flexDirection: "row",
+        justifyContent: "flex-end"}}/>
+          </div>
         </Header>
       </Affix>
     </Layout>

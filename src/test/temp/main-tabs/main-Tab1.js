@@ -8,6 +8,7 @@ import { Adfilter, Mdfilter, AdSitefilter } from "../../components/filter.js";
 import AdPerformance from "../../components/ADPerfomance";
 import ScoreCardChartComp from "../../components/ScoreChartCard";
 import MultipleBarChart from "../../components/MuiltiBarChart";
+import AdResultTable from "../../components/AdResultTable";
 const { Text } = Typography;
 
 const MainTab1 = () => {
@@ -247,6 +248,7 @@ const MainTab1 = () => {
       <div className="MultipleBarChartDiv">
         <h4>광고주별 광고 성과</h4>
         <MultipleBarChart colors={colors} adoptions={adoptions} adList={adList}/>
+        <AdResultTable/>
       </div>
     </>
   );
