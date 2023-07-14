@@ -58,25 +58,6 @@ const AdPerformanceRange = ({ colors , chartdata}) => {
       const barData = chartdata.find((item) => item.name === selectedBar[0]);
       const lineData = chartdata.find((item) => item.name === selectedLine[0]);
       if (barData && lineData) {
-        const barSeries = {
-          name: selectedBar[0],
-          type: "bar",
-          barWidth: 20,
-          data: barData.value,
-          smooth: true,
-        };
-        const lineSeries = {
-          name: selectedLine[0],
-          type: "line",
-          yAxisIndex: 1,
-          data: lineData.value,
-          symbol: "circle",
-          symbolSize: 6,
-        };
-        const series = [lineSeries];
-        if (selectedBar[0] === selectedLine[0]) {
-          series.push(lineSeries);
-        }
         const options = {
           tooltip: {
             trigger: "axis",
@@ -104,12 +85,36 @@ const AdPerformanceRange = ({ colors , chartdata}) => {
               name: selectedBar[0],
               position: "left",
               alignTicks: true,
+              splitLine :{
+                show : false,
+              },
+              axisLine: {
+                show: true,
+                lineStyle: {
+                  color: "#333",
+                },
+              },
+              axisTick:{
+                show: true,
+              },
             },
             {
               type: "value",
               name: selectedLine[0],
               position: "right",
               alignTicks: true,
+              splitLine :{
+                show : false,
+              },
+              axisLine: {
+                show: true,
+                lineStyle: {
+                  color: "#333",
+                },
+              },
+              axisTick:{
+                show: true,
+              },
             },
           ],
           series: [
