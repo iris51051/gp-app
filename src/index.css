@@ -368,3 +368,27 @@ code {
   display: flex;
   align-items: center;
 }
+
+
+/****************************************************************************************************/
+
+/*************                                ADResultTable                               ***********/  
+
+/****************************************************************************************************/
+.ADResultTable{
+  width : 100%
+}
+.ADResHeader{
+  border-bottom: 5px solid #cccccc;
+}
+.ADResultTable
+  .ant-table-cell{
+  border:1px solid #cccccc;
+}
+.ADResultTable
+  .th{
+    border-bottom: 5px solid #cccccc;
+  }
+.ADResultTable.ant-table-wrapper .ant-table-thead >tr>th{
+  width : 70px;
+}

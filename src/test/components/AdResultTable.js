@@ -205,26 +205,46 @@ const App = () => {
 
   const columns = [
     {
-      title: '광고주',
+      title: (
+        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+        광고주
+      </div>
+      ),
       dataIndex: 'id',
       align: 'start',
       key: 'id',
       sorter: (a, b) => a.id - b.id,
       sortOrder: sortedInfo.columnKey === 'id' ? sortedInfo.order : null,
       ellipsis: true,
+      width : 140,
     },
     {
       title: '통계',
       align: 'center',
       dataIndex: 'statistics',
       key: 'statistics',
+      width : 120,
+      render: (text, record) => {
+      return (
+        <>
+        <a href="">
+      <Button key={text}>상세보기</Button>
+      </a>
+      </>
+      )
+      }
     },
     {
-      title: '총 광고비',
+      title: (
+        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+        총 광고비
+      </div>
+      ),
       dataIndex: 'totad',
       key: 'totad',
       align: 'end',
       ellipsis: true,
+      width : 227,
       sorter: (a, b) => a.totad - b.totad,
       sortOrder: sortedInfo.columnKey === 'totad' ? sortedInfo.order : null,
       ellipsis: true,
@@ -234,11 +254,16 @@ const App = () => {
       },
     },
     {
-      title: '총 광고비(이전기간)',
+      title: (
+        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+        총 광고비(이전기간)
+      </div>
+      ),
       dataIndex: 'pretotad',
       align: 'end',
       key: 'pretotad',
       ellipsis: true,
+      width : 227,
       sorter: (a, b) => a.pretotad - b.pretotad,
       sortOrder: sortedInfo.columnKey === 'pretotad' ? sortedInfo.order : null,
       ellipsis: true,
@@ -254,11 +279,16 @@ const App = () => {
       },
     },
     {
-      title: '총 매출액',
+      title: (
+        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+       총 매출액
+      </div>
+      ),
       dataIndex: 'totsale',
       ellipsis: true,
       align: 'end',
       key: 'totsale',
+      width : 227,
       sorter: (a, b) => a.totsale - b.totsale,
       sortOrder: sortedInfo.columnKey === 'totsale' ? sortedInfo.order : null,
       render: (text, record) => {
@@ -267,9 +297,14 @@ const App = () => {
       },
     },
     {
-      title: '총 매출액(이전기간)',
+      title:(
+        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+       총 매출액(이전기간)
+      </div>
+      ),
       dataIndex: 'pretotsale',
       key: 'pretotsale',
+      width : 227,
       sorter: (a, b) => a.pretotsale - b.pretotsale,
       sortOrder:
         sortedInfo.columnKey === 'pretotsale' ? sortedInfo.order : null,
@@ -287,9 +322,14 @@ const App = () => {
       },
     },
     {
-      title: 'ROAS(%)',
+      title: (
+        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+       ROAS(%)
+      </div>
+      ),
       dataIndex: 'roas',
       key: 'roas',
+      width : 200,
       sorter: (a, b) => a.roas - b.roas,
       sortOrder: sortedInfo.columnKey === 'roas' ? sortedInfo.order : null,
       ellipsis: true,
@@ -300,9 +340,14 @@ const App = () => {
       },
     },
     {
-      title: 'ROAS(%)(이전기간)',
+      title:(
+        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+       ROAS(%)(이전기간)
+      </div>
+      ),
       dataIndex: 'preroas',
       key: 'preroas',
+      width : 200,
       sorter: (a, b) => a.preroas - b.preroas,
       sortOrder: sortedInfo.columnKey === 'preroas' ? sortedInfo.order : null,
       align: 'end',
@@ -375,11 +420,13 @@ const App = () => {
         </div>
       </div>
       <Table
+        className='ADResultTable'
         id="table"
         columns={columns}
         dataSource={data}
         onChange={handleChange}
         rowClassName={rowClassName}
+        showSorterTooltip={false}
       />
     </>
   );
