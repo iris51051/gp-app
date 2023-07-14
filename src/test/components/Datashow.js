@@ -3,7 +3,7 @@ import { Select } from "antd";
 import { VscTriangleDown } from "react-icons/vsc";
 
 const handleChange = (value) => {
-  console.log(`selected ${value}`);
+
 };
 export const Datashow = () => (
   <div>

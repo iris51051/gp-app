@@ -8,7 +8,6 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
   const [selectedOptions, setSelectedOptions] = useState([...options.map(option => option.value),"selectAll"]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  console.log("selectedOptions: ",selectedOptions);
   useEffect(() => {
     onValueChange(selectedOptions);
   }, [selectedOptions, onValueChange]);

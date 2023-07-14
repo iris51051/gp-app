@@ -149,14 +149,13 @@ const ScoreCardChart = (colors) => {
     if(value){
       setSelectAll(value);
       const keyArray = score.map((item) => item.key);
-      console.log("keyArray",keyArray)
       HandleChangeValue(keyArray)
     }else{
       setSelectAll(value);
       HandleChangeValue([]);
     }
   };
-  console.log("CharCardList", chartCardList);
+
   return (
     <div className="ScoreChartDiv">
       {/* Chart 추가 */}

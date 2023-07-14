@@ -24,176 +24,118 @@ const AdPerformanceRange = ({ colors , chartdata}) => {
   const [startDate, setStartDate] = useState(new Date("2023/04/20"));
   const [endDate, setEndDate] = useState(new Date("2023/06/01"));
   const [xdata, setXData] = useState(generateDates(startDate, endDate, "day"));
-  const [selectedBar, setSelectedBar] = useState(["총 노출수", "기준지표"]);
-  const [selectedLine, setSelectedLine] = useState(["총 클릭수", "비교지표"]);
+  const [selectedBar, setSelectedBar] = useState(["총 노출수"]);
+  const [selectedLine, setSelectedLine] = useState(["총 클릭수"]);
+  const [options, setOptions] = useState(null);
   //데이터
 
-  console.log("xdata", xdata);
-  const category = ["기준지표", "비교지표"];
+  const category = [selectedBar[0], selectedLine[0]];
 
-  const handlexDataChange = (e) => {
-    const value = e.target.value;
-    if (value === "day") {
-      const dates = generateDates(startDate, endDate, "day");
+  const handleXDataChange = useCallback(
+    (value) => {
+      const dates = generateDates(startDate, endDate, value);
       setXData(dates);
-    } else if (value === "week") {
-      const dates = generateDates(startDate, endDate, "week");
-      setXData(dates);
-    } else if (value === "month") {
-      const dates = generateDates(startDate, endDate, "month");
-      setXData(dates);
-    }
-  };
-
-  const handleLineChange = (e) => {
-    const newValue = e.target.value;
-    setSelectedLine([newValue, "기준지표"]);
-  };
-  const handleBarChange = (e) => {
-    const newValue = e.target.value;
-    setSelectedBar([newValue, "비교지표"]);
-  };
-
-  const [options, setOptions] = useState({
-    tooltip: {
-      trigger: "axis",
     },
-    grid: {
-      left: 50,
-      right: 50,
-      top: 10,
-      bottom: 50,
-    },
-    color: colors,
-    legend: {
-      data: category,
-      bottom: "bottom",
-      icon: "circle",
-      itemGap: 25,
-    },
-    xAxis: {
-      type: "category",
-      axisTick: {
-        alignWithLabel: true,
-      },
-      axisLine: {
-        show: true,
-      },
-      data: xdata,
-    },
-    yAxis: [
-      {
-        type: "value",
-        name: category[0],
-        position: "right",
-        alignTicks: true,
-      },
-      {
-        type: "value",
-        name: category[1],
-        position: "left",
-        alignTicks: true,
-      },
-    ],
-    series: [
-      {
-        name: category[0],
-        type: "bar",
-        barWidth: 20,
-        data: chartdata.find((item) => item.name === selectedBar[0]).value,
-        smooth: true,
-      },
+    [startDate, endDate]
+  );
 
-      {
-        name: category[1],
-        type: "line",
-        yAxisIndex: 1,
-        data: chartdata.find((item) => item.name === selectedLine[0]).value,
-        symbol: "circle",
-        symbolSize: 6,
-      },
-    ],
-  });
+  const handleLineChange = useCallback(
+    (value) => {
+      setSelectedLine([value]);
+    },
+    []
+  );
 
-  const updateChartOptions = useCallback(() => {
-    const updateOptions = {
-      tooltip: {
-        trigger: "axis",
-      },
-      // grid: {
-      //   left: 50,
-      //   right: 300,
-      //   top: 10,
-      //   bottom: 50,
-      // },
-      color: colors,
-      legend: {
-        data: category,
-        bottom: "bottom",
-        icon: "circle",
-        itemGap: 25,
-      },
-      xAxis: {
-        type: "category",
-        axisTick: {
-          alignWithLabel: true,
-        },
-        data: xdata,
-      },
-      yAxis: [
-        {
-          type: "value",
-          name: category[0],
-          position: "left",
-          splitLine :{
-            show : false,
-          },
-          axisLine: {
-            show: true,
-          },
-          axisTick:{
-            show: true,
-          },
-        },
-        {
-          type: "value",
-          name: category[1],
-          position: "right",
-          alignTicks: true,
-          axisLine: {
-            show: true,
-          },
-          splitLine :{
-            show : false,
-          },
-        },
-      ],
-      series: [
-        {
-          name: category[0],
+  const handleBarChange = useCallback(
+    (value) => {
+      setSelectedBar([value]);
+    },
+    []
+  );
+  useEffect(() => {
+  const updateChartOptions = () => {
+    if (chartdata) {
+      const barData = chartdata.find((item) => item.name === selectedBar[0]);
+      const lineData = chartdata.find((item) => item.name === selectedLine[0]);
+      if (barData && lineData) {
+        const barSeries = {
+          name: selectedBar[0],
           type: "bar",
           barWidth: 20,
-          data: chartdata.find((item) => item.name === selectedBar[0]).value,
+          data: barData.value,
           smooth: true,
-        },
-        {
-          name: category[1],
+        };
+        const lineSeries = {
+          name: selectedLine[0],
           type: "line",
           yAxisIndex: 1,
-          data: chartdata.find((item) => item.name === selectedLine[0]).value,
+          data: lineData.value,
           symbol: "circle",
           symbolSize: 6,
-        },
-      ],
-    };
-    console.log("selectedBar", selectedBar);
-    console.log("selectedLine", selectedLine);
-    setOptions(updateOptions);
-  }, [xdata, colors, selectedBar, selectedLine]);
-
-  useEffect(() => {
-    updateChartOptions();
-  }, [updateChartOptions]);
+        };
+        const series = [lineSeries];
+        if (selectedBar[0] === selectedLine[0]) {
+          series.push(lineSeries);
+        }
+        const options = {
+          tooltip: {
+            trigger: "axis",
+          },
+          color: colors,
+          legend: {
+            data: category,
+            bottom: "bottom",
+            icon: "circle",
+            itemGap: 25,
+          },
+          xAxis: {
+            type: "category",
+            axisTick: {
+              alignWithLabel: true,
+            },
+            axisLine: {
+              show: true,
+            },
+            data: xdata,
+          },
+          yAxis: [
+            {
+              type: "value",
+              name: selectedBar[0],
+              position: "left",
+              alignTicks: true,
+            },
+            {
+              type: "value",
+              name: selectedLine[0],
+              position: "right",
+              alignTicks: true,
+            },
+          ],
+          series: [
+            {
+              name: selectedBar[0],
+              type: "bar",
+              barWidth: 20,
+              data: barData.value,
+              smooth: true,
+            },
+            {
+              name: selectedLine[0],
+              type: "line",
+              yAxisIndex: 1,
+              data: lineData.value,
+              symbol: "circle",
+              symbolSize: 6,
+            },
+          ],
+        };
+          setOptions(options);
+          }
+        }
+      };
+  updateChartOptions();
+  }, [xdata, colors, selectedBar, selectedLine, chartdata]);
 
   return (
     <div>
@@ -209,7 +151,7 @@ const AdPerformanceRange = ({ colors , chartdata}) => {
             <tr>
               <th>Step 01. 기간 범위</th>
               <td>
-                <Radio.Group defaultValue="day" onChange={handlexDataChange}>
+                <Radio.Group defaultValue="day" onChange={(e) => handleXDataChange(e.target.value)}>
                   <Radio.Button value="day">일별</Radio.Button>
                   <Radio.Button value="week">주별</Radio.Button>
                   <Radio.Button value="month">월별</Radio.Button>
@@ -222,15 +164,15 @@ const AdPerformanceRange = ({ colors , chartdata}) => {
                 <Radio.Group
                   className="standard"
                   defaultValue="총 노출수"
-                  onChange={handleBarChange}
+                  onChange={(e) => handleBarChange(e.target.value)}
                 >
-                  <Radio.Button value="총 노출수" style={selectedBar[0] === '총 노출수' ? { background: colors[0],color:'white' } : {}}>
+                  <Radio.Button value="총 노출수" style={selectedBar[0] === '총 노출수' ? { background: colors[0],color:'white' } : {}}disabled={selectedLine[0] === "총 노출수"}>
                   총 노출수</Radio.Button>
-                  <Radio.Button value="총 클릭수"  style={selectedBar[0] === '총 클릭수' ? { background: colors[0],color:'white' } : {}}>
+                  <Radio.Button value="총 클릭수"  style={selectedBar[0] === '총 클릭수' ? { background: colors[0],color:'white' } : {}}disabled={selectedLine[0] === "총 클릭수"}>
                   총 클릭수</Radio.Button>
-                  <Radio.Button value="CTR"  style={selectedBar[0] === 'CTR' ? { background: colors[0],color:'white' } : {}}>
+                  <Radio.Button value="CTR"  style={selectedBar[0] === 'CTR' ? { background: colors[0],color:'white' } : {}}disabled={selectedLine[0] === "CTR"}>
                   CTR</Radio.Button>
-                  <Radio.Button value="CPC" style={selectedBar[0] === 'CPC' ? { background: colors[0],color:'white' } : {}}>
+                  <Radio.Button value="CPC" style={selectedBar[0] === 'CPC' ? { background: colors[0],color:'white' } : {} }disabled={selectedLine[0] === "CPC"}>
                   CPC</Radio.Button>
                 </Radio.Group>
               </td>
@@ -241,19 +183,21 @@ const AdPerformanceRange = ({ colors , chartdata}) => {
                 <Radio.Group
                   className="compare"
                   defaultValue="총 클릭수"
-                  onChange={handleLineChange}
+                  onChange={(e) => handleLineChange(e.target.value)}
                 >
-                  <Radio.Button value="총 노출수" style={selectedLine[0] === '총 노출수' ? { background: colors[1],borderColor:colors[1],color:'white' } : {}}>총 노출수</Radio.Button>
-                  <Radio.Button value="총 클릭수" style={selectedLine[0] === '총 클릭수' ? { background: colors[1],borderColor:colors[1],color:'white' } : {}}>총 클릭수</Radio.Button>
-                  <Radio.Button value="CTR" style={selectedLine[0] === 'CTR' ? { background: colors[1],borderColor:colors[1],color:'white' } : {}}>CTR</Radio.Button>
-                  <Radio.Button value="CPC" style={selectedLine[0] === 'CPC' ? { background: colors[1],borderColor:colors[1],color:'white' } : {}}>CPC</Radio.Button>
+                  <Radio.Button value="총 노출수" style={selectedLine[0] === '총 노출수' ? { background: colors[1],borderColor:colors[1],color:'white' } : {}} disabled={selectedBar[0] === "총 노출수"}>총 노출수</Radio.Button>
+                  <Radio.Button value="총 클릭수" style={selectedLine[0] === '총 클릭수' ? { background: colors[1],borderColor:colors[1],color:'white' } : {}} disabled={selectedBar[0] === "총 클릭수"}>총 클릭수</Radio.Button>
+                  <Radio.Button value="CTR" style={selectedLine[0] === 'CTR' ? { background: colors[1],borderColor:colors[1],color:'white' } : {}} disabled={selectedBar[0] === "CTR"}>CTR</Radio.Button>
+                  <Radio.Button value="CPC" style={selectedLine[0] === 'CPC' ? { background: colors[1],borderColor:colors[1],color:'white' } : {}} disabled={selectedBar[0] === "CPC"}>CPC</Radio.Button>
                 </Radio.Group>
               </td>
             </tr>
           </table>
         </div>
       </div>
+      {options && (
       <ECharts style={{ height: 350, width: '90%'}} option={options} notMerge={true} />
+      )}
     </div>
   );
 };

@@ -314,6 +314,7 @@ code {
 }
 .ScoreChartTitle {
   margin: 0;
+  font-size: 15px;
 }
 .ScoreChartValueDiv {
   text-align: right;

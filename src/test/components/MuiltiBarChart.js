@@ -2,10 +2,6 @@ import React from "react";
 import ECharts from "echarts-for-react";
 
 export const MultipleBarChart = ({ colors, adList, adoptions }) => {
-  console.log("colors.multipleBarChart",colors)
-  console.log("adList.multipleBarChart"+adList)
-  console.log("adoptions.multipleBarChart",adoptions)
-
   const filteredAdoptions = adoptions.filter((adoption) =>
   adList.includes(adoption.value)
 );
@@ -24,7 +20,7 @@ filteredAdoptions.forEach((adoption) => {
     }
   }
 });
-console.log("sourceArray",sourceArray)
+
   const options = {
     legend: {
       data: ['총 광고비', '매출액', 'ROAS'],

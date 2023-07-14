@@ -121,8 +121,6 @@ const Calendar = () => {
       setPickedRange([new Date(), new Date()]);
     }
   };
-  console.log("selectedDate: " + selectedDate);
-  console.log("pickedRange: " + PickedRange);
   return (
     <CustomProvider locale={koKR}>
       <DateRangePicker

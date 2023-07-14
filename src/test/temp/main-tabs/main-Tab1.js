@@ -81,7 +81,6 @@ const MainTab1 = () => {
       { name: "매출액",value : 452000 }
     ]},
   ];
-  console.log("adoptions.value: ",)
   // 광고 사이트 옵션
   const adsiteoptions = [
     { label: "족보닷컴", value: "족보닷컴" },
@@ -164,7 +163,6 @@ const MainTab1 = () => {
   const updateFilter =()=>{
     setFilterOptions([adList, adsiteList,mdList ]);
   }
-  console.log("filterOptionssssssssss",filterOptions[0])
   const colors = [
     "#4180ec",
     "#4fd9bc",
