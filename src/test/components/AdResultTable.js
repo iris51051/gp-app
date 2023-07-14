@@ -139,12 +139,6 @@ const App = () => {
     setData(defalutdata);
     setSortedInfo({});
   };
-  const setAgeSort = () => {
-    setSortedInfo({
-      order: 'descend',
-      columnKey: 'age',
-    });
-  };
 
   const tablerender = (record, mode) => {
     if (mode[0] !== 'roas') {
@@ -162,11 +156,12 @@ const App = () => {
 
       return (
         <>
-          {cur
-            ? `${Intl.NumberFormat('ko-KR', {
-                style: 'currency',
-                currency: 'KRW',
-              }).format(cur)}`
+          {cur ?
+                Intl.NumberFormat('ko-KR', {
+                  style: 'currency',
+                  currency: 'KRW',
+                }).format(cur).replace('₩', '₩\u00A0')
+
             : '-'}
           {pre === undefined || pre === 0
             ? '(-%'
@@ -272,7 +267,7 @@ const App = () => {
           return Intl.NumberFormat('ko-KR', {
             style: 'currency',
             currency: 'KRW',
-          }).format(text);
+          }).format(text).replace('₩', '₩\u00A0');
         } else {
           return '-';
         }
@@ -315,7 +310,7 @@ const App = () => {
           return Intl.NumberFormat('ko-KR', {
             style: 'currency',
             currency: 'KRW',
-          }).format(text);
+          }).format(text).replace('₩', '₩\u00A0'); 
         } else {
           return '-';
         }
@@ -367,7 +362,6 @@ const App = () => {
   };
   const onSearch = (value) => {
     setSearchText(value);
-
     const filteredData = data.filter((item) => {
       const itemValues = Object.values(item);
       return itemValues.some((itemValue) =>

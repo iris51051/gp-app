@@ -14,6 +14,7 @@ const Main = () => {
   ];
   return (
     <>
+    <div className="MainContainer">
       <Row className="title-Row">
         <Col xs={24}>
           <Breadcrumb items={items} />
@@ -34,6 +35,7 @@ const Main = () => {
             {/* <MainTab2></MainTab2> */}
           </TabPane>
         </Tabs>
+      </div>
       </div>
     </>
   );

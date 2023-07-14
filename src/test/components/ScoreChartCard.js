@@ -14,7 +14,7 @@ const ScoreCardChart = (colors) => {
     {
       key: 0,
       title: "총 매출액",
-      value: "7,554,857",
+      value: 217554857,
       unit: "원",
       percent: -2,
       data: [0, 205, 211, 401, 234, 290, 130, 150, 0],
@@ -22,7 +22,7 @@ const ScoreCardChart = (colors) => {
     {
       key: 1,
       title: "총 노출수",
-      value: "123123",
+      value: 123123,
       unit: "회",
       percent: 40,
       data: [0, 205, 211, 401, 234, 290, 130, 150, 0],
@@ -30,7 +30,7 @@ const ScoreCardChart = (colors) => {
     {
       key: 2,
       title: "평균 노출수",
-      value: "300",
+      value: 300,
       unit: "회",
       percent: 10,
       data: [0, 95, 211, 275, 234, 190, 275, 200, 0],
@@ -38,7 +38,7 @@ const ScoreCardChart = (colors) => {
     {
       key: 3,
       title: "총 클릭수",
-      value: "600",
+      value: 600,
       unit: "회",
       percent: 100,
       data: [0, 205, 211, 401, 234, 290, 130, 150, 0],
@@ -46,7 +46,7 @@ const ScoreCardChart = (colors) => {
     {
       key: 4,
       title: "평균 클릭 수",
-      value: "100",
+      value: 100,
       unit: "회",
       percent: -20,
       data: [0, 95, 100, 275, 300, 140, 190, 200, 0],
@@ -54,7 +54,7 @@ const ScoreCardChart = (colors) => {
     {
       key: 5,
       title: "CTR",
-      value: "542",
+      value: 542,
       unit: "%",
       percent: 100,
       data: [0, 95, 211, 275, 234, 190, 275, 200, 0],
@@ -63,7 +63,7 @@ const ScoreCardChart = (colors) => {
     {
       key: 6,
       title: "평균 CTR",
-      value: "120",
+      value: 120,
       unit: "%",
       percent: 30,
       data: [0, 95, 100, 275, 300, 140, 190, 200, 0],
@@ -71,7 +71,7 @@ const ScoreCardChart = (colors) => {
     {
       key: 7,
       title: "CPC",
-      value: "542",
+      value: 542,
       unit: "%",
       percent: 100,
       data: [0, 145, 211, 301, 234, 290, 130, 100, 0],
@@ -80,7 +80,7 @@ const ScoreCardChart = (colors) => {
     {
       key: 8,
       title: "평균 CPC",
-      value: "120",
+      value: 120,
       unit: "%",
       percent: 30,
       data: [0, 145, 211, 301, 234, 290, 130, 100, 0],
@@ -88,7 +88,7 @@ const ScoreCardChart = (colors) => {
     {
       key: 9,
       title: "총 광고비",
-      value: "3,283,872",
+      value: 3283872,
       unit: "원",
       percent: 100,
       data: [0, 145, 211, 301, 234, 290, 130, 100, 0],
@@ -96,7 +96,7 @@ const ScoreCardChart = (colors) => {
     {
       key: 10,
       title: "평균 광고비",
-      value: "3,283,872",
+      value: 3283872,
       unit: "원",
       percent: 100,
       data: [0, 145, 211, 301, 234, 290, 130, 100, 0],
@@ -104,7 +104,7 @@ const ScoreCardChart = (colors) => {
     {
       key: 11,
       title: "ROAS(%)",
-      value: "542",
+      value: 542,
       unit: "%",
       percent: 100,
       data: [0, 175, 211, 270, 234, 280, 130, 100, 0],
@@ -112,7 +112,7 @@ const ScoreCardChart = (colors) => {
     {
       key: 12,
       title: "평균 ROAS(%)",
-      value: "542",
+      value: 542,
       unit: "%",
       percent: 100,
       data: [0, 145, 211, 301, 234, 290, 130, 100, 0],
@@ -216,13 +216,24 @@ const ScoreCardChart = (colors) => {
             className="ScoreChartCol"
             direction="vertical"
           >
+
+
+
+
+
+
+
+
+
+
+            <div className="ScoreCardContainer">
             <h3 className="ScoreChartTitle">{item.title}</h3>
             <div className="ScoreChartValueDiv">
-              <span className="ScoreChartValue">{item.value}</span>
+              <span className="ScoreChartValue">{Intl.NumberFormat('ko-KR').format(item.value)}</span>
               <span className="ScoreChartUnit"> {item.unit}</span>
             </div>
             <div className="ScoreChartPercent">
-              ({item.percent}%
+              ({Intl.NumberFormat('ko-KR').format(item.percent)}%
               {item.percent > 0 ? (
                 <CaretUpOutlined className="ArrowUp" />
               ) : (
@@ -232,6 +243,7 @@ const ScoreCardChart = (colors) => {
             </div>
             <div>
               <AreaLineChart data={item.data} />
+            </div>
             </div>
           </Space.Compact>
         ))}
@@ -268,12 +280,11 @@ const AreaLineChart = ({ data }) => {
         var tooltipContent = "";
         params.forEach(function (item) {
           var color = "#30c7e9";
-          var value = item.data;
+          var value = Intl.NumberFormat('ko-KR').format(item.data);
           tooltipContent +=
             '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:8px;height:8px;background-color:' +
             color +
             ';"></span>';
-
           tooltipContent += value;
         });
         return tooltipContent;
@@ -335,8 +346,7 @@ const AreaLineChart = ({ data }) => {
     <div className="AreaChart">
       <ECharts
         option={options}
-        style={{ height: "30px", width: "90%" }}
-        // opts={{ renderer: "svg", width: "auto", height: "auto" }}
+        style={{ height: "40px", width: "228px" }}
       />
     </div>
   );

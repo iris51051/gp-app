@@ -24,7 +24,7 @@ filteredAdoptions.forEach((adoption) => {
   const options = {
     legend: {
       data: ['총 광고비', '매출액', 'ROAS'],
-      bottom: -5,
+      bottom: 15,
       icon: "circle",
       itemGap: 25,
     },

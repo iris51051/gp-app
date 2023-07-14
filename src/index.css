@@ -54,6 +54,9 @@ code {
 /************************************Content*****/
 
 /* **********************************Main **********************************/
+.MainContainer{
+  padding-bottom: 100px;
+}
 .active-title {
   display: flex;
   align-items: center;
@@ -298,22 +301,46 @@ code {
   flex-wrap: wrap;
   align-items: flex-start;
 }
-
 .ScoreChart {
   height: 100px !important;
   vertical-align: top;
 }
+.ScoreCardContainer{
+  padding:0 5 5 5
+}
+.ScoreChartAdd {
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  margin-right: 15px;
+  padding: 25px;
+  height: 178px;
+  width: 15.72%;
+  justify-content: center;
+}
+
+.ChartAdder {
+  color: blue;
+  font-size: xxx-large;
+}
+.ScoreChartAddContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .ScoreChartCol {
   direction: vertical;
-  margin-bottom: 50px;
-  margin-right: 4px;
-  padding: 25px;
+  margin-bottom: 15px;
+  margin-right: 15px;
+  padding: 10px;
   border: 1px solid #ccc;
   height: 178px;
-  width: 16%;
+  width: 15.72%;
 }
 .ScoreChartTitle {
   margin: 0;
+  margin-top:30;
   font-size: 15px;
 }
 .ScoreChartValueDiv {
@@ -333,26 +360,7 @@ code {
 .ArrowDown {
   color: blue;
 }
-.ScoreChartAdd {
-  border: 1px solid #ccc;
-  margin-bottom: 50px;
-  margin-right: 4px;
-  padding: 25px;
-  height: 178px;
-  width: 16%;
-  justify-content: center;
-}
-.ChartAdder {
-  color: blue;
-  font-size: xxx-large;
-}
-.ScoreChartAddContainer {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+
 .DropDownLayer {
   border: 1px solid #ccc;
   background-color: white;
@@ -368,7 +376,9 @@ code {
   display: flex;
   align-items: center;
 }
-
+.AreaChart{
+  padding-top: 5px;
+}
 
 /****************************************************************************************************/
 

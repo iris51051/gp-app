@@ -65,7 +65,7 @@ const AdPerformanceRange = ({ colors , chartdata}) => {
           color: colors,
           legend: {
             data: category,
-            bottom: "bottom",
+            bottom: 15,
             icon: "circle",
             itemGap: 25,
           },
@@ -201,7 +201,7 @@ const AdPerformanceRange = ({ colors , chartdata}) => {
         </div>
       </div>
       {options && (
-      <ECharts style={{ height: 350, width: '90%'}} option={options} notMerge={true} />
+      <ECharts style={{ height: 350, width: '100%'}} option={options} notMerge={true} />
       )}
     </div>
   );

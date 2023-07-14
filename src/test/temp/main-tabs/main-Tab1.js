@@ -9,6 +9,7 @@ import AdPerformance from "../../components/ADPerfomance";
 import ScoreCardChartComp from "../../components/ScoreChartCard";
 import MultipleBarChart from "../../components/MuiltiBarChart";
 import AdResultTable from "../../components/AdResultTable";
+import MDResultTable from "../../components/MDResultTable.js";
 const { Text } = Typography;
 
 const MainTab1 = () => {
@@ -117,7 +118,7 @@ const MainTab1 = () => {
   const chartdata = [
     {
       name: "총 노출수",
-      value: [600, 501, 210, 580, 950, 707, 100],
+      value: [1200, 501, 210, 580, 950, 707, 100],
     },
     {
       name: "총 클릭수",
@@ -249,6 +250,10 @@ const MainTab1 = () => {
       </div>
       <div>
       <AdResultTable/>
+      </div>
+      <div>
+        <h4 className="MDResult">광고 매체사별 성과</h4>
+        <MDResultTable/>
       </div>
     </>
   );

@@ -29,7 +29,7 @@ const App = () => {
           <Layout >
             <Content
               style={{
-                padding: 24,
+
                 background: colorBgContainer,
                 justifyContent: "space-between",
                 alignItems: "center",
