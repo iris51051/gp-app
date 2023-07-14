@@ -427,6 +427,7 @@ const App = () => {
         onChange={handleChange}
         rowClassName={rowClassName}
         showSorterTooltip={false}
+        size='small'
       />
     </>
   );

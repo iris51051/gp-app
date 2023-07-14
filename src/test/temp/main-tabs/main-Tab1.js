@@ -246,7 +246,9 @@ const MainTab1 = () => {
       <div className="MultipleBarChartDiv">
         <h4>광고주별 광고 성과</h4>
         <MultipleBarChart colors={colors} adoptions={adoptions} adList={adList}/>
-        <AdResultTable/>
+      </div>
+      <div>
+      <AdResultTable/>
       </div>
     </>
   );
