@@ -389,3 +389,25 @@ code {
   .ant-table-cell{
   border:1px solid #cccccc;
 }
+
+
+
+/****************************************************************************************************/
+
+/*************                                MDResultTable                               ***********/  
+
+/****************************************************************************************************/
+.MDresults .adPro{
+  border-left: none !important;
+}
+.MDresults .ant-table-row-expand-icon-cell {
+  border-right: none  !important;
+  width: 80px;
+}
+.MDresults .totalRow td{
+  border-top : double;
+}
+.MDresults .ant-table-thead th,
+.MDresults .ant-table-thead td{
+  border-bottom: 2px solid black !important;
+}

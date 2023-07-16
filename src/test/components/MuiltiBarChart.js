@@ -36,11 +36,6 @@ filteredAdoptions.forEach((adoption) => {
       dimensions: ['product', '총 광고비', '매출액', 'ROAS'],
       source: sourceArray.slice(1)
     },
-    // grid:{
-    //   left : 100,
-    //   right : 200,
-    //   top : 50,
-    // },
     xAxis: {
       type: "category",
       axisLine: {
