@@ -341,11 +341,22 @@ const test=()=>{
             totalclckCount += Number(clckCount);
             totaltotAd += Number(totAd);
           });
+          const totalCTR =()=>{
+            const num = ((totalclckCount/totalexpoCount)*100).toFixed(2);
+            const ctrValue = parseFloat(num).toFixed(2);
+            const formattedValue = Number(ctrValue).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return formattedValue + '%';
+          }
+          const totalCPC = ()=>{
+            const num = (totaltotAd/totalclckCount).toFixed(2);
+            const value = Intl.NumberFormat().format(num);
+            return ('₩ '+value)
+          }
           return (
             <>
               <Table.Summary fixed>
                 <Table.Summary.Row className='totalRow'>
-                  <Table.Summary.Cell index={0}>Total</Table.Summary.Cell>
+                  <Table.Summary.Cell index={0}>총합계</Table.Summary.Cell>
                   <Table.Summary.Cell index={1} colSpan={2}></Table.Summary.Cell>
                   <Table.Summary.Cell index={2}>
                     <Text >{ Intl.NumberFormat().format(totalexpoCount)}</Text>
@@ -354,13 +365,17 @@ const test=()=>{
                     <Text>{Intl.NumberFormat().format(totalclckCount)}</Text>
                   </Table.Summary.Cell>
                   <Table.Summary.Cell index={4}>
-                    <Text>{Intl.NumberFormat().format(totalclckCount)}</Text>
+                    <Text>{totalCTR()}</Text>
                   </Table.Summary.Cell>
                   <Table.Summary.Cell index={5}>
-                    <Text>{Intl.NumberFormat().format(totalclckCount)}</Text>
+                    <Text>{totalCPC()}</Text>
                   </Table.Summary.Cell>
                   <Table.Summary.Cell index={6}>
-                    <Text>{Intl.NumberFormat().format(totaltotAd)}</Text>
+                    <Text>{Intl.NumberFormat(
+                      'ko-KR',
+                       {style: 'currency',currency: 'KRW',})
+                      .format(totaltotAd)
+                      .replace('₩', '₩\u00A0')}</Text>
                   </Table.Summary.Cell>
                 </Table.Summary.Row>
                 </Table.Summary>

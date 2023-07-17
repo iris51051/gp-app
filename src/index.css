@@ -71,8 +71,14 @@ code {
 .title-Row {
   padding: 15px 10px 9px 10px;
 }
-/* MainTab1 */
-/* 세부 디자인 추가 */
+
+/****************************************************************************************************/
+
+/*************                                MainTab1                              ***********/  
+
+/****************************************************************************************************/
+
+/*****************************************     Slector   ********************************************/
 .selectedDateDescription {
   border: 1px solid rgba(120, 130, 140, 0.13);
   border-left: 3px solid #ffdc29 !important;
@@ -116,6 +122,53 @@ code {
   height: 34.42px;
 }
 
+
+/******************************************    Swtich    ***************************************************/
+
+.MainTabSwitch{
+  display : flex;
+  border-radius: 0 !important;
+  width:100px;
+  height: 25px;
+  padding-top: 2px;
+}
+.MainTabSwitch.ant-switch{
+  counter-reset: switch-content;
+}
+.MainTabSwitch.ant-switch .ant-switch-handle::before{
+  width:40px;
+  height: auto;
+  border-radius: 0;
+  font-size: 10px;
+  bottom: auto;
+  left:-25px;
+  counter-increment: switch-content;
+  content: "test";
+  display: inline-block;
+  animation: switch-animation 0.5s linear infinite alternate;
+}
+.MainTabSwitch.ant-switch .ant-switch-handle::after{
+  width:40px;
+  height: auto;
+  border-radius: 0;
+  font-size: 10px;
+  bottom: auto;
+  content: "aaaaa";
+  display: none;
+}
+@keyframes switch-animation {
+  0% {
+    display: inline-block;
+  }
+  50% {
+    display: none;
+  }
+  100% {
+    display: inline-block;
+  }
+}
+
+
 /* 선택한 분석 대상 */
 .selected-analysis-targer {
   font-weight: 600;
@@ -127,7 +180,7 @@ code {
 }
 
 .selected-analysis-targer-div {
-  border: 1px solid rgba(120, 130, 140, 0.13);
+  border: 1px solid rgba(0, 0, 0, 0.13);
   border-left: 3px solid #ffdc29 !important;
   padding: 10px 20px;
   margin: 0 0 20px;
@@ -138,8 +191,17 @@ code {
   line-height: 1.6;
   margin: 0 0 10px;
   font-weight: 600;
-  font-size: 13px !important;
+  font-size: 10px !important;
   color: black;
+}
+
+.selected-analysis-target-p .ant-tag{
+  font-size: 11px !important;
+  border-radius: 12px;
+}
+.selected-analysis-targer-p .ant-tag{
+  font-size: 11px !important;
+  border-radius: 12px;
 }
 
 .selected-analysis-targer-span {
@@ -406,8 +468,30 @@ code {
 }
 .MDresults .totalRow td{
   border-top : double;
+  text-align: end;
 }
 .MDresults .ant-table-thead th,
 .MDresults .ant-table-thead td{
   border-bottom: 2px solid black !important;
+}
+
+
+
+/****************************************************************************************************/
+
+/*************                                MainTab1Footer                              ***********/  
+
+/****************************************************************************************************/
+.fotterChartCompdiv{
+  display : flex;
+  height: 400;
+}
+
+.fotterChartCompdiv .fotterMDPiechart,.fotterBarchart,.fotterDevPiechart{
+  border : 1px solid #e8ecee;
+  margin-right :20px;
+}
+.fotterChartCompdiv .fotterBarchartTitle,.fotterMDPiecharttitle,.fotterDevPiechartTitle{
+  padding-top: 30px;
+  padding-left: 20px;
 }

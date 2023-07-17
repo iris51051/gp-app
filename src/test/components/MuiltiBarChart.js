@@ -44,6 +44,9 @@ filteredAdoptions.forEach((adoption) => {
           color: "#333",
         },
       },
+      axisLabel:{
+        interval:0,
+      },
       axisTick: {
         alignWithLabel: true,
       },
@@ -103,8 +106,19 @@ series: [
       ).format(value);
     }
   }, encode: { x: 'product', y: '총 광고비' } },
-  { name: '매출액', type: 'bar', encode: { x: 'product', y: '매출액' } },
-  { name: 'ROAS', type: 'bar', yAxisIndex: 1, encode: { x: 'product', y: 'ROAS' } },
+  { name: '매출액', type: 'bar', encode: { x: 'product', y: '매출액' },tooltip: {
+    valueFormatter: function (value) {
+      return new Intl.NumberFormat('ko-KR',
+      {style : 'currency', currency : 'KRW'}
+      ).format(value);
+    } }},
+  { name: 'ROAS', type: 'bar', yAxisIndex: 1, encode: { x: 'product', y: 'ROAS' },
+  tooltip: {
+    valueFormatter: function (value) {
+      return value + '%';
+    }
+  },
+ },
 ],
   };
   return (
@@ -179,5 +193,4 @@ export const EmpryChart =()=>{
   </>
   )
 }
-
 export default MultipleBarChart;

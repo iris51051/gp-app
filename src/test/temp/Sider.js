@@ -33,7 +33,6 @@ const Lnb = ({ collapsed }) => {
       collapsed={collapsed}
       style={{
         height: "100vh",
-
       }}
       width= '240px'
       collapsedWidth="0"

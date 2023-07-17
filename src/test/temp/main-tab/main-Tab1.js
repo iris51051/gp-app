@@ -204,13 +204,6 @@ const MainTab1 = () => {
   ].slice(0, 10);
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-        }}
-      >
-      </div>
       <div style={{ border: "1px solid #e8ecee", padding: "25px" }}>
         <Space size="large">
           <Text strong level={4}>
