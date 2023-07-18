@@ -13,6 +13,7 @@ import MDResultTable from "../../components/MDResultTable.js";
 import MDTransBar from "../../components/MediaTransition/MDTransBar.js";
 import MDTransPie from "../../components/MediaTransition/MDTransPie.js";
 import DeviceTransPie from "../../components/MediaTransition/DeviceTransPie.js";
+import LineChart from "../../components/LineChart";
 const { Text } = Typography;
 
 const MainTab1 = () => {
@@ -152,6 +153,120 @@ const MainTab1 = () => {
       { name: "총 전환율", value : 0}},
   ]
 
+  
+      //실제 데이터 (이름, 값)
+      const defaultData = [
+        {
+          group: "광고주",
+          groupname: "아트",
+          name: "노출수",
+          value: [60, 50, 21, 58, 95, 77, 21],
+        },
+        {
+          group: "광고주",
+          groupname: "아트",
+          name: "클릭수",
+          value: [10, 20, 81, 38, 95, 17, 81],
+        },
+        {
+          group: "광고주",
+          groupname: "아트",
+          name: "CTR",
+          value: [40, 60, 84, 38, 55, 77, 40],
+        },
+        {
+          group: "광고주",
+          groupname: "컴투펫",
+          name: "노출수",
+          value: [50, 30, 24, 18, 35, 47, 60],
+        },
+        {
+          group: "광고주",
+          groupname: "컴투펫",
+          name: "클릭수",
+          value: [60, 50, 21, 58, 95, 77, 21],
+        },
+        {
+          group: "광고주",
+          groupname: "컴투펫",
+          name: "CTR",
+          value: [10, 20, 81, 38, 95, 17, 81],
+        },
+        {
+          group: "광고주",
+          groupname: "휴라이트",
+          name: "노출수",
+          value: [40, 60, 84, 38, 55, 77, 40],
+        },
+        {
+          group: "광고주",
+          groupname: "휴라이트",
+          name: "클릭수",
+          value: [20, 40, 71, 68, 55, 17, 41],
+        },
+        {
+          group: "광고주",
+          groupname: "휴라이트",
+          name: "CTR",
+          value: [30, 50, 41, 58, 65, 77, 91],
+        },
+        {
+          group: "광고주",
+          groupname: "후퍼옵틱",
+          name: "노출수",
+          value: [110, 160, 91, 41, 65, 97, 20],
+        },
+        {
+          group: "광고주",
+          groupname: "후퍼옵틱",
+          name: "클릭수",
+          value: [160, 250, 21, 318, 95, 77, 21],
+        },
+        {
+          group: "광고주",
+          groupname: "후퍼옵틱",
+          name: "CTR",
+          value: [150, 20, 224, 218, 135, 47, 26],
+        },
+       
+        {
+          group: "매체",
+          groupname: "검샷",
+          name: "노출수",
+          value: [110, 160, 91, 41, 65, 97, 20],
+        },
+        {
+          group: "매체",
+          groupname: "검샷",
+          name: "클릭수",
+          value: [160, 250, 21, 318, 95, 77, 21],
+        },
+        {
+          group: "매체",
+          groupname: "검샷",
+          name: "CTR",
+          value: [150, 20, 224, 218, 135, 47, 26],
+        },
+        {
+          group: "매체",
+          groupname: "컴샷",
+          name: "노출수",
+          value: [30, 50, 41, 58, 65, 77, 91],
+        },
+        {
+          group: "매체",
+          groupname: "컴샷",
+          name: "클릭수",
+          value: [110, 160, 91, 41, 65, 97, 20],
+        },
+        {
+          group: "매체",
+          groupname: "컴샷",
+          name: "CTR",
+          value: [160, 250, 21, 318, 95, 77, 21],
+        },
+      ];
+
   const colors = [
     "#4180ec",
     "#4fd9bc",
@@ -167,8 +282,9 @@ const MainTab1 = () => {
   return (
     <>
 
-      <div>
+      <div className="LineChartDiv">
       <h4>기간별 광고 비용 추세</h4>
+      <LineChart colors={colors} defaultData={defaultData}/>
       </div>
       <div>
       <AdResultTable/>

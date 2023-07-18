@@ -130,6 +130,8 @@ const Main = () => {
     { label: "구글", value: "트구글위터" },
     { label: "FACEBOOK", value: "FACEBOOK" },
   ];
+
+
   //모든 필터 선택된 상태로 초기 로딩.
   useEffect(() => {
     
@@ -299,7 +301,6 @@ const Main = () => {
          </div>
            <ScoreCardChartComp collapsed={collapsed2}/>
       </div>
-      
         <Tabs className="MainTab" type="card">
           <TabPane  tab="통합광고 대시보드" key="1">
             <div className="WhiteBox">

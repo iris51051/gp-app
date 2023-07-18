@@ -99,6 +99,14 @@ code {
 .MainTab.ant-tabs-card.ant-tabs-top >.ant-tabs-nav .ant-tabs-tab{
   border-radius: 0;
 }
+.MainTab.ant-tabs-card.ant-tabs-top >.ant-tabs-nav .ant-tabs-tab-active{
+  border-bottom: 1px solid #1677ff !important;
+}
+.MainTab.ant-tabs-card.ant-tabs-top >.ant-tabs-nav .ant-tabs-tab+.ant-tabs-tab{
+  margin-left: 0px;
+  border : none;
+}
+
 .PerformanceDiv{
   padding : 20px;
   display:flex;
@@ -155,6 +163,16 @@ code {
   height: 34.42px;
 }
 
+
+/***********************************************************************************************************/
+/*******************************            LineChartDiv        ********************************************/
+/***********************************************************************************************************/
+
+.LineChartDiv{
+  padding : 10px;
+  border: 1px solid #e8ecee;
+  box-shadow: 0 1px 4px 0 rgb(21 27 38 / 8%);
+}
 
 /******************************************    Swtich    ***************************************************/
 
