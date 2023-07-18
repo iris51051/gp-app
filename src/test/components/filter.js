@@ -126,6 +126,7 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
       open={dropdownVisible}
       onOpenChange={handleDropdownVisibleChange}
       trigger={["click"]}
+
     >
       <div
         style={{
@@ -144,6 +145,7 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
           }/${options.length})`}
           onClick={() => setDropdownVisible(!dropdownVisible)}
           readOnly
+
         />
         <DownOutlined
           style={{
