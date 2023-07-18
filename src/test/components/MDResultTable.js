@@ -9,12 +9,8 @@ const MdResult = () => {
     setSortedInfo(sorter);
 
 };
-const test=()=>{
-  console.log('sorter', sortedInfo);
-}
   
   const titleRender =(value)=>{
-    test();
     return(
       <div classNmae="titleRender" style={{textAlign: 'center'}}> 
         {value}

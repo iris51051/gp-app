@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { Row, Col, Dropdown, Checkbox, Space, Button,Radio } from "antd";
+import { Row, Col, Dropdown, Checkbox, Space, Button } from "antd";
 import ECharts from "echarts-for-react";
 import {
   CaretUpOutlined,
@@ -9,8 +9,7 @@ import {
   CaretDownOutlined
 } from "@ant-design/icons";
 
-const ScoreCardChart = ({colors,collapsed}) => {
-
+const ScoreCardChart = (colors) => {
   const score = [
     {
       key: 0,
@@ -120,64 +119,113 @@ const ScoreCardChart = ({colors,collapsed}) => {
     },
   ];
 
+  const [dropdownVisible, setDropdownVisible] = useState(false);
   const defaultCheckedKeys = [0, 5, 9, 11];
   const [chartCardList, setChartCardList] = useState(defaultCheckedKeys);
+  const [selectAll, setSelectAll] = useState(false);
 
+  const FilterOptions = score.map(({ key, title }) => ({
+      label: title,
+      value: key,
+      disabled: defaultCheckedKeys.includes(key),
+    }));
 
-
-
+  const chartAdd = () => {
+    setDropdownVisible(!dropdownVisible);
+  };
   const HandleChangeValue = (checkedValues) => {
-    const newValue = score.find((item)=> item.title ===checkedValues).key
-    if(defaultCheckedKeys.includes(newValue)){
-    }else if (chartCardList.includes(newValue)) {
-      setChartCardList(chartCardList.filter((value) => value !== newValue));
-    } else {
-      setChartCardList([...chartCardList, newValue]);
+    if(checkedValues.length > 0) {
+    checkedValues.length === score.length ? setSelectAll(true) : setSelectAll(false);
+    const newValue = checkedValues
+    setChartCardList([...newValue]);
+    }else{
+      setChartCardList([0, 5, 9, 11]);
     }
   };
-  console.log('chartCardList',chartCardList)
-
-  const ScoreCardSelector = {
-    display : collapsed ? "none" : "flex",
-    paddingLeft : collapsed ? "0px" : "20px",
-    paddingRight : collapsed ? "0px" : "20px",
-    alignItems: "center",
-    width : '100%',
+  const closeDropdown = () => {
+    setDropdownVisible(false);
   };
+  const SelectedAll = (value) => {
+    if(value){
+      setSelectAll(value);
+      const keyArray = score.map((item) => item.key);
+      HandleChangeValue(keyArray)
+    }else{
+      setSelectAll(value);
+      HandleChangeValue([]);
+    }
+  };
+
   return (
-    <>
-        <div className="ScoreCardSelector"
-          style={ScoreCardSelector}
-          >
-          <div className="ScoreSelectorDiv">
-            <table className="ScoreCardSelectorTable">
-              <tr>
-                <th style={{width:'10%'}}>지표 항목 선택</th>
-                <td>
-                {score.map((item) => (
-                    <Radio.Button
-                      key={item.key}
-                      value={item.title}
-                      checked={chartCardList.includes(item.key)}
-                      onClick={(e) => HandleChangeValue(e.target.value)}
-                    >
-                      {item.title}
-                    </Radio.Button>
-                  ))}
-                </td>
-              </tr>
-            </table>
+    <div className="ScoreChartDiv">
+      {/* Chart 추가 */}
+      <Space className="ScoreChartAdd">
+        <div className="ScoreChartAddContainer">
+          <div>
+            <Dropdown
+              className="chartDropdown"
+              open={dropdownVisible}
+              overlay={
+                <div className="DropDownLayer">
+                  <div className="DropDownHeader">
+                    <span className="DropdownHeaderText">표현 항목</span>
+                    <Button className="ResetButton" size="small" onClick={() => SelectedAll(!selectAll)}>전체 선택/해제</Button>
+                    <div className="DropDownCloseContainer">
+                      <CloseOutlined
+                        className="DropDownClose"
+                        onClick={closeDropdown}
+                      />
+                    </div>
+                  </div>
+                  <Checkbox.Group
+                    style={{
+                      width: "238px",
+                    }}
+                    defaultValue={defaultCheckedKeys}
+                    onChange={HandleChangeValue}
+                    value={chartCardList}
+                  >
+                    <Row className="">
+                      {FilterOptions.map(
+                        (option) => (
+                          <Col span={12}>
+                            <Checkbox
+                              value={option.value}
+                              disabled={option.disabled}
+                            >
+                              {option.label}
+                            </Checkbox>
+                          </Col>
+                        )
+                      )}
+                    </Row>
+                  </Checkbox.Group>
+                </div>
+              }
+            >
+              <PlusCircleFilled className="ChartAdder" onClick={chartAdd} />
+            </Dropdown>
           </div>
         </div>
-    <div className="ScoreChartDiv">
+      </Space>
       {score
         .filter((item) => chartCardList.includes(item.key))
         .map((item) => (
           <Space.Compact
             key={item.key}
-            className="ScoreChartCard"
+            className="ScoreChartCol"
             direction="vertical"
           >
+
+
+
+
+
+
+
+
+
+
             <div className="ScoreCardContainer">
             <h3 className="ScoreChartTitle">{item.title}</h3>
             <div className="ScoreChartValueDiv">
@@ -200,7 +248,6 @@ const ScoreCardChart = ({colors,collapsed}) => {
           </Space.Compact>
         ))}
     </div>
-    </>
   );
 };
 const AreaLineChart = ({ data }) => {
@@ -304,8 +351,7 @@ const AreaLineChart = ({ data }) => {
     </div>
   );
 };
-const ScoreCardChartComp = ({collapsed}) => {
-
+const ScoreCardChartComp = () => {
   const color = [
     "#c23531",
     "#2f4554",
@@ -321,11 +367,9 @@ const ScoreCardChartComp = ({collapsed}) => {
   ];
   return (
     <>
-
-
       <div style={{ padding: 5, height: "auto" }}>
         <div>
-          <ScoreCardChart colors={color} collapsed={collapsed}/>
+          <ScoreCardChart colors={color} />
         </div>
       </div>
     </>

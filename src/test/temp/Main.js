@@ -4,7 +4,7 @@ import Breadcrumb from "../components/Breadcrumd";
 import { IoMdTimer } from "react-icons/io";
 import MainTab1 from "./main-tab/main-Tab1";
 import MainTab2 from "./main-tab/main-Tab2";
-import { Space, Typography, Button,Switch,Tag } from "antd";
+import { Space, Typography, Button,Switch,Tag,Radio } from "antd";
 import {PlusSquareOutlined,MinusSquareOutlined} from '@ant-design/icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
@@ -33,9 +33,13 @@ const Main = () => {
   const [adList, setAdList] = useState([]);
   const [adsiteList, setAdStieList] = useState([]);
   const [mdList, setMdList] = useState([]);
-  const [collapsed, setCollapsed] = useState(false);
-  const handleChange = () => {
-    setCollapsed(!collapsed);
+  const [collapsed1, setCollapsed1] = useState(false);
+  const [collapsed2, setCollapsed2] = useState(false);
+  const coll1Change = () => {
+    setCollapsed1(!collapsed1);
+  };
+  const coll2Change = () => {
+    setCollapsed2(!collapsed2);
   };
   
   const [filterOptions, setFilterOptions] = useState([]);
@@ -149,6 +153,7 @@ const Main = () => {
     }
   };
 
+
   const adsiteChange = (value) => {
     const AdSitefilteredValue = value.filter(
       (option) => option !== "selectAll"
@@ -164,10 +169,10 @@ const Main = () => {
   }
   const filterDivStyle = {
     border: "1px solid #e8ecee",
-    padding: collapsed ? "0" : "25px",
-    height: collapsed ? "0" : "auto",
+    padding: collapsed1 ? "0px" : "25px",
+    height: collapsed1 ? "0px" : "132px",
     overflow: "hidden",
-    transition: "height 0.3s ease",
+    transition: "height 0.5s ease, padding 0.5s ease"
   };
   const colors = [
     "#4180ec",
@@ -183,38 +188,37 @@ const Main = () => {
   ].slice(0, 10);
   return (
     <>
+
     <div className="MainContainer">
-      <Row className="title-Row">
-        <Col xs={24}>
-            <Breadcrumb items={items} />
-        </Col>
-        <Col xs={24}>
-          <div className="active-title">
-            <IoMdTimer className="title-icon" />
-            <span className="title-text">대시보드</span>
-          </div>
-        </Col>
-      </Row>
-      <div>
-      <div style={{ border: "1px solid #e8ecee",paddingLeft:"20px", display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-        <h6>필터 선택</h6>
-        <Button
-            type="text"
-            icon={collapsed ? <PlusSquareOutlined /> :<MinusSquareOutlined />}
-            onClick={handleChange}
-            style={{
-              fontSize: "16px",
-              width: 64,
-              height: 64,
-              justifySelf: "flex-end",
-            }}
-          />
+      <div className="WhiteBox">
+        <div className="TitleBox">
+        <Row className="title-Row">
+          <Col xs={24}>
+              <Breadcrumb items={items} />
+          </Col>
+          <Col xs={24}>
+            <div className="active-title">
+              <IoMdTimer className="title-icon" />
+              <span className="title-text">대시보드</span>
+            </div>
+          </Col>
+        </Row>
+        </div>
       </div>
+      <div>
+      <div className="WhiteBox">
+        <div className="FilterSelDiv">
+          <h6>필터 선택</h6>
+          <Button
+          className="CustomButton"
+              type='text'
+              size="large"
+              icon={collapsed1 ? <PlusSquareOutlined /> :<MinusSquareOutlined />}
+              onClick={coll1Change}
+            />
+        </div>
       <div
       className="FilterDiv"
-      collapsible
-      collapsed={collapsed}
-      collapsedHeight="0"
        style={filterDivStyle}>
         <Space size="large">
           <Text strong level={4}>
@@ -242,54 +246,78 @@ const Main = () => {
 
         </div>
       </div>
-      <div style={{border:'1px solid rgb(232, 236, 238)'}}>
-        <div style={{display:'flex'}}>
-          <span style={{fontSize:"10px"}}> 광고주:   </span>
+
+      <div className="FilterBox">
+        <div style={{display:'flex', alignItems:'center'}}>
+          <span style={{fontSize:"12px"}}>광고주 :&nbsp;</span>
           {adList.length <= dispop ? (
-        <div className="selected-analysis-targer-p">
-          {adList.map((item) => (
-            <Tag key={item}>{item}</Tag>
-          ))}
-        </div>
-      ) : (
-        <>
-          <div className="selected-analysis-targer-p">
-            {adList.slice(0, dispop).map((item) => (
-              <Tag key={item}>{item}</Tag>
+          <div className="FilterTagsDiv">
+            {adList.map((item) => (
+              <Tag className="FilterTags" key={item}>{item}</Tag>
             ))}
-            <span>...</span>
           </div>
-        </>
-      )}
-          <span>매체 : </span>
+           ) : (
+            <>
+              <div className="FilterTagsDiv">
+                {adList.slice(0, dispop).map((item) => (
+                  <Tag className="FilterTags" key={item}>{item}</Tag>
+                ))}
+                <span>...</span>
+              </div>
+            </>
+            )}
+          <span>매체 :&nbsp;</span>
           {mdList.length <= dispop ? (
-        <div className="selected-analysis-target-p">
-          {mdList.map((item) => (
-            <Tag key={item}>{item}</Tag>
-          ))}
-        </div>
-      ) : (
-        <>
-          <div className="selected-analysis-targer-p">
-            {mdList.slice(0, dispop).map((item) => (
-              <Tag key={item}>{item}</Tag>
+          <div className="FilterTagsDiv">
+            {mdList.map((item) => (
+              <Tag className="FilterTags" key={item}>{item}</Tag>
             ))}
-            <span>...</span>
           </div>
-        </>
-      )}
-      </div>
+            ) : (
+            <>
+              <div className="FilterTagsDiv">
+                {mdList.slice(0, dispop).map((item) => (
+                  <Tag className="FilterTags" key={item}>{item}</Tag>
+                ))}
+                <span>...</span>
+              </div>
+              </>
+              )}
         </div>
-        <Tabs>
-          <TabPane tab="통합광고 대시보드" key="1">
-            <MainTab1 />
+      </div>
+      </div>
+      <div className="WhiteBox">
+        <div className="PerformanceDiv">
+          <h6>성과 지표</h6>
+          <Button
+          className="CustomButton"
+              type='text'
+              size="large"
+              icon={collapsed2 ? <PlusSquareOutlined /> :<MinusSquareOutlined />}
+              onClick={coll2Change}
+            />
+         </div>
+           <ScoreCardChartComp collapsed={collapsed2}/>
+      </div>
+      
+        <Tabs className="MainTab" type="card">
+          <TabPane  tab="통합광고 대시보드" key="1">
+            <div className="WhiteBox">
+              <div style={{padding:'20px'}}>
+              <MainTab1/>
+              </div>
+            </div>
           </TabPane>
-          <TabPane tab="광고주/매체사별 요약 대시보드" key="2">
-           {/* <MainTab2></MainTab2> */}
+          <TabPane   tab="광고주/매체사별 요약 대시보드" key="2">
+           {/*
+            <div className="WhiteBox">
+              <MainTab2></MainTab2> 
+            </div>
+              */}
           </TabPane>
         </Tabs>
-      </div>
-      </div>
+        </div>
+        </div>
     </>
   );
 };

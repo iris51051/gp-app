@@ -131,6 +131,7 @@ const Gnb = ({ onValueChange }) => {
           </div>
 
           <Button
+            
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={handleChange}

@@ -16,19 +16,11 @@ import DeviceTransPie from "../../components/MediaTransition/DeviceTransPie.js";
 const { Text } = Typography;
 
 const MainTab1 = () => {
-  const dispop = 10;
+
   const [adList, setAdList] = useState([]);
   const [adsiteList, setAdStieList] = useState([]);
   const [mdList, setMdList] = useState([]);
   
-  const [filterOptions, setFilterOptions] = useState([]);
-
-  //모든 필터 선택된 상태로 초기 로딩.
-  useEffect(() => {
-    
-    setFilterOptions([adoptions.map((item)=>item.value), adsiteoptions.map((item)=>item.value), mdoptions.map((item)=>item.value)]);
-  }, []);
-
   // 광고주 선택 slector 및 광고주별 광고 성과 데이터
   const adoptions = [
     { label: "광고비 없음", value: "광고비 없음", children: [
@@ -160,36 +152,6 @@ const MainTab1 = () => {
       { name: "총 전환율", value : 0}},
   ]
 
-  const adChange = (value) => {
-    const AdfilteredValue = value.filter((option) => option !== "selectAll");
-    //제거하지 말것 무한 루프에 들어감.
-    //useMemo를 사용하면 해결이 가능하지만 코드가 길어짐.
-    if (!isEqual(AdfilteredValue, adList)) {
-      setAdList(AdfilteredValue);
-    }
-  };
-  const mdChange = (value) => {
-    const MdfilteredValue = value.filter((option) => option !== "selectAll");
-    //제거하지 말것 무한 루프에 들어감.
-    //useMemo를 사용하면 해결이 가능하지만 코드가 길어짐.
-    if (!isEqual(MdfilteredValue, mdList)) {
-      setMdList(MdfilteredValue);
-    }
-  };
-
-  const adsiteChange = (value) => {
-    const AdSitefilteredValue = value.filter(
-      (option) => option !== "selectAll"
-    );
-    //제거하지 말것 무한 루프에 들어감.
-    //useMemo를 사용하면 해결이 가능하지만 코드가 길어짐.
-    if (!isEqual(AdSitefilteredValue, adsiteList)) {
-      setAdStieList(AdSitefilteredValue);
-    }
-  };
-  const updateFilter =()=>{
-    setFilterOptions([adList, adsiteList,mdList ]);
-  }
   const colors = [
     "#4180ec",
     "#4fd9bc",
@@ -204,96 +166,9 @@ const MainTab1 = () => {
   ].slice(0, 10);
   return (
     <>
-      <div style={{ border: "1px solid #e8ecee", padding: "25px" }}>
-        <Space size="large">
-          <Text strong level={4}>
-            대상&nbsp;
-            <FontAwesomeIcon icon={faCircleChevronRight} />
-          </Text>
-
-          <Adfilter options={adoptions} onValueChange={adChange} />
-          <AdSitefilter options={adsiteoptions} onValueChange={adsiteChange} />
-          <Mdfilter options={mdoptions} onValueChange={mdChange} />
-          {/* <Switch className="MainTabSwitch" checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked >
-          </Switch> */}
-           <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked />
-        </Space>
-        <br></br>
-        <div style={{paddingTop:"20px"}}>
-        <Space size="large">
-          <Text strong level={4}>
-            기간&nbsp;
-            <FontAwesomeIcon icon={faCircleChevronRight} />
-          </Text>
-          <Calendar />
-          <Button type="primary" onClick={updateFilter}>확인</Button>
-        </Space>
-
-        </div>
-      </div>
 
       <div>
-        
-        <br />
-        <h4 className="selected-analysis-targer">선택한 분석 대상</h4>
-        <div className="selected-analysis-targer-div">
-          <span className="selected-analysis-targer-span">광고사 </span>
-          {adList.length <= dispop ? (
-        <div className="selected-analysis-target-p">
-          {adList.map((item) => (
-            <Tag key={item}>{item}</Tag>
-          ))}
-        </div>
-      ) : (
-        <>
-          <div className="selected-analysis-targer-p">
-            {adList.slice(0, dispop).map((item) => (
-              <Tag key={item}>{item}</Tag>
-            ))}
-            <span>...</span>
-          </div>
-        </>
-      )}
-          <span className="selected-analysis-targer-span">매체사 </span>
-          {mdList.length <= dispop ? (
-        <div className="selected-analysis-target-p">
-          {mdList.map((item) => (
-            <Tag key={item}>{item}</Tag>
-          ))}
-        </div>
-      ) : (
-        <>
-          <div className="selected-analysis-targer-p">
-            {mdList.slice(0, dispop).map((item) => (
-              <Tag key={item}>{item}</Tag>
-            ))}
-            <span>...</span>
-          </div>
-        </>
-      )}
-      </div>
-        <div className="selectedDateDescription">
-          <p>
-            <span style={{ fontSize: "20px" }}>• </span>
-            <strong>비교기간</strong>은 조회한 날짜를 기준으로, 동일한 직전
-            기간입니다.
-          </p>
-          <p>
-            (예시. 조회기간: 2021-11-01~2021-11-07(7일) → 비교기간:
-            2021-10-25~2021-10-31(7일))
-          </p>
-        </div>
-      </div>
-      <div>
-        <ScoreCardChartComp />
-      </div>
-      <div className="AdPerformancediv">
-        <h4>기간별 광고 성과</h4>
-        <AdPerformance colors={colors} chartdata={chartdata} style={{ height: 350 }} />
-      </div>
-      <div className="MultipleBarChartDiv">
-        <h4>광고주별 광고 성과</h4>
-        <MultipleBarChart colors={colors} adoptions={adoptions} adList={adList}/>
+      <h4>기간별 광고 비용 추세</h4>
       </div>
       <div>
       <AdResultTable/>

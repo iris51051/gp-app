@@ -10,7 +10,6 @@ const MDTransBar = ({colors, data}) => {
       sourceArray.push([name, value, totTransPercent]);
     }
   });
-  console.log("sourceArray", sourceArray);
   const option = {
     legend: {
       bottom: 'bottom',

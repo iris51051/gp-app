@@ -16,9 +16,7 @@ const App = () => {
   const colChange = (value) => {
     setCollapse(value);
   };
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+
 
   return (
     <BrowserRouter>
@@ -30,7 +28,7 @@ const App = () => {
             <Content
               style={{
 
-                background: colorBgContainer,
+                background: '#edf1f5',
                 justifyContent: "space-between",
                 alignItems: "center",
   
