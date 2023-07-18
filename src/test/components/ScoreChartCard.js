@@ -160,6 +160,7 @@ const ScoreCardChart = ({colors,collapsed}) => {
                       value={item.title}
                       checked={chartCardList.includes(item.key)}
                       onClick={(e) => HandleChangeValue(e.target.value)}
+                      style={{ userSelect: 'none' }}
                     >
                       {item.title}
                     </Radio.Button>
