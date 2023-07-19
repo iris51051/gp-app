@@ -112,7 +112,6 @@ useEffect(() => {
         );
         groupedData[key].count += 1;
       }
-      console.log()
       if (Object.keys(groupedData).length === defaultData.length) {
         Object.values(groupedData).forEach((data, index) => {
           data.value = data.value.map((val) => val / data.count);
@@ -128,10 +127,6 @@ useEffect(() => {
   };
   calculateAverage();
 }, [defaultData]);
-
-    console.log('dataAverage',dataAverage)
-
-
 
     useEffect(() => {
       const filteredData = defaultData.filter(

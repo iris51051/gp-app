@@ -9,8 +9,8 @@ import endOfMonth from "date-fns/endOfMonth";
 import addMonths from "date-fns/addMonths";
 import koKR from "rsuite/locales/ko_KR";
 
-const Calendar = () => {
-  const [selectedDate, setSelectedDate] = useState([]);
+const Calendar = ({onValueChange}) => {
+  const [selectedDate, setSelectedDate] = useState([new Date(), new Date()]);
   const [PickedRange, setPickedRange] = useState([new Date(), new Date()]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -121,6 +121,14 @@ const Calendar = () => {
       setPickedRange([new Date(), new Date()]);
     }
   };
+  useEffect(() => {
+    let returnData =[];
+    if (selectedDate[0] && selectedDate[1]) {
+      returnData =[format(selectedDate[0], "yyyy-MM-dd"),format(selectedDate[1], "yyyy-MM-dd")]
+    }
+    onValueChange(returnData);
+  }, [selectedDate, onValueChange]);
+
   return (
     <CustomProvider locale={koKR}>
       <DateRangePicker

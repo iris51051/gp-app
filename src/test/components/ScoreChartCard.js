@@ -135,7 +135,7 @@ const ScoreCardChart = ({colors,collapsed}) => {
       setChartCardList([...chartCardList, newValue]);
     }
   };
-  console.log('chartCardList',chartCardList)
+
 
   const ScoreCardSelector = {
     display : collapsed ? "none" : "flex",

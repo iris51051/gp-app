@@ -70,8 +70,14 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
   };
 
   const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  typeof option.name === "string" &&
+  option.name.toLowerCase().includes(searchValue.toLowerCase())
+);
+
+const modifiedOptions = options.map((option) => ({
+  label: option.name,
+  value: option.value,
+}));
 
   const menu = (
     <div className="FilterDiv">
@@ -104,17 +110,18 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
         {filteredOptions.length === 0 ? (
           <div style={{ marginLeft: 10 }}>검색 결과 없음.</div>
         ) : (
+          <div onClick={setSelect}>
           <CheckboxGroup
           style={{
             display: "flex",
             flexDirection: "column",
           }}
           className="adCheckboxGroup"
-          options={filteredOptions}
+          options={modifiedOptions}
           value={selectedOptions.filter((value) => value !== "selectAll")}
           onChange={handleCheckboxChange}
-          onClick={setSelect}
         />
+        </div>
         )}
       </Menu>
     </div>
