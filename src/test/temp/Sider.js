@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import {
   UploadOutlined,
   UserOutlined,
@@ -6,27 +6,34 @@ import {
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { SelectPicker } from "rsuite";
-
 import { Layout, Menu, Divider,Affix } from "antd";
+import AdData from "../data/AdData";
+
+
+
+
 const { Sider } = Layout;
-const Adselect = () => {
-  const data = [
-    "Eugenia",
-    "Bryan",
-    "Linda",
-    "Nancy",
-    "Lloyd",
-    "Alice",
-    "Julia",
-    "Albert",
-  ].map((item) => ({ label: item, value: item }));
-  return <SelectPicker data={data} style={{ width: 224 }} />;
-};
-const Lnb = ({ collapsed }) => {
-  const [top, setTop] = useState(61);
+
+const Lnb = ({ collapsed ,onValueChange}) => {
+  const [selectedAd,setSelectedAd] = useState('0');
+
+  const Adselect = () => {
+    
+    const adSelect =(data)=>{
+      setSelectedAd(data);
+      onValueChange(data)
+    }
+    const data =[{label:'전체광고주', value:'0'},...AdData.map((item) => ({ label: item.name, value: item.value }))];
+
+    return <SelectPicker data={data} style={{ width: 224 }} cleanable={false} defaultValue={0} value={selectedAd} onChange={adSelect}/>;
+  };
+  useEffect(() => {
+    onValueChange(selectedAd);
+  }, [selectedAd,onValueChange]);
+
   return (
 <>
-<Affix offsetTop={top}>
+<Affix offsetTop={61}>
     <Sider
       trigger={null}
       collapsible

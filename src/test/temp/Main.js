@@ -8,7 +8,6 @@ import { Space, Typography, Button,Switch,Tag,Radio } from "antd";
 import {PlusSquareOutlined,MinusSquareOutlined} from '@ant-design/icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { isEqual } from "lodash";
 import Calendar from "../components/calendar.js";
 import { Adfilter, Mdfilter, AdSitefilter } from "../components/filter.js";
 import ScoreCardChartComp from "../components/ScoreChartCard";
@@ -17,6 +16,7 @@ import adMediaData from "../data/AdMediaData";
 import {VatStatDateData,StatDateData} from "../data/StatDateData";
 import {VatByDateData,ByDateData} from "../data/ByDateData";
 import AdSiteData from "../data/AdSiteData";
+import format from "date-fns/format";
 
 
 //광고매체사 옵션
@@ -45,14 +45,16 @@ const Main = () => {
     { title: "대시보드" },
   ];
   
-  const dispop = 10;
   const [adList, setAdList] = useState([]);
   const [adsiteList, setAdStieList] = useState([]);
   const [mdList, setMdList] = useState([]);
   const [collapsed1, setCollapsed1] = useState(false);
   const [collapsed2, setCollapsed2] = useState(false);
   const [vatValue, setVatValue] = useState(true);
-  const [dateValue, setDateValue] = useState()
+  const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
+  const [BydateValue, setByDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
+  const [startDate,setStartDate]=useState(`${format(new Date(),"yyyy-MM-dd")}`)
+  const [endDate,setEndDate]=useState(`${format(new Date(),"yyyy-MM-dd")}`)
   const [datas, setDatas] = useState([VatStatDateData,VatByDateData])
 
   const coll1Change = () => {
@@ -61,9 +63,18 @@ const Main = () => {
   const coll2Change = () => {
     setCollapsed2(!collapsed2);
   };
-  
-  const [filterOptions, setFilterOptions] = useState([AdData,AdSiteData,adMediaData,StatDateData,VatStatDateData,VatByDateData]);
+  const defaultFilterOptions = {
+    AdData: AdData,
+    AdSiteData: AdSiteData,
+    adMediaData: adMediaData,
+    vatValue: vatValue,
+    Datas : datas
+  };
+  const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
+
+
   // const adoptions = [
+
   //   { label: "광고비 없음", value: "광고비 없음", children: [
   //     { name: "매출액",value :  230000}
   //   ]},
@@ -153,22 +164,44 @@ const Main = () => {
 
 
   //모든 필터 선택된 상태로 초기 로딩.
- const updateFilter =() => {
-  console.log("확인키를 눌렀음!!!!!!!!!!!!!!!!!!")
-    if(vatValue){
-      setDatas([vatValue,VatStatDateData,VatByDateData])
-    }else{
-      setDatas([vatValue,StatDateData,ByDateData])
+ 
+ 
+  const updateFilter = () => {
+    console.log("확인키를 눌렀음!!!!!!!!!!!!!!!!!!")
+    
+    if (vatValue) {
+      setDatas([vatValue, VatStatDateData, VatByDateData]);
+    } else {
+      setDatas([vatValue, StatDateData, ByDateData]);
     }
-    console.log("vatValuevatValuevatValuevatValuevatValuevatValuevatValuevatValuevatValuevatValuevatValuevatValue",vatValue)
-    setFilterOptions([AdData.filter((item)=>adList.includes(item.name)), AdSiteData.filter((item)=>adsiteList.includes(item.value)),
-      adMediaData.filter((item)=>mdList.includes(item.ad_provider)) , vatValue, dateValue, datas]);
+    
+    // Filter the AdData based on the selected adList names
+    const filteredAdData = AdData.filter((item) => adList.includes(item.name));
+    const filteredAdSiteData = AdSiteData.filter((item) => adsiteList.includes(item.value));
+    const filteredadMediaData =adMediaData.filter((item)=> mdList.includes(item.ad_provider));
+    
+    // You can use the spread operator to update the filterOptions state
+    setFilterOptions((prevOptions) => ({
+      ...prevOptions,
+      AdData: filteredAdData,
+      AdSiteData:filteredAdSiteData,
+      adMediaData:filteredadMediaData,
+      Datas : datas,
+    }));
   };
+
   console.log("필터 데이터 모음집이요~~~~~",filterOptions)
+  console.log("AdDataAdDataAdDataAdDataAdData",filterOptions.AdData)
+  console.log("AdDataAdDataAdDataAdDataAdData",filterOptions.AdSiteData)
+  console.log("AdDataAdDataAdDataAdDataAdData",filterOptions.adMediaData)
+  console.log("Datas",filterOptions.Datas)
+
+
   const adChange = useCallback((value) => {
     const AdfilteredValue = AdData.filter((item) => value.includes(item.value)).map((item) => item.name);
       setAdList(AdfilteredValue);
   }, []);
+
   const mdChange = useCallback((value) => {
     const MdfilteredValue = value.filter((option) => option !== "selectAll");
     setMdList(MdfilteredValue);
@@ -176,18 +209,53 @@ const Main = () => {
 
   const DateChange = useCallback((value) => {
     setDateValue(value);
-  }, []);
+    //value의 0,1간의 날짜 차이
+    const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
 
+    // //비교군의 날짜 산정
+    const ByDate2 = new Date(value[0]);
+    ByDate2.setDate(ByDate2.getDate() - 1);
+    console.log("Bydate1Bydate1Bydate1Bydate1Bydate1Bydate1Bydate1",ByDate2)
+    const ByDate1 = new Date(ByDate2);
+    ByDate1.setDate(ByDate2.getDate() - daysDifference);
+    setByDateValue([`${format(ByDate1,"yyyy-MM-dd")}`,`${format(ByDate2,"yyyy-MM-dd")}`]);
+    setStartDate(`${format(new Date(value[0]),"yyyy-MM-dd")}`);
+    setEndDate(`${format(new Date(value[1]),"yyyy-MM-dd")}`);
+    if(vatValue){
+      const VatData =[]
+      for(const data of VatStatDateData){
+        const stat_date = data.stat_date;
+        if(stat_date>=startDate && stat_date <=endDate){
+          console.log(1);
+          VatData.push(data);
+        }
+      }
+      setDatas(VatData);
+    }else{
+      const originData = [];
+      for(const data of VatStatDateData){
+        const stat_date = data.stat_date;
+        if(stat_date>=`${format(ByDate1,"yyyy-MM-dd")}`&& stat_date <=`${format(ByDate2,"yyyy-MM-dd")}`){
+          originData.push(data);
+        }
+      }
+      setDatas(originData);
+    }
+    
+  }, []);
+  console.log("날짜 선택에 관한 datas!!!!!!!!!!!!!!!!",datas)
+  console.log(startDate)
   const adsiteChange = useCallback((value) => {
     const AdSitefilteredValue = value.filter(
       (option) => option !== "selectAll"
     );
       setAdStieList(AdSitefilteredValue);
   }, []);
+
   const handleSwitchToggle =(value)=>{
     setVatValue(value)
-
   }
+  console.log("ByDateValueByDateValueByDateValueByDateValueByDateValueByDateValueByDateValueByDateValueByDateValue",BydateValue)
   const filterDivStyle = {
     border: "1px solid #e8ecee",
     padding: collapsed1 ? "0px" : "25px",
@@ -195,6 +263,27 @@ const Main = () => {
     overflow: "hidden",
     transition: "height 0.5s ease, padding 0.5s ease"
   };
+
+  const handleRenderTag = useCallback(() => {
+    const providerArr = [];
+    console.log("providerArrproviderArrproviderArrproviderArr",providerArr)
+    return (
+      <div className="FilterTagsDiv">
+        {filterOptions.adMediaData.map((item) => {
+          if (!providerArr.includes(item.ad_provider)) {
+            providerArr.push(item.ad_provider);
+            return (
+              <Tag className="FilterTags" key={item.ad_provider}>
+                {item.ad_provider}
+              </Tag>
+            );
+          }
+          return null;
+        })}
+      </div>
+    );
+  }, [filterOptions.adMediaData]);
+
   const colors = [
     "#4180ec",
     "#4fd9bc",
@@ -246,12 +335,9 @@ const Main = () => {
             대상&nbsp;
             <FontAwesomeIcon icon={faCircleChevronRight} />
           </Text>
-
           <Adfilter options={AdData} onValueChange={adChange} />
           <AdSitefilter options={AdSiteData} onValueChange={adsiteChange} />
           <Mdfilter options={adProviders} onValueChange={mdChange} />
-          {/* <Switch className="MainTabSwitch" checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked >
-          </Switch> */}
            <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>
         </Space>
         <br></br>
@@ -262,7 +348,7 @@ const Main = () => {
             <FontAwesomeIcon icon={faCircleChevronRight} />
           </Text>
           <Calendar onValueChange={DateChange}/>
-          <Button type="primary" onClick={updateFilter}>확인</Button>
+          <Button className=""type="primary" onClick={updateFilter}>확인</Button>
         </Space>
 
         </div>
@@ -271,39 +357,13 @@ const Main = () => {
       <div className="FilterBox">
         <div style={{display:'flex', alignItems:'center'}}>
           <span style={{fontSize:"12px"}}>광고주 :&nbsp;</span>
-          {adList.length <= dispop ? (
-          <div className="FilterTagsDiv">
-            {adList.map((item) => (
-              <Tag className="FilterTags" key={item}>{item}</Tag>
+          <div className="AdFilterTagsDiv">
+            {filterOptions.AdData.map((item) => (
+              <Tag className="FilterTags" key={item.value}>{item.name}</Tag>
             ))}
           </div>
-           ) : (
-            <>
-              <div className="FilterTagsDiv">
-                {adList.slice(0, dispop).map((item) => (
-                  <Tag className="FilterTags" key={item}>{item}</Tag>
-                ))}
-                <span>...</span>
-              </div>
-            </>
-            )}
           <span>매체 :&nbsp;</span>
-          {mdList.length <= dispop ? (
-          <div className="FilterTagsDiv">
-            {mdList.map((item) => (
-              <Tag className="FilterTags" key={item}>{item}</Tag>
-            ))}
-          </div>
-            ) : (
-            <>
-              <div className="FilterTagsDiv">
-                {mdList.slice(0, dispop).map((item) => (
-                  <Tag className="FilterTags" key={item}>{item}</Tag>
-                ))}
-                <span>...</span>
-              </div>
-              </>
-              )}
+          {handleRenderTag()}
         </div>
       </div>
       </div>

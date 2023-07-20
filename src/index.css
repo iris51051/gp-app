@@ -225,8 +225,17 @@ code {
   padding: 18px 25px;
   
 }
-.FilterTagsDiv{
-  width:46%;
+.AdFilterTagsDiv{
+  max-width: 55%;
+  min-width: 55%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  
+}
+.MdFilterTagsDiv{
+  max-width:40%;
+  min-width:40%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
