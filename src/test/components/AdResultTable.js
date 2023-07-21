@@ -201,7 +201,7 @@ const App = () => {
   const columns = [
     {
       title: (
-        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
         광고주
       </div>
       ),
@@ -231,7 +231,7 @@ const App = () => {
     },
     {
       title: (
-        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
         총 광고비
       </div>
       ),
@@ -250,7 +250,7 @@ const App = () => {
     },
     {
       title: (
-        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
         총 광고비(이전기간)
       </div>
       ),
@@ -275,7 +275,7 @@ const App = () => {
     },
     {
       title: (
-        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
        총 매출액
       </div>
       ),
@@ -293,7 +293,7 @@ const App = () => {
     },
     {
       title:(
-        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
        총 매출액(이전기간)
       </div>
       ),
@@ -318,7 +318,7 @@ const App = () => {
     },
     {
       title: (
-        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
        ROAS(%)
       </div>
       ),
@@ -336,7 +336,7 @@ const App = () => {
     },
     {
       title:(
-        <div classNmae="ADResHeader"style={{ textAlign: 'center' }}>
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
        ROAS(%)(이전기간)
       </div>
       ),

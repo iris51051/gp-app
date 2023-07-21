@@ -13,11 +13,14 @@ import { Adfilter, Mdfilter, AdSitefilter } from "../components/filter.js";
 import ScoreCardChartComp from "../components/ScoreChartCard";
 import AdData from "../data/AdData";
 import adMediaData from "../data/AdMediaData";
-import {VatStatDateData,StatDateData} from "../data/StatDateData";
-import {VatByDateData,ByDateData} from "../data/ByDateData";
+import {StatDateData} from "../data/StatDateData";
+import {ByDateData} from "../data/ByDateData";
 import AdSiteData from "../data/AdSiteData";
 import format from "date-fns/format";
 
+//날짜 기반 데이터
+// const { StatDateData, VatStatDateData } = StatDateDatas(); //vat 미포함, vat 포함 기준 데이터
+// const { ByDateData, VatByDateData } = ByDateDatas();       //vat 미포함, vat 포함 비교 데이터
 
 //광고매체사 옵션
 const adProviders = [];
@@ -32,14 +35,12 @@ for (const data of adMediaData) {
     adProviders.push({ name: data.ad_provider, value: data.ad_provider });
   }
 }
-console.log(AdData);
-console.log(adMediaData);
-console.log(StatDateData);
-console.log(VatStatDateData);
+
 const { TabPane } = Tabs;
 const { Text } = Typography;
 
 const Main = () => {
+  
   const items = [
     { title: "AIR(매체 통합 리포트)", href: "/" },
     { title: "대시보드" },
@@ -53,9 +54,35 @@ const Main = () => {
   const [vatValue, setVatValue] = useState(true);
   const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
   const [BydateValue, setByDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
-  const [startDate,setStartDate]=useState(`${format(new Date(),"yyyy-MM-dd")}`)
-  const [endDate,setEndDate]=useState(`${format(new Date(),"yyyy-MM-dd")}`)
-  const [datas, setDatas] = useState([VatStatDateData,VatByDateData])
+  
+  const [VatByDateData, setVatByDateData] = useState([]);
+  const [VatStatDateData, setVatStatDateData]= useState([]);
+  const [datas, setDatas] = useState([])
+  
+  useEffect(() => {
+   
+    const updatedData=StatDateData.map((item) => {
+      return {
+        ...item,
+        m_rvn: item.m_rvn + item.m_rvn * 0.1,
+        rvn:  item.rvn + item.rvn * 0.1,
+        m_cost: item.m_cost + item.m_cost * 0.1,
+      };
+    });
+
+    const  updatedByData=ByDateData.map((item) => {
+      return {
+        ...item,
+        m_rvn: item.m_rvn + item.m_rvn * 0.1,
+        rvn: item.rvn + item.rvn * 0.1,
+        m_cost: item.m_cost + item.m_cost * 0.1,
+      };
+    });
+    setVatStatDateData([...updatedData])
+    setVatByDateData([...updatedByData])
+    console.log("초기랜더링할 때 vat 추가요!!!!!!!!!",updatedByData)
+    console.log("초기랜더링할 때 vat 추가요!!!!!!!!!",updatedData)
+},[]);
 
   const coll1Change = () => {
     setCollapsed1(!collapsed1);
@@ -166,15 +193,12 @@ const Main = () => {
   //모든 필터 선택된 상태로 초기 로딩.
  
  
-  const updateFilter = () => {
-    console.log("확인키를 눌렀음!!!!!!!!!!!!!!!!!!")
-    
+  const updateFilter = () => {   
     if (vatValue) {
-      setDatas([vatValue, VatStatDateData, VatByDateData]);
+      //몰루?
     } else {
-      setDatas([vatValue, StatDateData, ByDateData]);
+      //vat 해제시 모든 금액 관련 데이터에 +10%
     }
-    
     // Filter the AdData based on the selected adList names
     const filteredAdData = AdData.filter((item) => adList.includes(item.name));
     const filteredAdSiteData = AdSiteData.filter((item) => adsiteList.includes(item.value));
@@ -190,12 +214,7 @@ const Main = () => {
     }));
   };
 
-  console.log("필터 데이터 모음집이요~~~~~",filterOptions)
-  console.log("AdDataAdDataAdDataAdDataAdData",filterOptions.AdData)
-  console.log("AdDataAdDataAdDataAdDataAdData",filterOptions.AdSiteData)
-  console.log("AdDataAdDataAdDataAdDataAdData",filterOptions.adMediaData)
-  console.log("Datas",filterOptions.Datas)
-
+console.log(".filterOptions.Datas",filterOptions.Datas)
 
   const adChange = useCallback((value) => {
     const AdfilteredValue = AdData.filter((item) => value.includes(item.value)).map((item) => item.name);
@@ -206,45 +225,66 @@ const Main = () => {
     const MdfilteredValue = value.filter((option) => option !== "selectAll");
     setMdList(MdfilteredValue);
   }, []);
-
   const DateChange = useCallback((value) => {
+    console.log("VatStatDateData????????????????",VatStatDateData)
     setDateValue(value);
     //value의 0,1간의 날짜 차이
     const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
-
     // //비교군의 날짜 산정
-    const ByDate2 = new Date(value[0]);
-    ByDate2.setDate(ByDate2.getDate() - 1);
-    console.log("Bydate1Bydate1Bydate1Bydate1Bydate1Bydate1Bydate1",ByDate2)
-    const ByDate1 = new Date(ByDate2);
-    ByDate1.setDate(ByDate2.getDate() - daysDifference);
-    setByDateValue([`${format(ByDate1,"yyyy-MM-dd")}`,`${format(ByDate2,"yyyy-MM-dd")}`]);
-    setStartDate(`${format(new Date(value[0]),"yyyy-MM-dd")}`);
-    setEndDate(`${format(new Date(value[1]),"yyyy-MM-dd")}`);
-    if(vatValue){
-      const VatData =[]
-      for(const data of VatStatDateData){
+    //종료 일시
+    const ByEndDate = new Date(value[0]);
+    ByEndDate.setDate(ByEndDate.getDate() - 1);
+    //시작일시
+    const ByStartDate = new Date(ByEndDate);
+    ByStartDate.setDate(ByEndDate.getDate() - daysDifference);
+    setByDateValue([`${format(ByStartDate,"yyyy-MM-dd")}`,`${format(ByEndDate,"yyyy-MM-dd")}`]);
+      let StatData =[];
+      let ByData = [];
+      for(const data of StatDateData){
         const stat_date = data.stat_date;
-        if(stat_date>=startDate && stat_date <=endDate){
+        console.log('stat_date 날짜 비교요!!!!!!',stat_date,value[0],value[1])
+        console.log('날짜 비교!!!!!!!!!',stat_date>=value[0] && stat_date <=value[1])
+        if(stat_date>=value[0] && stat_date <=value[1]){
           console.log(1);
-          VatData.push(data);
+          StatData.push(data);
         }
       }
-      setDatas(VatData);
-    }else{
-      const originData = [];
-      for(const data of VatStatDateData){
-        const stat_date = data.stat_date;
-        if(stat_date>=`${format(ByDate1,"yyyy-MM-dd")}`&& stat_date <=`${format(ByDate2,"yyyy-MM-dd")}`){
-          originData.push(data);
+      for(const data of ByDateData){
+        const by_day = data.by_day;
+        console.log('by_date날짜 비교요@@@@@@@@@@@@@@@@@',by_day,value[0],value[1])
+        console.log('날짜 비교!!!!!!!!!',by_day>=value[0] && by_day <=value[1])
+        if(by_day>=value[0] && by_day <=value[1]){
+          console.log(1);
+          ByData.push(data);
         }
       }
-      setDatas(originData);
-    }
+      if(vatValue){
+        const updatedStatData = StatData.map((item) => {
+          return {
+            ...item,
+            m_rvn: item.m_rvn + item.m_rvn * 0.1,
+            rvn:  item.rvn + item.rvn * 0.1,
+            m_cost: item.m_cost + item.m_cost * 0.1,
+          };
+        });
     
-  }, []);
+        const updatedByData =ByData.map((item) => {
+          return {
+            ...item,
+            m_rvn: item.m_rvn + item.m_rvn * 0.1,
+            rvn: item.rvn + item.rvn * 0.1,
+            m_cost: item.m_cost + item.m_cost * 0.1,
+          };
+        });
+        setDatas([updatedStatData,updatedByData]);
+      }else{
+        setDatas([StatData,ByData]);
+      }
+
+      console.log('VatDataVatDataVatData',StatData,ByData)
+  }, [vatValue, VatStatDateData, VatByDateData]);
   console.log("날짜 선택에 관한 datas!!!!!!!!!!!!!!!!",datas)
-  console.log(startDate)
+
   const adsiteChange = useCallback((value) => {
     const AdSitefilteredValue = value.filter(
       (option) => option !== "selectAll"
@@ -255,7 +295,7 @@ const Main = () => {
   const handleSwitchToggle =(value)=>{
     setVatValue(value)
   }
-  console.log("ByDateValueByDateValueByDateValueByDateValueByDateValueByDateValueByDateValueByDateValueByDateValue",BydateValue)
+
   const filterDivStyle = {
     border: "1px solid #e8ecee",
     padding: collapsed1 ? "0px" : "25px",
@@ -265,9 +305,7 @@ const Main = () => {
   };
 
   const handleRenderTag = useCallback(() => {
-    const providerArr = [];
-    console.log("providerArrproviderArrproviderArrproviderArr",providerArr)
-    return (
+    const providerArr = [];    return (
       <div className="FilterTagsDiv">
         {filterOptions.adMediaData.map((item) => {
           if (!providerArr.includes(item.ad_provider)) {

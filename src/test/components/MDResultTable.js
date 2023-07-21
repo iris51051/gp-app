@@ -12,7 +12,7 @@ const MdResult = () => {
   
   const titleRender =(value)=>{
     return(
-      <div classNmae="titleRender" style={{textAlign: 'center'}}> 
+      <div className="titleRender" style={{textAlign: 'center'}}> 
         {value}
       </div>
     )
@@ -43,7 +43,7 @@ const MdResult = () => {
     Table.EXPAND_COLUMN,
     {
       title:  
-      <div classNmae="adPro"> 
+      <div className="adPro"> 
       광고상품
     </div>,
       dataIndex: 'adPro',

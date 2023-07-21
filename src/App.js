@@ -21,7 +21,7 @@ const App = () => {
   const selectAd =(value)=>{
     setSelectedAd(value)
   }
-  console.log("selectedAdselectedAdselectedAdselectedAd",selectedAd);
+
   return (
     <BrowserRouter>
       <Layout >
