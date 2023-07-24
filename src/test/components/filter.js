@@ -59,7 +59,7 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
     }
   };
 
-  const handleSelectAll = () => {
+  const handleSelectAll = (e) => {
     const allOptionValues = options.map((option) => option.value);
     const allSelected = selectedOptions.includes("selectAll");
     if (allSelected) {
@@ -78,23 +78,30 @@ const modifiedOptions = options.map((option) => ({
   label: option.name,
   value: option.value,
 }));
-
+const CheckClick =(e)=>{
+  e.preventDefault()
+}
   const menu = (
     <div className="FilterDiv">
       <Menu>
         <Menu.Item key="search">
           <Input
+
             className="Searcher"
-            placeholder="Search"
+            placeholder="검색"
             value={searchValue}
             onChange={handleSearchChange}
-            style={{ color: "black" }}
+            style={{ color: "black", width:'241.828px',display: "flex", }}
           />
         </Menu.Item>
         {!searchValue && (
-          // <Menu.Item key="selectAll" onClick={handleSelectAll}>
-          <Menu.Item key="selectAll" >
+          <Menu.Item key="selectAll">
+          {/* <Menu.Item key="selectAll" > */}
             <Checkbox
+              style={{
+                  display: "flex",
+                  width : 'auto',
+               }}
               checked={selectedOptions.length === options.length + 1}
               indeterminate={
                 selectedOptions.length > 0 &&

@@ -1,5 +1,4 @@
-import * as React from "react";
-import { useState } from "react";
+import React,{ useState, useEffect } from "react";
 import {Space, Radio } from "antd";
 import ECharts from "echarts-for-react";
 import {
@@ -7,16 +6,56 @@ import {
   CaretDownOutlined
 } from "@ant-design/icons";
 
-const ScoreCardChart = ({colors,collapsed}) => {
+const ScoreCardChart = ({colors,collapsed, datas}) => {
 
-  const score = [
+  // const [totalMRvn, setTotalMRvn] =useState(0);
+  // const [totalMCost, settotalMCost] =useState(0);
+  const [totalMCost, settotalMCost] =useState(0);
+  const [totalMRvn, setTotalMRvn] =useState(0);
+  const [MrvnArr,setMrvnArr ]=useState([]);
+
+  useEffect(()=>{
+    console.log("aaaaaaaaaaaaaa",datas)
+    let MRvnsum=0;
+    let MCostsum =0;
+    if(datas.length>0){
+    for(const item of datas[0] ){
+      if('m_rvn' in item) {
+        MRvnsum +=item.m_rvn;
+
+      }
+      if('m_cost' in item){
+        MCostsum+= item.m_cost;
+      }
+    }
+
+    // for(const item of datas[0] ){
+    setMrvnArr(datas[0].map(item => item.m_rvn));
+    setTotalMRvn(MRvnsum);
+    settotalMCost(MCostsum)
+  }
+  },[datas])
+  console.log("선택한 총매출액 범위요!!!!!!!!!",MrvnArr)
+  const score= [
     {
       key: 0,
       title: "총 매출액",
-      value: 217554857,
+      // value: function (datas) {
+      //   let totalMRvn = 0;
+      //   for(const item of datas[0]){
+      //     totalMRvn += item.m_rvn;
+      //   }
+      //   console.log("totalMRvntotalMRvntotalMRvntotalMRvn",totalMRvn);
+      //   if(totalMRvn === 0){
+      //     totalMRvn = 0;
+      //   }
+      //   return(
+      //     totalMRvn
+      // )},
+      value : totalMRvn,
       unit: "원",
       percent: -2,
-      data: [0, 205, 211, 401, 234, 290, 130, 150, 0],
+      data: MrvnArr,
     },
     {
       key: 1,
@@ -87,7 +126,7 @@ const ScoreCardChart = ({colors,collapsed}) => {
     {
       key: 9,
       title: "총 광고비",
-      value: 3283872,
+      value: totalMCost,
       unit: "원",
       percent: 100,
       data: [0, 145, 211, 301, 234, 290, 130, 100, 0],
@@ -117,11 +156,9 @@ const ScoreCardChart = ({colors,collapsed}) => {
       data: [0, 145, 211, 301, 234, 290, 130, 100, 0],
     },
   ];
-
+  const [updatedScore, setUpdatedScore] = useState(score);
   const defaultCheckedKeys = [0, 5, 9, 11];
   const [chartCardList, setChartCardList] = useState(defaultCheckedKeys);
-
-
 
 
   const HandleChangeValue = (checkedValues) => {
@@ -144,6 +181,8 @@ const ScoreCardChart = ({colors,collapsed}) => {
   };
   return (
     <>
+        <p>{totalMCost}</p>
+        <p>{totalMRvn}</p>
         <div className="ScoreCardSelector"
           style={ScoreCardSelector}
           >
@@ -211,7 +250,7 @@ const AreaLineChart = ({ data }) => {
 
   const maxValues = [];
   const maxValue = Math.max(...data);
-
+  console.log("에리어 라인차트 data요!!!!!!!!!!!",data)
   data.forEach((value, index) => {
     if (value === minValue) {
       minValues.push(index);
@@ -303,7 +342,7 @@ const AreaLineChart = ({ data }) => {
     </div>
   );
 };
-const ScoreCardChartComp = ({collapsed}) => {
+const ScoreCardChartComp = ({collapsed, datas}) => {
 
   const color = [
     "#c23531",
@@ -324,7 +363,7 @@ const ScoreCardChartComp = ({collapsed}) => {
 
       <div style={{ padding: 5, height: "auto" }}>
         <div>
-          <ScoreCardChart colors={color} collapsed={collapsed}/>
+          <ScoreCardChart colors={color} collapsed={collapsed} datas={datas}/>
         </div>
       </div>
     </>

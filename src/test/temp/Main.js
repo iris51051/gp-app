@@ -13,8 +13,8 @@ import { Adfilter, Mdfilter, AdSitefilter } from "../components/filter.js";
 import ScoreCardChartComp from "../components/ScoreChartCard";
 import AdData from "../data/AdData";
 import adMediaData from "../data/AdMediaData";
-import {StatDateData} from "../data/StatDateData";
 import {ByDateData} from "../data/ByDateData";
+import {StatDateData} from "../data/StatDateData";
 import AdSiteData from "../data/AdSiteData";
 import format from "date-fns/format";
 
@@ -194,11 +194,7 @@ const Main = () => {
  
  
   const updateFilter = () => {   
-    if (vatValue) {
-      //몰루?
-    } else {
-      //vat 해제시 모든 금액 관련 데이터에 +10%
-    }
+
     // Filter the AdData based on the selected adList names
     const filteredAdData = AdData.filter((item) => adList.includes(item.name));
     const filteredAdSiteData = AdSiteData.filter((item) => adsiteList.includes(item.value));
@@ -211,7 +207,7 @@ const Main = () => {
       AdSiteData:filteredAdSiteData,
       adMediaData:filteredadMediaData,
       Datas : datas,
-    }));
+    })); 
   };
 
 console.log(".filterOptions.Datas",filterOptions.Datas)
@@ -226,39 +222,81 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
     setMdList(MdfilteredValue);
   }, []);
   const DateChange = useCallback((value) => {
-    console.log("VatStatDateData????????????????",VatStatDateData)
+
     setDateValue(value);
     //value의 0,1간의 날짜 차이
     const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
     // //비교군의 날짜 산정
     //종료 일시
-    const ByEndDate = new Date(value[0]);
-    ByEndDate.setDate(ByEndDate.getDate() - 1);
+    const StatEndDate = new Date(value[0]);
+    StatEndDate.setDate(StatEndDate.getDate() - 1);
     //시작일시
-    const ByStartDate = new Date(ByEndDate);
-    ByStartDate.setDate(ByEndDate.getDate() - daysDifference);
-    setByDateValue([`${format(ByStartDate,"yyyy-MM-dd")}`,`${format(ByEndDate,"yyyy-MM-dd")}`]);
+    const StatStartDate = new Date(StatEndDate);
+    StatStartDate.setDate(StatEndDate.getDate() - daysDifference);
+    setByDateValue([`${format(StatStartDate,"yyyy-MM-dd")}`,`${format(StatEndDate,"yyyy-MM-dd")}`]);
       let StatData =[];
       let ByData = [];
-      for(const data of StatDateData){
-        const stat_date = data.stat_date;
-        console.log('stat_date 날짜 비교요!!!!!!',stat_date,value[0],value[1])
-        console.log('날짜 비교!!!!!!!!!',stat_date>=value[0] && stat_date <=value[1])
-        if(stat_date>=value[0] && stat_date <=value[1]){
-          console.log(1);
-          StatData.push(data);
-        }
+    //데이터 Vat 추가 방법1
+    //StatDateData에서 불러온 데이터 자체를 처음부터 Vat추가해서 비교한 날짜 데이터로 가져오는 방법
+    // 한번에 많은양의 데이터 불러올 시 시간이 오래 걸릴수도 있다?
+    //   if(vatValue){
+    //     for(const data of VatByDateData){
+    //       const by_day = data.by_day;
+    //       if(by_day>=value[0] && by_day <=value[1]){
+    //         ByData.push(data);
+    //       }
+    //     }
+        
+    //     for(const data of VatStatDateData){
+    //       const stat_date = data.stat_date;
+    //       if(stat_date>=`${format(StatStartDate,"yyyy-MM-dd")}` && stat_date <=`${format(StatEndDate,"yyyy-MM-dd")}`){
+    //         StatData.push(data);
+    //       }
+    //     }
+    //   }else{
+    //   for(const data of ByDateData ){
+    //       const by_day = data.by_day;
+    //       if(by_day>=value[0] && by_day <=value[1]){
+    //         ByData.push(data);
+    //       }
+    //     }
+
+    //   for(const data of StatDateData){
+    //       const stat_date = data.stat_date;
+    //       if(stat_date>=`${format(StatStartDate,"yyyy-MM-dd")}` && stat_date <=`${format(StatEndDate,"yyyy-MM-dd")}`){
+    //         StatData.push(data);
+    //       }
+    //     }
+    // }
+    //데이터 Vat 추가 방법2
+    //StatDateData에서 작성된 순정 데이터(DB,Axio....)에서 날짜를 비교한 후 추려진 데이터에 대해서만 Vat 추가 할지 선택
+    //매번 날짜 기준으로 데이터를 조회 할 때 마다 vat를 계산해줘야한다.
+
+    for(const data of ByDateData){
+      const by_day = data.by_day;
+      if(by_day>=value[0] && by_day <=value[1]){
+        console.log(1);
+        ByData.push(data);
+
       }
-      for(const data of ByDateData){
-        const by_day = data.by_day;
-        console.log('by_date날짜 비교요@@@@@@@@@@@@@@@@@',by_day,value[0],value[1])
-        console.log('날짜 비교!!!!!!!!!',by_day>=value[0] && by_day <=value[1])
-        if(by_day>=value[0] && by_day <=value[1]){
-          console.log(1);
-          ByData.push(data);
-        }
+    }
+    
+    for(const data of StatDateData){
+      const stat_date = data.stat_date;
+      if(stat_date>=`${format(StatStartDate,"yyyy-MM-dd")}` && stat_date <=`${format(StatEndDate,"yyyy-MM-dd")}`){
+        console.log(1);
+        StatData.push(data);
       }
+    }
       if(vatValue){
+        const updatedByData =ByData.map((item) => {
+          return {
+            ...item,
+            m_rvn: item.m_rvn + item.m_rvn * 0.1,
+            rvn: item.rvn + item.rvn * 0.1,
+            m_cost: item.m_cost + item.m_cost * 0.1,
+          };
+        });
         const updatedStatData = StatData.map((item) => {
           return {
             ...item,
@@ -268,20 +306,12 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
           };
         });
     
-        const updatedByData =ByData.map((item) => {
-          return {
-            ...item,
-            m_rvn: item.m_rvn + item.m_rvn * 0.1,
-            rvn: item.rvn + item.rvn * 0.1,
-            m_cost: item.m_cost + item.m_cost * 0.1,
-          };
-        });
-        setDatas([updatedStatData,updatedByData]);
+        setDatas([updatedByData,updatedStatData]);
+        console.log('VatData 내용 ::::::',updatedByData,updatedStatData)
       }else{
-        setDatas([StatData,ByData]);
+        setDatas([ByData,StatData]);
+        console.log('SatData 내용 ::::::',StatData,ByData)
       }
-
-      console.log('VatDataVatDataVatData',StatData,ByData)
   }, [vatValue, VatStatDateData, VatByDateData]);
   console.log("날짜 선택에 관한 datas!!!!!!!!!!!!!!!!",datas)
 
@@ -416,7 +446,7 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
               onClick={coll2Change}
             />
          </div>
-           <ScoreCardChartComp collapsed={collapsed2}/>
+           <ScoreCardChartComp collapsed={collapsed2} datas={filterOptions.Datas}/>
       </div>
         <Tabs className="MainTab" type="card">
           <TabPane  tab="통합광고 대시보드" key="1">
