@@ -292,9 +292,9 @@ code {
 
 /* 선택 광고주 input */
 .ant-dropdown-menu-title-content .Searcher {
-
-  border: 1px solid #eee;
-  width: 200px !important ;
+  border: none;
+  border-bottom: 1px solid #eee;
+  width: 180px !important;
   margin-right: -10px;
   font-size: 12px;
 }
@@ -325,7 +325,7 @@ code {
   color: #263238;
 }
 .Filterdisp {
-  width: 244px;
+  width: 210px;
   cursor: pointer;
 }
 
@@ -365,7 +365,7 @@ code {
   height: 330px !important;
 }
 .rs-picker-daterange {
-  width: 244px;
+  width: 235px;
 }
 .rs-picker-toolbar {
   justify-content: flex-end;
