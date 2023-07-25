@@ -9221,6 +9221,29 @@ export const StatDateData=[
         "rgr_per_m_click": 0,
         "odr_per_m_cost": 0.16923076923076924,
         "roas": 4986038
+    },
+    {
+        "stat_date": "2023-07-24",
+        "m_rvn": 500,
+        "m_impr": 17219,
+        "m_cost": 28552,
+        "m_odr": 1,
+        "m_rgr": 0,
+        "land": 3992,
+        "rvn": 7605304,
+        "m_cart": 0,
+        "odr": 114,
+        "rgr": 0,
+        "m_conv": 6,
+        "m_click": 40,
+        "m_cpc": 713.8,
+        "m_ctr": 0.0023230152738254253,
+        "m_crt": 0.15,
+        "m_roas": 0.017511908097506305,
+        "rvn_per_odr": 66713.19298245614,
+        "rgr_per_m_click": 0,
+        "odr_per_m_cost": 0.003992715046231437,
+        "roas": 190132.6
     }
 ]
 export const VatStatDateData = () => {

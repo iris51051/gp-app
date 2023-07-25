@@ -443,34 +443,10 @@ code {
   flex-wrap: wrap;
   align-items: flex-start;
 }
-.ScoreChart {
-  height: 100px !important;
-  vertical-align: top;
-}
 .ScoreCardContainer{
   padding:0 5 5 5
 }
-.ScoreChartAdd {
-  border: 1px solid #ccc;
-  margin-bottom: 15px;
-  margin-right: 15px;
-  padding: 25px;
-  height: 178px;
-  width: 15.72%;
-  justify-content: center;
-}
 
-.ChartAdder {
-  color: blue;
-  font-size: xxx-large;
-}
-.ScoreChartAddContainer {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 .ScoreChartCard {
   direction: vertical;
   margin-bottom: 15px;
@@ -478,7 +454,7 @@ code {
   padding: 10px;
   border: 1px solid #ccc;
   height: 178px;
-  width: 15.72%;
+  width: 15%;
 }
 .ScoreChartTitle {
   margin: 0;
@@ -519,7 +495,7 @@ code {
   align-items: center;
 }
 .AreaChart{
-  padding-top: 5px;
+  padding-top: 1px;
 }
 .ScoreCardSelectorTable{
   width: 100%;

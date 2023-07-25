@@ -18,7 +18,7 @@ import {StatDateData} from "../data/StatDateData";
 import AdSiteData from "../data/AdSiteData";
 import format from "date-fns/format";
 
-//날짜 기반 데이터
+//날짜 기반 데  이터
 // const { StatDateData, VatStatDateData } = StatDateDatas(); //vat 미포함, vat 포함 기준 데이터
 // const { ByDateData, VatByDateData } = ByDateDatas();       //vat 미포함, vat 포함 비교 데이터
 
@@ -64,18 +64,20 @@ const Main = () => {
     const updatedData=StatDateData.map((item) => {
       return {
         ...item,
-        m_rvn: item.m_rvn + item.m_rvn * 0.1,
-        rvn:  item.rvn + item.rvn * 0.1,
-        m_cost: item.m_cost + item.m_cost * 0.1,
+        m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
+        rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
+        m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
+        m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
       };
     });
 
     const  updatedByData=ByDateData.map((item) => {
       return {
         ...item,
-        m_rvn: item.m_rvn + item.m_rvn * 0.1,
-        rvn: item.rvn + item.rvn * 0.1,
-        m_cost: item.m_cost + item.m_cost * 0.1,
+        m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
+        rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
+        m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
+        m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
       };
     });
     setVatStatDateData([...updatedData])
@@ -226,6 +228,7 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
     setDateValue(value);
     //value의 0,1간의 날짜 차이
     const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
+    console.log("daysDifference",daysDifference)
     // //비교군의 날짜 산정
     //종료 일시
     const StatEndDate = new Date(value[0]);
@@ -246,7 +249,6 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
     //         ByData.push(data);
     //       }
     //     }
-        
     //     for(const data of VatStatDateData){
     //       const stat_date = data.stat_date;
     //       if(stat_date>=`${format(StatStartDate,"yyyy-MM-dd")}` && stat_date <=`${format(StatEndDate,"yyyy-MM-dd")}`){
@@ -260,7 +262,6 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
     //         ByData.push(data);
     //       }
     //     }
-
     //   for(const data of StatDateData){
     //       const stat_date = data.stat_date;
     //       if(stat_date>=`${format(StatStartDate,"yyyy-MM-dd")}` && stat_date <=`${format(StatEndDate,"yyyy-MM-dd")}`){
@@ -272,15 +273,47 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
     //StatDateData에서 작성된 순정 데이터(DB,Axio....)에서 날짜를 비교한 후 추려진 데이터에 대해서만 Vat 추가 할지 선택
     //매번 날짜 기준으로 데이터를 조회 할 때 마다 vat를 계산해줘야한다.
 
+
     for(const data of ByDateData){
       const by_day = data.by_day;
       if(by_day>=value[0] && by_day <=value[1]){
-        console.log(1);
-        ByData.push(data);
-
+          ByData.push(data);
+        }
+    }
+    if(new Date(value[1])!== new Date(value[0])){
+    if(new Date(value[1]).getDate() === new Date().getDate()
+     && new Date(value[1]).getMonth() ===new Date().getMonth()
+     && new Date(value[1]).getFullYear()=== new Date().getFullYear()){
+        const newValue ={
+        "by_day": value[1],
+        "m_rvn": 0,
+        "m_impr": 0,
+        "m_cost": 0,
+        "m_odr": 0,
+        "m_rgr": 0,
+        "land": 0,
+        "rvn": 0,
+        "m_cart": 0,
+        "odr": 0,
+        "rgr": 0,
+        "m_conv": 0,
+        "m_click": 0,
+        "m_cpc": 0,
+        "m_ctr": 0,
+        "m_crt": 0,
+        "m_roas": 0,
+        "rvn_per_odr": 0,
+        "rgr_per_m_click": 0,
+        "odr_per_m_cost": 0,
+        "roas": 0}
+        ByData.push(newValue);
+        
       }
     }
-    
+      console.log('ByData요!!!!!!!!!!!!!!!!!!!!!!',new Date())
+      console.log(new Date(value[1]).getFullYear()=== new Date().getFullYear())
+      console.log(new Date(value[1]).getDate() === new Date().getDate(), new Date(value[1]).getMonth() ===new Date().getMonth() ,new Date(value[1]).getFullYear() === new Date().getFullYear)
+
     for(const data of StatDateData){
       const stat_date = data.stat_date;
       if(stat_date>=`${format(StatStartDate,"yyyy-MM-dd")}` && stat_date <=`${format(StatEndDate,"yyyy-MM-dd")}`){
@@ -295,14 +328,16 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
             m_rvn: item.m_rvn + item.m_rvn * 0.1,
             rvn: item.rvn + item.rvn * 0.1,
             m_cost: item.m_cost + item.m_cost * 0.1,
+            m_cpc: item.m_cpc + item.m_cpc * 0.1,
           };
         });
         const updatedStatData = StatData.map((item) => {
           return {
             ...item,
             m_rvn: item.m_rvn + item.m_rvn * 0.1,
-            rvn:  item.rvn + item.rvn * 0.1,
+            rvn: item.rvn + item.rvn * 0.1,
             m_cost: item.m_cost + item.m_cost * 0.1,
+            m_cpc: item.m_cpc + item.m_cpc * 0.1,
           };
         });
     

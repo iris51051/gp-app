@@ -14,7 +14,10 @@ const Calendar = ({onValueChange}) => {
   const [PickedRange, setPickedRange] = useState([new Date(), new Date()]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-
+  const today = new Date(); 
+  const disabledAfterToday = (date) => {
+    return date > today;
+  };
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
@@ -143,7 +146,8 @@ const Calendar = ({onValueChange}) => {
         onClean={resetRange}
         editable={false}
         onClose={CloseCal}
-        placement="bottomEnd"
+        placement="bottomStart"
+        disabledDate={disabledAfterToday}
       />
     </CustomProvider>
   );
