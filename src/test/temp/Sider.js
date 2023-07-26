@@ -6,7 +6,7 @@ import {
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { SelectPicker } from "rsuite";
-import { Layout, Menu, Divider,Affix } from "antd";
+import { Layout, Menu, Divider } from "antd";
 import AdData from "../data/AdData";
 
 
@@ -18,14 +18,26 @@ const Lnb = ({ collapsed ,onValueChange}) => {
   const [selectedAd,setSelectedAd] = useState('0');
 
   const Adselect = () => {
-    
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const adSelect =(data)=>{
       setSelectedAd(data);
       onValueChange(data)
     }
     const data =[{label:'전체광고주', value:'0'},...AdData.map((item) => ({ label: item.name, value: item.value }))];
-
-    return <SelectPicker data={data} style={{ width: 224 }} cleanable={false} defaultValue={0} value={selectedAd} onChange={adSelect}/>;
+    const handleMouseEnter = () => {
+      setIsMenuOpen(true);
+    };
+  
+    const handleMouseLeave = () => {
+      setIsMenuOpen(false);
+    };
+  
+    return (
+    // <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    // <SelectPicker data={data} open={isMenuOpen} style={{ width: 224 }} cleanable={false} defaultValue={0} value={selectedAd} onChange={adSelect}/>
+    // </div>
+    <SelectPicker data={data} style={{ width: 224 }} cleanable={false} defaultValue={0} value={selectedAd} onChange={adSelect}/>
+    )
   };
   useEffect(() => {
     onValueChange(selectedAd);
@@ -33,13 +45,17 @@ const Lnb = ({ collapsed ,onValueChange}) => {
 
   return (
 <>
-<Affix offsetTop={61}>
     <Sider
       trigger={null}
       collapsible
       collapsed={collapsed}
       style={{
         height: "100vh",
+        position: 'fixed',
+        top: 61,
+        left: 0,
+        right: 0,
+        zIndex: 1,
       }}
       width= '240px'
       collapsedWidth="0"
@@ -63,7 +79,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
           {
             key: "1",
             icon: <VideoCameraOutlined />,
-            label: <Link to="/temp/dashboard">대시보드</Link>,
+            label: <Link to="/temp/modules">모듈샘플</Link>,
           },
           {
             key: "2",
@@ -109,7 +125,6 @@ const Lnb = ({ collapsed ,onValueChange}) => {
         ]}
         />
     </Sider>
-    </Affix>
         </>
   );
 };

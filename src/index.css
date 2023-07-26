@@ -13,6 +13,14 @@ code {
     monospace;
 }
 /************************ Header**********************************/
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  height: 60px;
+}
 .Logo {
   align-items: center;
   display: flex;
@@ -51,7 +59,15 @@ code {
 .sider-selector {
   margin: 10px;
 }
+.sider-selector.rs-picker-menu.rs-picker-select-menu{
 
+  z-index: 3;
+}
+.rs-picker-menu.rs-picker-check-menu, .rs-picker-menu.rs-picker-select-menu {
+  position: fixed;
+  z-index: 3;
+  top: 125px !important;
+}
 /************************************Content*****/
 
 /* **********************************Main **********************************/
@@ -317,12 +333,15 @@ code {
   padding: 8px !important;
   border-bottom: 1px solid #eee;
 }
-
+.FilterDrop .ant-dropdown{
+  z-index: 0;
+}
 .FilterDiv {
   border: 1px solid #eee;
   max-height: 300px !important;
   overflow: auto;
   color: #263238;
+
 }
 .Filterdisp {
   width: 210px;

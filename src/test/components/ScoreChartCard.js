@@ -3,14 +3,14 @@ import {Space, Radio } from "antd";
 import ECharts from "echarts-for-react";
 import {
   CaretUpOutlined,
-  CaretDownOutlined
+  CaretDownOutlined,
+  LineOutlined
 } from "@ant-design/icons";
 
 const ScoreCardChart = ({colors,collapsed, datas}) => {
 
 
-  //byData
-
+    //byData
     //총합
     const [totalMCost, settotalMCost] =useState(0); //총광고비
     const [totalMRvn, setTotalMRvn] =useState(0);   //총매출액
@@ -32,16 +32,31 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     const [MROASArr,setMROASArr ]=useState([]);//ROAS
     const [MConvArr,setMConvArr ]=useState([]);//총전환수
     const [AVGMconvArr, setAVGMconvArr ]=useState([]);//총전환율
+
+
+
+    //statData
+    //총합
+    const [totalSMCost, settotalSMCost] =useState(0); //총광고비
+    const [totalSMRvn, setTotalSMRvn] =useState(0);   //총매출액
+    const [totalSMImpr, setTotalSMImpr] = useState(0);  //총노출수
+    const [totalSMClick, setTotalSMClick] = useState(0);  //총클릭수
+    const [totalSMConv, setTotalSMConv] = useState(0);    //총 전환수
+
+    //평균
+    const [SAVGCPC, setSAVGCPC] = useState(0);
+
+
     
   useEffect(()=>{
 
     //bydata
-    let MRvnsum=0;
-    let MCostsum =0;
-    let MImprsum =0;
-    let MClicksum =0;
-    let MCPCsum =0;
-    let MConvsum =0;
+    let MRvnsum=0;    //총매출액
+    let MCostsum =0;  //총광고비
+    let MImprsum =0;  //총노출수
+    let MClicksum =0; //총클릭수
+    let MCPCsum =0;   //CPC
+    let MConvsum =0;  //총전환수
 
     //statdata
     let SMRvnsum=0;
@@ -55,6 +70,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
 
       //bydata
       for(const item of datas[0] ){
+
         if('m_rvn' in item) {
           const value =item.m_rvn
           MRvnsum +=value;
@@ -79,27 +95,28 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       for(const item of datas[1] ){
         if('m_rvn' in item) {
           const value =item.m_rvn
-          MRvnsum +=value;
+          SMRvnsum +=value;
         }
         if('m_cost' in item){
-          MCostsum+=item.m_cost;
+          SMCostsum+=item.m_cost;
         }
         if('m_impr' in item){        
-          MImprsum+=item.m_impr;
+          SMImprsum+=item.m_impr;
         }
         if('m_click' in item){        
-          MClicksum+=item.m_click;
+          SMClicksum+=item.m_click;
         }
         if('m_cpc' in item){
-          MCPCsum+=item.m_cpc;
+          SMCPCsum+=item.m_cpc;
         }
         if('m_conv' in item){
-          MConvsum +=item.m_conv;
+          SMConvsum +=item.m_conv;
         }
       }
 
 
-
+      //byData
+      //데이터 배열
       setMrvnArr(datas[0].map(item => item.m_rvn));
       setMCostArr(datas[0].map(item => item.m_cost));
       setMImprArr(datas[0].map(item => item.m_impr));
@@ -108,16 +125,27 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       setMCPCArr(datas[0].map(item => parseFloat((item.m_cpc).toFixed(0))));
       setMROASArr(datas[0].map(item => parseFloat((item.m_roas*100).toFixed(0))));
       setMConvArr(datas[0].map(item => item.m_conv));
-      setAVGMconvArr(datas[0].map(item => item.m_crt));
-
+      setAVGMconvArr(datas[0].map(item => parseFloat((item.m_crt).toFixed(2))));
+      //합계
       setTotalMRvn(parseInt((MRvnsum).toFixed(0)));
       settotalMCost(parseInt((MCostsum).toFixed(0)))
       setTotalMImpr(parseInt((MImprsum).toFixed(0)))
       setTotalMClick(parseInt((MClicksum).toFixed(0)))
       setTotalMConv((MConvsum))
-
-
+      //평균
       setAVGCPC(parseInt((MCPCsum/datas[0].map(item => item.m_cpc).length).toFixed(0))) 
+      
+
+
+      //statData
+      //합계
+      setTotalSMRvn(parseInt((SMRvnsum).toFixed(0)));
+      settotalSMCost(parseInt((SMCostsum).toFixed(0)))
+      setTotalSMImpr(parseInt((SMImprsum).toFixed(0)))
+      setTotalSMClick(parseInt((SMClicksum).toFixed(0)))
+      setTotalSMConv((SMConvsum))
+      //평균
+      setSAVGCPC(parseInt((SMCPCsum/datas[1].map(item => item.m_cpc).length).toFixed(0))) 
     }
   },[datas])
   
@@ -127,7 +155,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "CTR",
       value: (totalMClick / totalMImpr * 100).toFixed(2),
       unit: "%",
-      percent: 100,
+      percent: ((((totalMClick/totalMImpr)-((totalSMClick / totalSMImpr)))/(totalSMClick / totalSMImpr))*100).toFixed(0),
       data: MCTRArr,
     },
     {
@@ -135,7 +163,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "총 광고비",
       value: totalMCost,
       unit: "원",
-      percent: 100,
+      percent: (((totalMCost-totalSMCost)/totalSMCost)*100).toFixed(0),
       data: MCostArr,
     },
     {
@@ -143,7 +171,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "총 매출액",
       value : totalMRvn,
       unit: "원",
-      percent: -2,
+      percent: (((totalMRvn-totalSMRvn)/totalSMRvn)*100).toFixed(0),
       data: MrvnArr,
     },
     {
@@ -151,7 +179,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "ROAS",
       value: (totalMRvn/totalMCost*100).toFixed(2),
       unit: "%",
-      percent: 100,
+      percent: (((totalMRvn/totalMCost)-(totalSMRvn/totalSMCost))/(totalSMRvn/totalSMCost)*100).toFixed(0),
       data: MROASArr,
     },
     {
@@ -159,7 +187,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "총 노출수",
       value: totalMImpr,
       unit: "",
-      percent: 40,
+      percent: (((totalMImpr-totalSMImpr)/totalSMImpr)*100).toFixed(0),
       data: MImprArr,
     },
     {
@@ -167,7 +195,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "총 클릭수",
       value: totalMClick,
       unit: "",
-      percent: 100,
+      percent: ((totalMClick-totalSMClick)/(totalSMClick)*100).toFixed(0),
       data: MClickArr,
     },
     
@@ -176,7 +204,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "CPC",
       value: (totalMCost/totalMClick).toFixed(0),
       unit: "원",
-      percent: 30,
+      percent: (((totalMCost/totalMClick)-(totalSMCost/totalSMClick))/(totalSMCost/totalSMClick)*100).toFixed(0),
       data: MCPCArr,
     },
     {
@@ -184,7 +212,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "총 전환수",
       value: totalMConv,
       unit: "",
-      percent: 100,
+      percent: ((totalMConv-totalSMConv)/(totalSMConv)*100).toFixed(0),
       data: MConvArr,
     },
     {
@@ -192,7 +220,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "전환율",
       value: (totalMConv/totalMClick*100).toFixed(2),
       unit: "%",
-      percent: 100,
+      percent: (((totalMConv/totalMClick)-(totalSMConv/totalSMClick))/(totalSMConv/totalSMClick)*100).toFixed(0),
       data: AVGMconvArr,
     },
     {
@@ -200,7 +228,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "평균 노출수",
       value: (totalMImpr/MImprArr.length).toFixed(0),
       unit: "",
-      percent: 10,
+      percent: (((totalMImpr/MImprArr.length)-(totalSMImpr/MImprArr.length))/(totalSMImpr/MImprArr.length)*100).toFixed(0),
       data : "",
     },
     {
@@ -208,7 +236,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "평균 클릭 수",
       value: (totalMClick/MClickArr.length).toFixed(0),
       unit: "",
-      percent: -20,
+      percent: (((totalMClick/MClickArr.length)-(totalSMClick/MClickArr.length))/(totalSMClick/MClickArr.length)*100).toFixed(0),
       data: "",
     },
 
@@ -217,7 +245,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "평균 CPC",
       value: AVGCPC,
       unit: "원",
-      percent: 30,
+      percent: (((AVGCPC-SAVGCPC)/SAVGCPC)*100).toFixed(0),
       data: "",
     },
     {
@@ -225,7 +253,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "평균 광고비",
       value: (totalMCost/MCostArr.length).toFixed(0),
       unit: "원",
-      percent: 100,
+      percent: (((totalMCost/MCostArr.length)-(totalSMCost/MCostArr.length))/(totalSMCost/MCostArr.length)*100).toFixed(0),
       data: "",
     },
     {
@@ -233,7 +261,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "평균 전환수",
       value: (totalMConv/MConvArr.length).toFixed(0),
       unit: "",
-      percent: 100,
+      percent: (((totalMConv/MConvArr.length)-(totalSMConv/MConvArr.length))/(totalSMConv/MConvArr.length)*100).toFixed(0),
       data: '',
     },
     {
@@ -241,12 +269,12 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: "평균 매출액",
       value: (totalMRvn/MrvnArr.length).toFixed(0),
       unit: "원",
-      percent: 100,
+      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
       data: '',
     },
 
   ];
-  const [updatedScore, setUpdatedScore] = useState(score);
+
   const defaultCheckedKeys = [1,2,3,4];
   const [chartCardList, setChartCardList] = useState(defaultCheckedKeys);
 
@@ -260,6 +288,21 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       setChartCardList([...chartCardList, newValue]);
     }
   };
+  const RenderValue = (value,unit)=>{
+    if(unit === '%'){
+      if(value>0){
+      return parseFloat(value).toFixed(2);
+      }else{
+        return (0).toFixed(2);
+      }
+    }else{
+      if(value>0){
+     return Intl.NumberFormat('en-KR').format(value)
+    }else{
+      return 0
+    }
+    }
+  }
 
 
   const ScoreCardSelector = {
@@ -273,6 +316,32 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
   const renderAreaLineChart =(item)=>{
     if(item.data.length >1){
       return <AreaLineChart datas={item.data}/>
+    }
+  }
+  const CompareValue = (value)=>{
+    if(isFinite(value) &&  (value >0 || value < 0) ){
+      return '('+Intl.NumberFormat('ko-KR').format(value)+'%'
+    }else{
+      return '';
+    }
+  }
+  const arrowRender =(percent)=>{
+    if(percent >0 && isFinite(percent)){
+      return  (
+      <span>
+      <CaretUpOutlined className="ArrowUp" />
+        )
+      </span>
+      )
+    }else if(percent < 0  && isFinite(percent)){
+      return (
+        <span>
+      <CaretDownOutlined className="ArrowDown" />
+        )
+      </span>
+      )
+    }else{
+      return <LineOutlined />
     }
   }
 
@@ -315,20 +384,15 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
             <h3 className="ScoreChartTitle">{item.title}</h3>
             <div className="ScoreChartValueDiv">
               <span className="ScoreChartValue">
-              { !isNaN(item.value) && item.value > 0
-                ? Intl.NumberFormat('en-KR').format(item.value)
-                : '0'}
+                {RenderValue(item.value,item.unit)}
+                </span>
+                <span className="ScoreChartValue">
                 </span>
               <span className="ScoreChartUnit"> {item.unit}</span>
             </div>
             <div className="ScoreChartPercent">
-              ({Intl.NumberFormat('ko-KR').format(item.percent)}%
-              {item.percent > 0 ? (
-                <CaretUpOutlined className="ArrowUp" />
-              ) : (
-                <CaretDownOutlined className="ArrowDown" />
-              )}
-              )
+              {CompareValue(item.percent)}
+              {arrowRender(item.percent)}
             </div>
             <div>
               {/* <AreaLineChart datas={item.data} /> */}
@@ -410,7 +474,7 @@ const AreaLineChart = ({ datas }) => {
         },
         color: "rgba(65,128,236,0.5)",
         symbol: "circle",
-        symbolSize: 3,
+        symbolSize: 0,
         markPoint: {
           symbol: "circle",
           symbolSize: 3.5,
@@ -422,7 +486,7 @@ const AreaLineChart = ({ datas }) => {
               type: "max",
               name: "max",
               itemStyle: { color: "green" },
-              coord: [index, maxValue],
+              coord: [maxValues[0], maxValue],
             })),
             ...minValues.map((index) => ({
               type: "min",

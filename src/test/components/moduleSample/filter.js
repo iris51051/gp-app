@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Checkbox, Dropdown, Input, Menu } from "antd";
+import { Checkbox, Dropdown, Input, Menu,Affix } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
 const CheckboxGroup = Checkbox.Group;
@@ -83,10 +83,9 @@ const CheckClick =(e)=>{
 }
   const menu = (
     <div className="FilterDiv">
-      <Menu >
+      <Menu>
         <Menu.Item key="search">
           <Input
-
             className="Searcher"
             placeholder="검색"
             value={searchValue}
@@ -140,6 +139,7 @@ const CheckClick =(e)=>{
       open={dropdownVisible}
       onOpenChange={handleDropdownVisibleChange}
       trigger={["click"]}
+      className="FilterDropdown"
     >
       <div
         style={{
@@ -158,6 +158,7 @@ const CheckClick =(e)=>{
           }/${options.length})`}
           onClick={() => setDropdownVisible(!dropdownVisible)}
           readOnly
+
         />
         <DownOutlined
           style={{
@@ -172,10 +173,10 @@ const CheckClick =(e)=>{
   );
 };
 
-export const Adfilter = (props) => <DropdownFilter name="광고주" {...props} />;
+export const Adfilter = (props) =>        <DropdownFilter name="광고주" {...props} />
 
 export const AdSitefilter = (props) => (
-  <DropdownFilter  name="사이트" {...props} />
+  <DropdownFilter name="사이트" {...props} />
 );
 
 export const Mdfilter = (props) => (

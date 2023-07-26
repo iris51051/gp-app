@@ -99,8 +99,8 @@ const Gnb = ({ onValueChange }) => {
 
   return (
     <Layout>
-      <Affix offsetTop={top}>
         <Header
+        className="fixed-header"
           style={{
             padding: 0,
             background: colorBgContainer,
@@ -108,6 +108,7 @@ const Gnb = ({ onValueChange }) => {
             borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
             width: "100%",
             height: "61px",
+            zIndex: "2000",
           }}
         >
           <div className="top-left-part" ref={leftpartRef}>
@@ -146,7 +147,7 @@ const Gnb = ({ onValueChange }) => {
         justifyContent: "flex-end"}}/>
           </div>
         </Header>
-      </Affix>
+
     </Layout>
   );
 };

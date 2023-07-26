@@ -12,10 +12,10 @@ import Calendar from "../components/calendar.js";
 import { Adfilter, Mdfilter, AdSitefilter } from "../components/filter.js";
 import ScoreCardChartComp from "../components/ScoreChartCard";
 import AdData from "../data/AdData";
+import AdSiteData from "../data/AdSiteData";
 import adMediaData from "../data/AdMediaData";
 import {ByDateData} from "../data/ByDateData";
 import {StatDateData} from "../data/StatDateData";
-import AdSiteData from "../data/AdSiteData";
 import format from "date-fns/format";
 
 //날짜 기반 데  이터
@@ -223,6 +223,12 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
     const MdfilteredValue = value.filter((option) => option !== "selectAll");
     setMdList(MdfilteredValue);
   }, []);
+  const adsiteChange = useCallback((value) => {
+    const AdSitefilteredValue = value.filter(
+      (option) => option !== "selectAll"
+    );
+      setAdStieList(AdSitefilteredValue);
+  }, []);
   const DateChange = useCallback((value) => {
 
     setDateValue(value);
@@ -237,8 +243,8 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
     const StatStartDate = new Date(StatEndDate);
     StatStartDate.setDate(StatEndDate.getDate() - daysDifference);
     setByDateValue([`${format(StatStartDate,"yyyy-MM-dd")}`,`${format(StatEndDate,"yyyy-MM-dd")}`]);
-      let StatData =[];
       let ByData = [];
+      let StatData =[];
     //데이터 Vat 추가 방법1
     //StatDateData에서 불러온 데이터 자체를 처음부터 Vat추가해서 비교한 날짜 데이터로 가져오는 방법
     // 한번에 많은양의 데이터 불러올 시 시간이 오래 걸릴수도 있다?
@@ -281,35 +287,35 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
         }
     }
     if(new Date(value[1])!== new Date(value[0])){
-    if(new Date(value[1]).getDate() === new Date().getDate()
-     && new Date(value[1]).getMonth() ===new Date().getMonth()
-     && new Date(value[1]).getFullYear()=== new Date().getFullYear()){
-        const newValue ={
-        "by_day": value[1],
-        "m_rvn": 0,
-        "m_impr": 0,
-        "m_cost": 0,
-        "m_odr": 0,
-        "m_rgr": 0,
-        "land": 0,
-        "rvn": 0,
-        "m_cart": 0,
-        "odr": 0,
-        "rgr": 0,
-        "m_conv": 0,
-        "m_click": 0,
-        "m_cpc": 0,
-        "m_ctr": 0,
-        "m_crt": 0,
-        "m_roas": 0,
-        "rvn_per_odr": 0,
-        "rgr_per_m_click": 0,
-        "odr_per_m_cost": 0,
-        "roas": 0}
-        ByData.push(newValue);
-        
+      if(new Date(value[1]).getDate() === new Date().getDate()
+        && new Date(value[1]).getMonth() ===new Date().getMonth()
+        && new Date(value[1]).getFullYear()=== new Date().getFullYear()){
+            const newValue ={
+            "by_day": value[1],
+            "m_rvn": 0,
+            "m_impr": 0,
+            "m_cost": 0,
+            "m_odr": 0,
+            "m_rgr": 0,
+            "land": 0,
+            "rvn": 0,
+            "m_cart": 0,
+            "odr": 0,
+            "rgr": 0,
+            "m_conv": 0,
+            "m_click": 0,
+            "m_cpc": 0,
+            "m_ctr": 0,
+            "m_crt": 0,
+            "m_roas": 0,
+            "rvn_per_odr": 0,
+            "rgr_per_m_click": 0,
+            "odr_per_m_cost": 0,
+            "roas": 0}
+            ByData.push(newValue);
+            
+          }
       }
-    }
       console.log('ByData요!!!!!!!!!!!!!!!!!!!!!!',new Date())
       console.log(new Date(value[1]).getFullYear()=== new Date().getFullYear())
       console.log(new Date(value[1]).getDate() === new Date().getDate(), new Date(value[1]).getMonth() ===new Date().getMonth() ,new Date(value[1]).getFullYear() === new Date().getFullYear)
@@ -350,12 +356,7 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
   }, [vatValue, VatStatDateData, VatByDateData]);
   console.log("날짜 선택에 관한 datas!!!!!!!!!!!!!!!!",datas)
 
-  const adsiteChange = useCallback((value) => {
-    const AdSitefilteredValue = value.filter(
-      (option) => option !== "selectAll"
-    );
-      setAdStieList(AdSitefilteredValue);
-  }, []);
+
 
   const handleSwitchToggle =(value)=>{
     setVatValue(value)

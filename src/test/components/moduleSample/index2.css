@@ -1,0 +1,588 @@
+/**
+ ******************************* ChartComponent **********************************
+ *
+ * */
+
+.pieChartDiv {
+  display: block;
+  width: 33%;
+}
+.pieChart {
+  text-align: center;
+}
+
+.TwoWayBarChart-title {
+  font-size: 14px;
+  font-family: sans-serif, "Rubik";
+  font-weight: 600;
+  color: #313131;
+}
+
+.twoway-bar-x-axis-labels {
+  color: "#666";
+  font-size: "11px";
+}
+
+/**
+ ************************************* ScoreCard ****************************************
+ *
+ * */
+.scorecard {
+  text-align: center;
+  font-size: 12px;
+  margin: 20px;
+  border-collapse: collapse;
+}
+
+.scorecard .cardName {
+  background-color: #f3f3f7;
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 200px;
+}
+
+.scorecard .emphasis {
+  font-weight: 900;
+  font-size: 20px;
+}
+
+/**
+ ******************************** ChartScoreCard *********************************
+ *
+ * */
+
+.chartScoreCardDiv {
+  position: relative;
+  padding-left: 0px !important;
+  padding-right: 15px;
+  min-height: 1px;
+  margin: 20px;
+}
+
+.chartScoreCard {
+  padding: 25px;
+  margin-bottom: 30px;
+  display: block;
+  box-shadow: 0 1px 4px 0 rgb(21 27 38 / 8%);
+  min-height: 178px;
+  border: 1px solid #e8ecee;
+}
+
+.CardTitle {
+  font-weight: 600 !important;
+  margin-bottom: 0;
+  text-transform: none;
+  font-size: 15px;
+  margin: 0px 0px 12px;
+  line-height: 30px;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+}
+
+.CardValueDiv {
+  text-align: right;
+}
+
+.CardValue {
+  line-height: normal;
+  font-size: 30px;
+  font-weight: 550 !important;
+}
+
+.won {
+  font-size: 16px !important;
+}
+
+.percent {
+  font-size: 11px;
+  color: #898989;
+  letter-spacing: -1px;
+  padding-left: 3px;
+  font-weight: 500;
+  display: inline-block;
+  max-width: 100px;
+}
+
+.chartScoreCardContainer {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.chartScoreCardContainer > * {
+  width: 20%;
+}
+
+/**
+ ******************************* DataGridComponent **********************************
+ *
+ * */
+/**
+ ************************************* type1 ****************************************
+ *
+ * */
+
+.type1Div {
+  margin: 20px;
+  padding: 20px;
+}
+
+.type1Div .basicBtn {
+  background-color: white;
+  border: 1px solid #ccc;
+}
+
+.type1Div th.ant-table-cell {
+  text-align: center;
+}
+
+.type1Div td.ant-table-cell {
+  text-align: right;
+}
+
+/**
+ ************************************* type2 ****************************************
+ *
+ * */
+
+.type2Div {
+  margin: 20px;
+  padding: 20px;
+}
+
+.type2Div .deleteBtn {
+  background-color: #f33155;
+  border: 1px solid #f33155;
+  color: white;
+  border-radius: 15%;
+}
+
+.type2Div .statusBtn {
+  background-color: white;
+  border: 1px solid;
+  border-radius: 10px 10px 10px 10px;
+  width: 55px;
+}
+
+.type2Div .status-creating {
+  color: rgb(14, 161, 247);
+}
+
+.type2Div .status-error {
+  color: red;
+}
+
+.type2Div .status-complete {
+  color: #666;
+}
+
+.type2Div .newBtn {
+  background-color: rgb(14, 161, 247);
+}
+
+.typeBtn {
+  background-color: white;
+  border: 1px solid #666;
+  color: #666;
+  border-radius: 30px;
+  width: 90px;
+  text-align: left;
+  padding: 4px 10px;
+}
+
+.type2Div .icon-behavioral {
+  color: #ffdc29;
+}
+
+.type2Div .icon-discovery {
+  color: rgb(0, 238, 255);
+}
+
+.type2Div .icon-union {
+  color: rgba(165, 11, 165);
+}
+
+.type2Div .icon {
+  font-size: 11px;
+}
+
+.type2Div .excelBtn {
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 5px 10px !important;
+}
+
+.type2Div .ant-table-cell .ant-table-column-has-sorters {
+  text-align: center;
+}
+
+.type2Div .ant-table-cell {
+  text-align: right;
+}
+
+/**
+ ************************************* type3 ****************************************
+ *
+ * */
+.type3Div {
+  margin: 20px;
+  padding: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.type3Div .expanded-column {
+  width: 190px;
+}
+
+.type3Div .ant-table-selection-column {
+  width: 33px;
+}
+
+.type3Div .selection-column {
+  border-right: none;
+  width: 4px;
+}
+
+.type3Div .column-width-fix {
+  width: 310px;
+}
+
+.type3Div .ant-table th,
+td {
+  border-right: 1px solid #e4e7ea;
+}
+
+.type3Div .total-row td {
+  border-top-style: double;
+}
+
+.type3Div .ant-table-row-expand-icon-cell {
+  border-right: none;
+  width: 43px;
+}
+
+.type3Div .selectText {
+  font-weight: 400;
+}
+
+.type3Div .ant-table-wrapper .ant-table tbody > tr > td {
+  text-align: right;
+}
+
+.type3Div .ant-table-wrapper .ant-table-footer {
+  padding: 0;
+  background-color: white;
+  text-align: right;
+}
+
+/**
+ ************************************* 공통 ****************************************
+ *
+ * */
+
+.row .odd-row {
+  background-color: white;
+}
+
+.even-row {
+  background-color: rgba(239, 242, 247, 0.5);
+}
+
+.ant-table {
+  border: 1px solid #e4e7ea;
+}
+
+.ant-table-wrapper .ant-table thead > tr > th {
+  border-bottom: 1px solid #000;
+  text-align: center;
+}
+
+.ant-table-wrapper .ant-table tbody {
+  font-size: 12px;
+}
+
+.ant-table-wrapper .ant-table thead > tr > td {
+  border-bottom: 1px solid #000;
+}
+
+.btn {
+  line-height: 1.5;
+  padding: 1px 5px;
+  margin: auto;
+  font-size: 12px;
+}
+
+.inputBox {
+  border: 1px solid rgba(120, 130, 140, 0.13);
+  height: 30px;
+  margin-right: 8px;
+}
+
+.searchText {
+  font-size: 12px;
+  color: #313131;
+  line-height: 1.42857143;
+  margin-right: 8px;
+}
+
+.searchBtn {
+  width: 200px;
+  margin-right: 8px;
+}
+
+.selectBox {
+  width: 125px;
+  color: #555;
+  margin-right: 12px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #313131;
+  font-family: "Rubik", sans-serif;
+  margin: 10px 0;
+  font-weight: 300;
+}
+
+/**
+ ******************************* ScoreCardChart *********************************
+ *
+ * */
+/* ScoreCard */
+.ScoreCardTable,
+.ScoreCardRow,
+.ScoreCardCol {
+  border: 1px solid #dbdbdb;
+  border-collapse: collapse;
+  text-align: center;
+}
+.ScoreCardTable {
+  width: 80%;
+  height: 100px;
+  background-color: #f4f4f4;
+}
+/* ScoreCardChart */
+.ScoreChartDiv {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.ScoreChart {
+  height: 100px !important;
+  vertical-align: top;
+}
+.ScoreChartCol {
+  direction: vertical;
+  margin-bottom: 50px;
+  margin-right: 4px;
+  padding: 25px;
+  border: 1px solid #ccc;
+  height: 178px;
+  width: 16%;
+}
+.ScoreChartTitle {
+  margin: 0;
+}
+.ScoreChartValueDiv {
+  text-align: right;
+}
+.ScoreChartValue {
+  text-align: right;
+  font-size: 30px;
+}
+.ScoreChartPercent {
+  text-align: right;
+  font-size: 11px;
+}
+.ArrowUp {
+  color: red;
+}
+.ArrowDown {
+  color: blue;
+}
+.ScoreChartAdd {
+  border: 1px solid #ccc;
+  margin-bottom: 50px;
+  margin-right: 4px;
+  padding: 25px;
+  height: 178px;
+  width: 16%;
+  justify-content: center;
+}
+.ChartAdder {
+  color: blue;
+  font-size: xxx-large;
+}
+.ScoreChartAddContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.DropDownLayer {
+  border: 1px solid #ccc;
+  background-color: white;
+}
+.DropDownHeader {
+  padding: 5px;
+  background-color: #e1e3ec;
+  display: flex;
+  justify-content: space-between;
+}
+
+.DropDownCloseContainer {
+  display: flex;
+  align-items: center;
+}
+
+
+.rs-picker-toggle-value {
+  color: black !important;
+}
+/* Drawer 스타일 */
+.ant-drawer-content-wrapper {
+  box-shadow: none !important;
+  margin-top: 88px;
+  height: 300px;
+  /* 경계선 구분을 위한 임시 테두리*/
+  border: 1px solid;
+}
+.ant-drawer-header,
+.ant-drawer-body,
+.ant-drawer-footer {
+  background: #f5f5f5;
+}
+.FilterAdd {
+  background: #fff;
+}
+.DrawerContent {
+  background: #fff;
+}
+/* 달력 스타일 */
+.rs-picker-daterange-header {
+  visibility: hidden;
+  padding: 0px 0px !important;
+  height: 0;
+}
+.rs-picker-daterange-predefined {
+  height: 330px !important;
+}
+.rs-picker-daterange {
+  width: 210px;
+}
+.rs-picker-toolbar {
+  justify-content: flex-end;
+}
+/* 세부 디자인 추가 */
+.ant-space-item .ant-input {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.ant-select .ant-select-selector {
+  height: 34.42px !important;
+  align-items: center;
+}
+
+.ant-select-selector .ant-select-selection-item {
+  font-size: 13px;
+}
+
+.ant-select .ant-select-selector {
+  padding: 6px 12px !important;
+}
+
+.rs-picker .rs-picker-toggle {
+  padding: 6px 12px !important;
+}
+
+.rs-picker-toggle .rs-btn .rs-btn-default .rs-btn-sm {
+  padding: 7px 12px;
+}
+
+.rs-stack-item {
+  font-size: 13px !important;
+  font-weight: 600;
+}
+
+.rs-picker-toggle {
+  height: 34.42px;
+}
+
+/* 선택한 분석 대상 */
+.selected-analysis-targer {
+  font-weight: 600;
+  font-size: 18px !important;
+  line-height: 22px !important;
+  margin: 10px 0;
+  font-family: "Rubik", sans-serif;
+  color: black;
+}
+
+.selected-analysis-targer-div {
+  border: 1px solid rgba(120, 130, 140, 0.13);
+  border-left: 3px solid #ffdc29 !important;
+  padding: 10px 20px;
+  margin: 0 0 20px;
+  font-size: 17.5px;
+}
+
+.selected-analysis-targer-p {
+  line-height: 1.6;
+  margin: 0 0 10px;
+  font-weight: 600;
+  font-size: 13px !important;
+  color: black;
+}
+
+.selected-analysis-targer-span {
+  background-color: rgb(122, 206, 76);
+  color: #fff;
+  border-radius: 60px !important;
+  padding: 4px 12px 3px;
+  font-weight: 600;
+  text-align: center;
+  font-size: 11px;
+}
+
+/* 선택 광고주 input */
+.ant-dropdown-menu-title-content .adSearch {
+  border: none;
+  border-bottom: 1px solid #eee;
+  width: 180px !important;
+  margin-right: -10px;
+  font-size: 12px;
+}
+
+.ant-dropdown-menu-title-content .adSearch::placeholder {
+  color: black;
+}
+
+.ant-dropdown-menu .ant-dropdown-menu-item {
+  padding-left: 30px !important;
+  padding: 8px !important;
+  border-bottom: #eee;
+}
+
+.ant-checkbox-wrapper {
+  font-size: 12px !important;
+}
+
+.ant-checkbox-group .ant-checkbox-wrapper {
+  padding: 8px !important;
+  border-bottom: 1px solid #eee;
+}
+
+.adFilterDiv {
+  border: 1px solid #eee;
+  max-height: 300px !important;
+  overflow: auto;
+  color: #263238;
+}
+

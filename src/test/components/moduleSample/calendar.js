@@ -9,15 +9,12 @@ import endOfMonth from "date-fns/endOfMonth";
 import addMonths from "date-fns/addMonths";
 import koKR from "rsuite/locales/ko_KR";
 
-const Calendar = ({onValueChange}) => {
-  const [selectedDate, setSelectedDate] = useState([new Date(), new Date()]);
+export const Calendar = () => {
+  const [selectedDate, setSelectedDate] = useState([]);
   const [PickedRange, setPickedRange] = useState([new Date(), new Date()]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const today = new Date(); 
-  const disabledAfterToday = (date) => {
-    return date > today;
-  };
+
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
@@ -48,22 +45,19 @@ const Calendar = ({onValueChange}) => {
     },
     {
       label: "최근 7일",
-      // value: [subDays(new Date(), 6), new Date()],
-      value: [subDays(new Date(), 7), new Date()],
+      value: [subDays(new Date(), 6), new Date()],
       placement: "left",
       closeOverlay: false,
     },
     {
       label: "최근 30일",
-      // value: [subDays(new Date(), 29), new Date()],
-      value: [subDays(new Date(), 30), new Date()],
+      value: [subDays(new Date(), 29), new Date()],
       placement: "left",
       closeOverlay: false,
     },
     {
       label: "최근 90일",
-      // value: [subDays(new Date(), 89), new Date()],
-      value: [subDays(new Date(), 90), new Date()],
+      value: [subDays(new Date(), 89), new Date()],
       placement: "left",
       closeOverlay: false,
     },
@@ -127,14 +121,8 @@ const Calendar = ({onValueChange}) => {
       setPickedRange([new Date(), new Date()]);
     }
   };
-  useEffect(() => {
-    let returnData =[];
-    if (selectedDate[0] && selectedDate[1]) {
-      returnData =[format(selectedDate[0], "yyyy-MM-dd"),format(selectedDate[1], "yyyy-MM-dd")]
-    }
-    onValueChange(returnData);
-  }, [selectedDate, onValueChange]);
-
+  console.log("selectedDate: " + selectedDate);
+  console.log("pickedRange: " + PickedRange);
   return (
     <CustomProvider locale={koKR}>
       <DateRangePicker
@@ -149,10 +137,8 @@ const Calendar = ({onValueChange}) => {
         onClean={resetRange}
         editable={false}
         onClose={CloseCal}
-        placement="bottomStart"
-        disabledDate={disabledAfterToday}
+        placement="auto"
       />
     </CustomProvider>
   );
 };
-export default Calendar;
