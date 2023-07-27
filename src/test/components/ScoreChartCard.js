@@ -12,12 +12,19 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
 
     //byData
     //총합
+    //매체 데이터
     const [totalMCost, settotalMCost] =useState(0); //총광고비
     const [totalMRvn, setTotalMRvn] =useState(0);   //총매출액
     const [totalMImpr, setTotalMImpr] = useState(0);  //총노출수
     const [totalMClick, setTotalMClick] = useState(0);  //총클릭수
     const [totalMConv, setTotalMConv] = useState(0);    //총 전환수
+    //스크립트 데이터
+    const [totalOdr, setTotalOdr] = useState(0); //총 주문수
+    const [totalRvn, setTotalRvn] = useState(0); //총 주문금액
+    const [totalRgr, setTotalRgr] = useState(0); //총 회원가입수
+    const [totalRpo, setTotalRpo] = useState(0); //총 구매단가
 
+    
     //평균
     const [AVGCPC, setAVGCPC] = useState(0);
 
@@ -32,7 +39,15 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     const [MROASArr,setMROASArr ]=useState([]);//ROAS
     const [MConvArr,setMConvArr ]=useState([]);//총전환수
     const [AVGMconvArr, setAVGMconvArr ]=useState([]);//총전환율
-
+    
+    //스크립트 데이터 Array
+    const [RoasArr, setRoasArr ]=useState([]);//Roas
+    const [OdrArr, setOdrArr ]=useState([]);//총 주문수
+    const [RvnArr, setRvnArr ]=useState([]);//총 주문금액
+    const [RgrArr, setRgrArr ]=useState([]);//총 회원가입수
+    const [RgrpmcArr, setRgrpmcArr ]=useState([]);//총 회원가입수
+    const [RpoArr, setRpoArr ]=useState([]);//총 구매단가
+    const [OpmcArr, setOpmcArr ]=useState([]);//총 주문율
 
 
     //statData
@@ -51,12 +66,18 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
   useEffect(()=>{
 
     //bydata
+    //매체
     let MRvnsum=0;    //총매출액
     let MCostsum =0;  //총광고비
     let MImprsum =0;  //총노출수
     let MClicksum =0; //총클릭수
     let MCPCsum =0;   //CPC
     let MConvsum =0;  //총전환수
+    //스크립트
+    let Odrsum =0;  //총 주문수
+    let Rvnsum =0;  //총 주문금액
+    let Rgrsum =0;  //총 회원가입수
+    let Rposum =0;  //총 구매단가
 
     //statdata
     let SMRvnsum=0;
@@ -70,7 +91,6 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
 
       //bydata
       for(const item of datas[0] ){
-
         if('m_rvn' in item) {
           const value =item.m_rvn
           MRvnsum +=value;
@@ -90,6 +110,19 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
         if('m_conv' in item){
           MConvsum +=item.m_conv;
         }
+        if('rvn' in item){
+          Rvnsum +=item.rvn;
+        }
+        if('odr' in item){
+          Odrsum +=item.odr;
+        }
+        if('rgr' in item){
+          Rgrsum +=item.rgr;
+        }
+        if('rvn_per_odr' in item){
+          Rposum +=item.rvn_per_odr;
+        }
+
       }
       //statData
       for(const item of datas[1] ){
@@ -116,7 +149,8 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
 
 
       //byData
-      //데이터 배열
+      //매체 데이터
+      //배열
       setMrvnArr(datas[0].map(item => item.m_rvn));
       setMCostArr(datas[0].map(item => item.m_cost));
       setMImprArr(datas[0].map(item => item.m_impr));
@@ -135,6 +169,22 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       //평균
       setAVGCPC(parseInt((MCPCsum/datas[0].map(item => item.m_cpc).length).toFixed(0))) 
       
+      //스크립트 데이터
+      //배열
+      setRoasArr(datas[0].map(item => parseFloat(((item.roas)*100).toFixed(0))));
+      setRpoArr(datas[0].map(item => parseFloat((item.rvn_per_odr).toFixed(0))));
+      setRgrArr(datas[0].map(item => parseFloat((item.rgr).toFixed(0))));
+      setRgrpmcArr(datas[0].map(item => parseFloat((item.rgr_per_m_click).toFixed(0))));
+      setOpmcArr(datas[0].map(item => parseFloat((item.odr_per_m_cost).toFixed(2))));
+      setRvnArr(datas[0].map(item => parseFloat((item.rvn).toFixed(0))));
+      setOdrArr(datas[0].map(item => item.odr));
+      
+      //합계
+      setTotalOdr(parseInt((Odrsum).toFixed(0)));
+      setTotalRvn(parseInt((Rvnsum).toFixed(0)));
+      setTotalRgr(parseInt((Rgrsum).toFixed(0)));
+      setTotalRpo(parseInt((Rposum).toFixed(0)));
+
 
 
       //statData
@@ -280,13 +330,62 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
       data: '',
     },
+    //스크립트
     {
       key: 16,
       title: renderTitle('총 주문수'),
+      value: totalOdr,
+      unit: "원",
+      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      data: OdrArr,
+    },
+    {
+      key: 17,
+      title: renderTitle('총 주문율'),
+      value: ((totalOdr/totalMClick)*100).toFixed(0),
+      unit: "%",
+      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      data: OpmcArr,
+    },
+    {
+      key: 18,
+      title: renderTitle('총 주문금액'),
+      value: totalRvn,
+      unit: "원",
+      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      data: RvnArr,
+    },
+    {
+      key: 19,
+      title: renderTitle('ROAS(%)'),
+      value: ((totalRvn/totalMCost)*100).toFixed(2),
+      unit: "%",
+      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      data: RoasArr,
+    },
+    {
+      key: 20,
+      title: renderTitle('총 구매단가'),
+      value: (totalRvn/totalOdr).toFixed(2),
+      unit: "원",
+      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      data: RpoArr,
+    },
+    {
+      key: 21,
+      title: renderTitle('총 회원가입수'),
+      value: totalRgr,
+      unit: "원",
+      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      data: RgrArr,
+    },
+    {
+      key: 22,
+      title: renderTitle('총 회원가입률'),
       value: (totalMRvn/MrvnArr.length).toFixed(0),
       unit: "원",
       percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
-      data: '',
+      data: RgrpmcArr,
     },
   ];
 
@@ -304,8 +403,19 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       setChartCardList([...chartCardList, newValue]);
     }
   };
-  const RenderValue = (value,unit)=>{
-    if(unit === '%'){
+  const RenderValue = (value,unit,key)=>{
+    if (key === 19) {
+      console.log('RendervalueRendervalueRendervalueRendervalue',value)
+      if (value > 0) {
+        const formattedValue = new Intl.NumberFormat(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(value);
+        return formattedValue;
+      } else {
+        return "0.00";
+      }
+    }else if(unit === '%'){
       if(value>0){
       return parseFloat(value).toFixed(2);
       }else{
@@ -403,7 +513,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
             <h3 className="ScoreChartTitle">{item.title}</h3>
             <div className="ScoreChartValueDiv">
               <span className="ScoreChartValue">
-                {RenderValue(item.value,item.unit)}
+                {RenderValue(item.value,item.unit,item.key)}
                 </span>
                 <span className="ScoreChartValue">
                 </span>

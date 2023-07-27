@@ -65,9 +65,10 @@ const Main = () => {
       return {
         ...item,
         m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
-        rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
         m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
         m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
+        rvn_per_odr: (item.rvn_per_odr + item.rvn_per_odr * 0.1).toFixed(0),
+
       };
     });
 
@@ -75,9 +76,9 @@ const Main = () => {
       return {
         ...item,
         m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
-        rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
         m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
         m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
+        rvn_per_odr: (item.rvn_per_odr + item.rvn_per_odr * 0.1).toFixed(0),
       };
     });
     setVatStatDateData([...updatedData])
@@ -332,18 +333,18 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
           return {
             ...item,
             m_rvn: item.m_rvn + item.m_rvn * 0.1,
-            rvn: item.rvn + item.rvn * 0.1,
             m_cost: item.m_cost + item.m_cost * 0.1,
             m_cpc: item.m_cpc + item.m_cpc * 0.1,
+            rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
           };
         });
         const updatedStatData = StatData.map((item) => {
           return {
             ...item,
             m_rvn: item.m_rvn + item.m_rvn * 0.1,
-            rvn: item.rvn + item.rvn * 0.1,
             m_cost: item.m_cost + item.m_cost * 0.1,
             m_cpc: item.m_cpc + item.m_cpc * 0.1,
+            rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
           };
         });
     

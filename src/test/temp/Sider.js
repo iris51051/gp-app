@@ -129,7 +129,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
         mode="inline"
         defaultSelectedKeys={["0"]}
         items={sideItems}
-        selectedKeys={(sideItems.find((item)=> item.value === currentPath)).key }
+        // selectedKeys={(sideItems.find((item)=> item.value === currentPath)).key}
         />
     </Sider>
         </>
