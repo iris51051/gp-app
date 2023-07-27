@@ -8,6 +8,7 @@ import Header from "./test/temp/Header";
 import Sider from "./test/temp/Sider";
 import Modules from "./test/temp/modules";
 import Main from "./test/temp/Main";
+import Apitest from "./test/temp/api-test/Apitest";
 import Working from "./test/temp/workingonit";
 import "./index.css";
 
@@ -40,14 +41,14 @@ const App = () => {
                 position: "relative",
                 top : 61,
                 left: 240,
-                width : '100%',
+                width: '87.4%',
                 zIndex: 0,
               }}
             >
               <Routes>
                 {selectedAd === '0'? <Route path="/" element={<Main/>}></Route> : <Route path="/" element={<Working/>}></Route>}
                 <Route path="/temp/modules" element={<Modules />}></Route>
-                <Route path="/temp/report-down" element={<Working/>}></Route>
+                <Route path="/temp/apitest" element={<Apitest/>}></Route>
                 <Route path="/temp/monitoring/alarm" element={<Working/>}></Route>
                 <Route path="/temp/monitoring/alarm-story"element={<Working/>}></Route>
                 <Route path="/temp/media/upload"element={<Working/>}></Route>

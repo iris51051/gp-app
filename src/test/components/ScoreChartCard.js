@@ -148,6 +148,14 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       setSAVGCPC(parseInt((SMCPCsum/datas[1].map(item => item.m_cpc).length).toFixed(0))) 
     }
   },[datas])
+
+  const renderTitle=(title)=>{
+    return( 
+       <div>
+        <span>{title}</span><span className="ico-script">s</span>
+      </div>
+    )  
+  }
   
   const score= [
     {
@@ -272,7 +280,14 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
       data: '',
     },
-
+    {
+      key: 16,
+      title: renderTitle('총 주문수'),
+      value: (totalMRvn/MrvnArr.length).toFixed(0),
+      unit: "원",
+      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      data: '',
+    },
   ];
 
   const defaultCheckedKeys = [1,2,3,4];
@@ -280,7 +295,8 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
 
 
   const HandleChangeValue = (checkedValues) => {
-    const newValue = score.find((item)=> item.title ===checkedValues).key
+    console.log("checkedValuescheckedValuescheckedValuescheckedValues",checkedValues)
+    const newValue = parseInt(checkedValues)
     if(defaultCheckedKeys.includes(newValue)){
     }else if (chartCardList.includes(newValue)) {
       setChartCardList(chartCardList.filter((value) => value !== newValue));
@@ -303,7 +319,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     }
     }
   }
-
+  console.log("chartCardListchartCardListchartCardListchartCardList",chartCardList)
 
   const ScoreCardSelector = {
     display : collapsed ? "none" : "flex",
@@ -344,6 +360,9 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       return <LineOutlined />
     }
   }
+  const radioStyle = {
+    fontSize: "12px", 
+  }
 
   return (
     <>
@@ -357,11 +376,11 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
                 <td>
                 {score.map((item) => (
                     <Radio.Button
+                      className="ScoreButton"
                       key={item.key}
-                      value={item.title}
+                      value={item.key}
                       checked={chartCardList.includes(item.key)}
                       onClick={(e) => HandleChangeValue(e.target.value)}
-                      style={{ userSelect: 'none' }}
                     >
                       {item.title}
                     </Radio.Button>

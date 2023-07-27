@@ -86,7 +86,6 @@ const CheckClick =(e)=>{
       <Menu >
         <Menu.Item key="search">
           <Input
-
             className="Searcher"
             placeholder="검색"
             value={searchValue}

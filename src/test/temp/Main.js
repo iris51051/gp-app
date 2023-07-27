@@ -439,7 +439,7 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
             대상&nbsp;
             <FontAwesomeIcon icon={faCircleChevronRight} />
           </Text>
-          <Adfilter options={AdData} onValueChange={adChange} />
+          <Adfilter className="test" options={AdData} onValueChange={adChange} />
           <AdSitefilter options={AdSiteData} onValueChange={adsiteChange} />
           <Mdfilter options={adProviders} onValueChange={mdChange} />
            <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>

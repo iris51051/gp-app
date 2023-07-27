@@ -102,13 +102,7 @@ const Gnb = ({ onValueChange }) => {
         <Header
         className="fixed-header"
           style={{
-            padding: 0,
             background: colorBgContainer,
-            display: "flex",
-            borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
-            width: "100%",
-            height: "61px",
-            zIndex: "2000",
           }}
         >
           <div className="top-left-part" ref={leftpartRef}>
