@@ -51,6 +51,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
 
 
     //statData
+    //매체 data
     //총합
     const [totalSMCost, settotalSMCost] =useState(0); //총광고비
     const [totalSMRvn, setTotalSMRvn] =useState(0);   //총매출액
@@ -60,7 +61,11 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
 
     //평균
     const [SAVGCPC, setSAVGCPC] = useState(0);
-
+    //스크립트 Data
+    const [totalSOdr, setTotalSOdr] = useState(0); //총 주문수
+    const [totalSRvn, setTotalSRvn] = useState(0); //총 주문금액
+    const [totalSRgr, setTotalSRgr] = useState(0); //총 회원가입수
+    const [totalSRpo, setTotalSRpo] = useState(0); //총 구매단가
 
     
   useEffect(()=>{
@@ -80,17 +85,24 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     let Rposum =0;  //총 구매단가
 
     //statdata
+    //매체
     let SMRvnsum=0;
     let SMCostsum =0;
     let SMImprsum =0;
     let SMClicksum =0;
     let SMCPCsum =0;
     let SMConvsum =0;
+    //스크립트
+    let SOdrsum =0;  //총 주문수
+    let SRvnsum =0;  //총 주문금액
+    let SRgrsum =0;  //총 회원가입수
+    let SRposum =0;  //총 구매단가
 
     if(datas.length>0){
 
       //bydata
       for(const item of datas[0] ){
+        //매체
         if('m_rvn' in item) {
           const value =item.m_rvn
           MRvnsum +=value;
@@ -110,6 +122,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
         if('m_conv' in item){
           MConvsum +=item.m_conv;
         }
+        //스크립트
         if('rvn' in item){
           Rvnsum +=item.rvn;
         }
@@ -126,6 +139,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       }
       //statData
       for(const item of datas[1] ){
+        //매체
         if('m_rvn' in item) {
           const value =item.m_rvn
           SMRvnsum +=value;
@@ -145,6 +159,19 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
         if('m_conv' in item){
           SMConvsum +=item.m_conv;
         }
+        //스크립트
+        if('rvn' in item){
+          SRvnsum +=item.rvn;
+        }
+        if('odr' in item){
+          SOdrsum +=item.odr;
+        }
+        if('rgr' in item){
+          SRgrsum +=item.rgr;
+        }
+        if('rvn_per_odr' in item){
+          SRposum +=item.rvn_per_odr;
+        }
       }
 
 
@@ -161,10 +188,10 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       setMConvArr(datas[0].map(item => item.m_conv));
       setAVGMconvArr(datas[0].map(item => parseFloat((item.m_crt).toFixed(2))));
       //합계
-      setTotalMRvn(parseInt((MRvnsum).toFixed(0)));
+      setTotalMRvn(MRvnsum);
       settotalMCost(parseInt((MCostsum).toFixed(0)))
-      setTotalMImpr(parseInt((MImprsum).toFixed(0)))
-      setTotalMClick(parseInt((MClicksum).toFixed(0)))
+      setTotalMImpr(MImprsum)
+      setTotalMClick(MClicksum)
       setTotalMConv((MConvsum))
       //평균
       setAVGCPC(parseInt((MCPCsum/datas[0].map(item => item.m_cpc).length).toFixed(0))) 
@@ -180,14 +207,15 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       setOdrArr(datas[0].map(item => item.odr));
       
       //합계
-      setTotalOdr(parseInt((Odrsum).toFixed(0)));
-      setTotalRvn(parseInt((Rvnsum).toFixed(0)));
-      setTotalRgr(parseInt((Rgrsum).toFixed(0)));
-      setTotalRpo(parseInt((Rposum).toFixed(0)));
+      setTotalOdr(Odrsum);
+      setTotalRvn(Rvnsum);
+      setTotalRgr(Rgrsum);
+      setTotalRpo(Rposum);
 
 
 
       //statData
+      //매체 data
       //합계
       setTotalSMRvn(parseInt((SMRvnsum).toFixed(0)));
       settotalSMCost(parseInt((SMCostsum).toFixed(0)))
@@ -196,6 +224,14 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       setTotalSMConv((SMConvsum))
       //평균
       setSAVGCPC(parseInt((SMCPCsum/datas[1].map(item => item.m_cpc).length).toFixed(0))) 
+      //스크립트 data
+      //합계
+      setTotalSOdr(SOdrsum);
+      setTotalSRvn(SRvnsum);
+      setTotalSRgr(SRgrsum);
+      setTotalSRpo(SRposum);
+
+
     }
   },[datas])
 
@@ -336,7 +372,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: renderTitle('총 주문수'),
       value: totalOdr,
       unit: "원",
-      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      percent: ((totalOdr-totalSOdr)/(totalSOdr)*100).toFixed(0),
       data: OdrArr,
     },
     {
@@ -344,7 +380,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: renderTitle('총 주문율'),
       value: ((totalOdr/totalMClick)*100).toFixed(0),
       unit: "%",
-      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      percent: (((totalOdr/totalMClick)-(totalSOdr/totalSMClick))/(totalSOdr/totalSMClick)*100).toFixed(0),
       data: OpmcArr,
     },
     {
@@ -352,7 +388,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: renderTitle('총 주문금액'),
       value: totalRvn,
       unit: "원",
-      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      percent: ((totalRvn-totalSRvn)/(totalSRvn)*100).toFixed(0),
       data: RvnArr,
     },
     {
@@ -360,7 +396,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: renderTitle('ROAS(%)'),
       value: ((totalRvn/totalMCost)*100).toFixed(2),
       unit: "%",
-      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      percent: (((totalRvn/totalMCost)-(totalSRvn/totalSMCost))/(totalSRvn/totalSMCost)*100).toFixed(0),
       data: RoasArr,
     },
     {
@@ -368,7 +404,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: renderTitle('총 구매단가'),
       value: (totalRvn/totalOdr).toFixed(2),
       unit: "원",
-      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      percent: (((totalRvn/totalOdr)-(totalSRvn/totalSOdr))/(totalSRvn/totalSOdr)*100).toFixed(0),
       data: RpoArr,
     },
     {
@@ -376,12 +412,12 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       title: renderTitle('총 회원가입수'),
       value: totalRgr,
       unit: "원",
-      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      percent: ((totalRgr-totalSRgr)/(totalSRgr)*100).toFixed(0),
       data: RgrArr,
     },
     {
       key: 22,
-      title: renderTitle('총 회원가입률'),
+      title: renderTitle('총 회원가입률?'),
       value: (totalMRvn/MrvnArr.length).toFixed(0),
       unit: "원",
       percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
