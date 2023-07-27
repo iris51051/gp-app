@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ECharts from "echarts-for-react";
-import { Radio, Select, Row, Col, Checkbox, Dropdown } from "antd";
+import { Radio } from "antd";
 
 
 
@@ -57,47 +57,11 @@ const LineChart = ({ colors, defaultData }) => {
     const handleGroupChange = (e) => {
       setSelectedGroup(e.target.value);
     };
-  
-    //name별 필터링
-    const handleChange = (value) => {
-      setSelectedName(value);
-    };
-  
-    const [options, setOptions] = useState({});
-//   const dataAverage=[
-//     {   group: "광고주",
-//         groupname: "평균 노출수",
-//         name: "노출수",
-//         value: [],
-//       },
-//     {   group: "광고주",
-//         groupname: "평균 클릭수",
-//         name: "클릭수",
-//         value: [],
-//       },
-//     {   group: "광고주",
-//         groupname: "평균 CTR",
-//         name: "CTR",
-//         value: [],
-//     },
-//     {   group: "매체",
-//         groupname: "평균 노출수",
-//         name: "노출수",
-//         value: [],
-//       },
-//     {   group: "매체",
-//         groupname: "평균 클릭수",
-//         name: "클릭수",
-//         value: [],
-//       },
-//     {   group: "매체",
-//         groupname: "평균 CTR",
-//         name: "CTR",
-//         value: [],
-//     }, 
-//   ]
 
-const [dataAverage, setDataAverage] = useState([]);
+    const [options, setOptions] = useState({});
+
+
+const [, setDataAverage] = useState([]);
 
 useEffect(() => {
   const calculateAverage = () => {
@@ -139,9 +103,12 @@ useEffect(() => {
       const updateOptions = {
         tooltip: {
           trigger: "axis",
-          axisPointer: {
-            type: "cross",
-          },
+        },
+        grid:{
+          top:10,
+          left:40,
+          right:40,
+          bottom:60,
         },
         color: colors,
         legend: {
@@ -157,8 +124,14 @@ useEffect(() => {
         },
         yAxis: {
           type: "value",
+          splitLine: {
+          lineStyle:{
+            type: "dashed",
+          }
+        },
           axisLine: {
             show: true,
+
           },
         },
         series: dataSeries(filteredData),
@@ -188,21 +161,13 @@ useEffect(() => {
           }}
         >
           <div>
-            <Radio.Group value={selectedGroup} onChange={handleGroupChange}>
-              <Radio.Button value="광고주">광고주</Radio.Button>
+            <Radio.Group value={selectedGroup} size='small' onChange={handleGroupChange}>
               <Radio.Button value="매체">매체</Radio.Button>
+              <Radio.Button value="갬페인">캠페인</Radio.Button>
+              <Radio.Button value="광고그룹">광고그룹</Radio.Button>
+              <Radio.Button value="광고유형">광고유형</Radio.Button>
+              <Radio.Button value="디바이스">디바이스</Radio.Button>
             </Radio.Group>
-            &nbsp;&nbsp;
-            <Select
-              value={selectedName}
-              className="selectBox"
-              options={[
-                { value: "노출수", label: "노출수" },
-                { value: "클릭수", label: "클릭수" },
-                { value: "CTR", label: "CTR" },
-              ]}
-              onChange={handleChange}
-            />
           </div>
           <div>
             <Radio.Group defaultValue="day" onChange={handlexDataChange}>
@@ -214,7 +179,7 @@ useEffect(() => {
         </div>
         <div >
         <ECharts
-        style={{height: "450px",width:'100%', marginLeft:'-110px'}}
+        style={{height: "450px"}}
             option={options}
             notMerge={true}
         />

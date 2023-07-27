@@ -1,3 +1,7 @@
+//client_seq = 광고주이름.
+//pfno : 사이트
+
+
 export const AdDataMore =[
     {
         "client_seq": "105580",

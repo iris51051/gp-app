@@ -120,7 +120,7 @@ const ChartScoreCardData = ({ data }) => {
  *
  * */
 
-const LineChart = ({ colors }) => {
+export const LineChart = ({ colors }) => {
   //선택된 기간에 대한 x축 data값 생성(일, 주, 월)
   const generateDates = (start, end, interval) => {
     const dates = [];

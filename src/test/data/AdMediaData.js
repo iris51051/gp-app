@@ -1,3 +1,5 @@
+//ad_provider로 구분.
+
 const adMediaData=[
     {
         "client_seq": "105580",

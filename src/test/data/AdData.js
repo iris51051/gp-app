@@ -1,4 +1,4 @@
-
+//client_seq ===value
 export const AdData =[
     {value:"29367" , name: '롯데푸드몰-PeopleDB™'},
     {value:"105580", name: '모바일미샤'},

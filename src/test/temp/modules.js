@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 import format from "date-fns/format";
 
-import  {PieChart,DynamicChart}  from "../components/moduleSample/ChartComponent";
+import  {PieChart,DynamicChart,LineChart}  from "../components/moduleSample/ChartComponent";
 import  {BLchart,BarChart,ScoreCard,ScoreCardChart }  from "../components/moduleSample/ChartScoreCard1";
 import  { Type1,Type2,Type3}  from "../components/moduleSample/DataGridComponent";
 import  { Adfilter,AdSitefilter,Mdfilter}  from "../components/moduleSample/filter";
@@ -96,7 +96,7 @@ const Modules = () => {
       <Type3/>
       <h2>4.차트</h2>
       <h4>A.라인차트</h4>
-      <BLchart colors={colors}/>
+      <LineChart colors={colors}/>
       <h4>B.파이차트</h4>
       <PieChart colors={colors}/>
       <h4>C.바차트</h4>
