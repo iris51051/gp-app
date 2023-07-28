@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Col, Tabs, Row} from "antd";
+import { Col, Tabs, Row,Space, Typography, Button,Switch,Tag,Radio} from "antd";
 import Breadcrumb from "../components/Breadcrumd";
 import { IoMdTimer } from "react-icons/io";
 import MainTab1 from "./main-tab/main-Tab1";
 import MainTab2 from "./main-tab/main-Tab2";
-import { Space, Typography, Button,Switch,Tag,Radio } from "antd";
 import {PlusSquareOutlined,MinusSquareOutlined} from '@ant-design/icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
@@ -46,9 +45,9 @@ const Main = () => {
     { title: "대시보드" },
   ];
   
-  const [adList, setAdList] = useState([]);
-  const [adsiteList, setAdStieList] = useState([]);
-  const [mdList, setMdList] = useState([]);
+  const [adFilter, setAdFilter] = useState([]);
+  const [siteFilter, setSiteFilter] = useState([]);
+  const [mdFilter, setMdFilter] = useState([]);
   const [collapsed1, setCollapsed1] = useState(false);
   const [collapsed2, setCollapsed2] = useState(false);
   const [vatValue, setVatValue] = useState(true);
@@ -58,6 +57,14 @@ const Main = () => {
   const [VatByDateData, setVatByDateData] = useState([]);
   const [VatStatDateData, setVatStatDateData]= useState([]);
   const [datas, setDatas] = useState([])
+  const defaultFilterOptions = {
+    AdData: AdData,
+    AdSiteData: AdSiteData,
+    adMediaData: adMediaData,
+    vatValue: vatValue,
+    Datas : datas
+  };
+  const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
   
   useEffect(() => {
    
@@ -65,6 +72,7 @@ const Main = () => {
       return {
         ...item,
         m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
+        rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
         m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
         m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
         rvn_per_odr: (item.rvn_per_odr + item.rvn_per_odr * 0.1).toFixed(0),
@@ -76,6 +84,7 @@ const Main = () => {
       return {
         ...item,
         m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
+        rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
         m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
         m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
         rvn_per_odr: (item.rvn_per_odr + item.rvn_per_odr * 0.1).toFixed(0),
@@ -93,14 +102,6 @@ const Main = () => {
   const coll2Change = () => {
     setCollapsed2(!collapsed2);
   };
-  const defaultFilterOptions = {
-    AdData: AdData,
-    AdSiteData: AdSiteData,
-    adMediaData: adMediaData,
-    vatValue: vatValue,
-    Datas : datas
-  };
-  const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
 
 
   // const adoptions = [
@@ -198,10 +199,10 @@ const Main = () => {
  
   const updateFilter = () => {   
 
-    // Filter the AdData based on the selected adList names
-    const filteredAdData = AdData.filter((item) => adList.includes(item.name));
-    const filteredAdSiteData = AdSiteData.filter((item) => adsiteList.includes(item.value));
-    const filteredadMediaData =adMediaData.filter((item)=> mdList.includes(item.ad_provider));
+    // Filter the AdData based on the selected adFilter names
+    const filteredAdData = AdData.filter((item) => adFilter.includes(item.name));
+    const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
+    const filteredadMediaData =adMediaData.filter((item)=> mdFilter.includes(item.ad_provider));
     
     // You can use the spread operator to update the filterOptions state
     setFilterOptions((prevOptions) => ({
@@ -217,18 +218,18 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
 
   const adChange = useCallback((value) => {
     const AdfilteredValue = AdData.filter((item) => value.includes(item.value)).map((item) => item.name);
-      setAdList(AdfilteredValue);
+      setAdFilter(AdfilteredValue);
   }, []);
 
   const mdChange = useCallback((value) => {
     const MdfilteredValue = value.filter((option) => option !== "selectAll");
-    setMdList(MdfilteredValue);
+    setMdFilter(MdfilteredValue);
   }, []);
   const adsiteChange = useCallback((value) => {
     const AdSitefilteredValue = value.filter(
       (option) => option !== "selectAll"
     );
-      setAdStieList(AdSitefilteredValue);
+      setSiteFilter(AdSitefilteredValue);
   }, []);
   const DateChange = useCallback((value) => {
 
@@ -333,6 +334,7 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
           return {
             ...item,
             m_rvn: item.m_rvn + item.m_rvn * 0.1,
+            rvn: item.rvn + item.rvn * 0.1,
             m_cost: item.m_cost + item.m_cost * 0.1,
             m_cpc: item.m_cpc + item.m_cpc * 0.1,
             rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
@@ -342,6 +344,7 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
           return {
             ...item,
             m_rvn: item.m_rvn + item.m_rvn * 0.1,
+            rvn: item.rvn + item.rvn * 0.1,
             m_cost: item.m_cost + item.m_cost * 0.1,
             m_cpc: item.m_cpc + item.m_cpc * 0.1,
             rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
@@ -421,89 +424,88 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
         </div>
       </div>
       <div>
-      <div className="WhiteBox">
-        <div className="FilterSelDiv">
-          <h6>필터 선택</h6>
-          <Button
-          className="CustomButton"
-              type='text'
-              size="large"
-              icon={collapsed1 ? <PlusSquareOutlined /> :<MinusSquareOutlined />}
-              onClick={coll1Change}
-            />
-        </div>
-      <div
-      className="FilterDiv"
-       style={filterDivStyle}>
-        <Space size="large">
-          <Text strong level={4}>
-            대상&nbsp;
-            <FontAwesomeIcon icon={faCircleChevronRight} />
-          </Text>
-          <Adfilter className="test" options={AdData} onValueChange={adChange} />
-          <AdSitefilter options={AdSiteData} onValueChange={adsiteChange} />
-          <Mdfilter options={adProviders} onValueChange={mdChange} />
-           <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>
-        </Space>
-        <br></br>
-        <div style={{paddingTop:"20px"}}>
-        <Space size="large">
-          <Text strong level={4}>
-            기간&nbsp;
-            <FontAwesomeIcon icon={faCircleChevronRight} />
-          </Text>
-          <Calendar onValueChange={DateChange}/>
-          <Button className=""type="primary" onClick={updateFilter}>확인</Button>
-        </Space>
-
-        </div>
-      </div>
-
-      <div className="FilterBox">
-        <div style={{display:'flex', alignItems:'center'}}>
-          <span style={{fontSize:"12px"}}>광고주 :&nbsp;</span>
-          <div className="AdFilterTagsDiv">
-            {filterOptions.AdData.map((item) => (
-              <Tag className="FilterTags" key={item.value}>{item.name}</Tag>
-            ))}
+        <div className="WhiteBox">
+          <div className="FilterSelDiv">
+            <h6>필터 선택</h6>
+            <Button
+            className="CustomButton"
+                type='text'
+                size="large"
+                icon={collapsed1 ? <PlusSquareOutlined /> :<MinusSquareOutlined />}
+                onClick={coll1Change}
+              />
           </div>
-          <span>매체 :&nbsp;</span>
-          {handleRenderTag()}
-        </div>
-      </div>
-      </div>
-      <div className="WhiteBox">
-        <div className="PerformanceDiv">
-          <h6>성과 지표</h6>
-          <Button
-          className="CustomButton"
-              type='text'
-              size="large"
-              icon={collapsed2 ? <PlusSquareOutlined /> :<MinusSquareOutlined />}
-              onClick={coll2Change}
-            />
-         </div>
-           <ScoreCardChartComp collapsed={collapsed2} datas={filterOptions.Datas}/>
-      </div>
-        <Tabs className="MainTab" type="card">
-          <TabPane  tab="통합광고 대시보드" key="1">
-            <div className="WhiteBox">
-              <div style={{padding:'20px'}}>
-              <MainTab1/>
+          <div
+            className="FilterDiv"
+            style={filterDivStyle}>
+            <Space size="large">
+              <Text strong level={4}>
+                대상&nbsp;
+                <FontAwesomeIcon icon={faCircleChevronRight} />
+              </Text>
+              <Adfilter className="test" options={AdData} onValueChange={adChange} />
+              <AdSitefilter options={AdSiteData} onValueChange={adsiteChange} />
+              <Mdfilter options={adProviders} onValueChange={mdChange} />
+              <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>
+            </Space>
+            <br/>
+            <div style={{paddingTop:"20px"}}>
+              <Space size="large">
+                <Text strong level={4}>
+                  기간&nbsp;
+                  <FontAwesomeIcon icon={faCircleChevronRight} />
+                </Text>
+                <Calendar onValueChange={DateChange}/>
+                <Button className=""type="primary" onClick={updateFilter}>확인</Button>
+              </Space>
+            </div>
+          </div>
+
+          <div className="FilterBox">
+            <div style={{display:'flex', alignItems:'center'}}>
+              <span style={{fontSize:"12px"}}>광고주 :&nbsp;</span>
+              <div className="AdFilterTagsDiv">
+                {filterOptions.AdData.map((item) => (
+                  <Tag className="FilterTags" key={item.value}>{item.name}</Tag>
+                ))}
               </div>
+              <span>매체 :&nbsp;</span>
+              {handleRenderTag()}
             </div>
-          </TabPane>
-          <TabPane   tab="광고주/매체사별 요약 대시보드" key="2">
-           {/*
-            <div className="WhiteBox">
-              <MainTab2></MainTab2> 
+          </div>
+        </div>
+          <div className="WhiteBox">
+            <div className="PerformanceDiv">
+              <h6>성과 지표</h6>
+              <Button
+              className="CustomButton"
+                  type='text'
+                  size="large"
+                  icon={collapsed2 ? <PlusSquareOutlined /> :<MinusSquareOutlined />}
+                  onClick={coll2Change}
+                />
             </div>
-              */}
-          </TabPane>
-        </Tabs>
-        </div>
-        </div>
-    </>
+              <ScoreCardChartComp collapsed={collapsed2} datas={filterOptions.Datas}/>
+          </div>
+          <Tabs className="MainTab" type="card">
+            <TabPane  tab="통합광고 대시보드" key="1">
+              <div className="WhiteBox">
+                <div style={{padding:'20px'}}>
+                <MainTab1/>
+                </div>
+              </div>
+            </TabPane>
+            <TabPane   tab="광고주/매체사별 요약 대시보드" key="2">
+            {/*
+              <div className="WhiteBox">
+                <MainTab2></MainTab2> 
+              </div>
+                */}
+            </TabPane>
+          </Tabs>
+      </div>
+    </div>
+  </>
   );
 };
 export default Main;

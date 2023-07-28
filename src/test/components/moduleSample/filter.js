@@ -78,9 +78,7 @@ const modifiedOptions = options.map((option) => ({
   label: option.name,
   value: option.value,
 }));
-const CheckClick =(e)=>{
-  e.preventDefault()
-}
+
   const menu = (
     <div className="FilterDiv">
       <Menu>
@@ -95,7 +93,6 @@ const CheckClick =(e)=>{
         </Menu.Item>
         {!searchValue && (
           <Menu.Item key="selectAll">
-          {/* <Menu.Item key="selectAll" > */}
             <Checkbox
               style={{
                   display: "flex",

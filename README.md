@@ -42,7 +42,9 @@ rsuite
 
 npm i rsuite --save
 
-yarn add rsuite
+## 날짜 변환
+
+npm install date-fns
 
 ## Chart
 
@@ -62,7 +64,7 @@ npm install xlsx
 
 npm install react-router-dome
 
-## 플러그인 추가
+## 라이브러리 추가
 
 npm install react-scripts
 npm i -g lodash
@@ -76,4 +78,5 @@ npm install highcharts-react-official
 npm i echarts-for-react
 npm install xlsx
 npm install react-router-dome
+npm install date-fns
 

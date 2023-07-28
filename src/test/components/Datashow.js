@@ -16,11 +16,11 @@ export const Datashow = () => (
       options={[
         {
           value: "1",
-          label: "스크립트 전환 데이터 보기",
+          label: "스크립트 전환 데이터",
         },
         {
           value: "2",
-          label: "매체 전환 데이터 보기",
+          label: "매체 전환 데이터 ",
         },
       ]}
     />

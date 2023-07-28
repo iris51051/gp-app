@@ -15,9 +15,12 @@ import AdData from "../data/AdData";
 const { Sider } = Layout;
 
 const Lnb = ({ collapsed ,onValueChange}) => {
+  // const [data,setData] = useState();
+
   const location = useLocation();
   const currentPath = location.pathname;
   console.log('currentPath',currentPath)
+  
   const sideItems =[{
     key: "0",
     icon: <UserOutlined />,
@@ -39,18 +42,24 @@ const Lnb = ({ collapsed ,onValueChange}) => {
   {
     key: "3",
     icon: <UploadOutlined />,
+    value : "/temp/report/Exam",
+    label: <Link to="/temp/report/Exam">리포트</Link>,
+  },
+  {
+    key: "4",
+    icon: <UploadOutlined />,
     value : "/temp/monitoring/alarm",
     label: <Link to="/temp/monitoring/alarm">모니터링 알람</Link>,
     children: [
       {
-        key: "3-1",
+        key: "4-1",
         value : "/temp/monitoring/alarm-setting",
         label: (
           <Link to="/temp/monitoring/alarm-setting">알람 설정</Link>
           ),
         },
       {
-        key: "3-2",
+        key: "4-2",
         value : "/temp/monitoring/alarm-story",
         label: (
           <Link to="/temp/monitoring/alarm-story">
@@ -59,12 +68,6 @@ const Lnb = ({ collapsed ,onValueChange}) => {
         ),
       },
     ],
-  },
-  {
-    key: "4",
-    icon: <UploadOutlined />,
-    value : "/temp/media/upload",
-    label: <Link to="/temp/media/upload">매체 파일 업로드</Link>,
   },
   {
     key: "5",
@@ -82,20 +85,42 @@ const Lnb = ({ collapsed ,onValueChange}) => {
   ]
   const [selectedAd,setSelectedAd] = useState('0');
 
+
   const Adselect = () => {
 
+    let data;
+    let defaultValue;
+    
+    if (location.pathname === "/") {
+      data = [
+        { label: "전체광고주", value: "0" },
+        ...AdData.map((item) => ({ label: item.name, value: item.value })),
+      ];
+      defaultValue = "0"; // Set the default value to "0" if the current path is "/"
+    } else {
+      data = AdData.map((item) => ({ label: item.name, value: item.value }));
+      const ad = AdData.find((item) => item.value === location.pathname.split("/")[2]);
+      defaultValue = ad ? ad.value : ""; // Find the corresponding ad value in AdData based on the current path
+    }
+    console.log("defalut 설정 준비 중",AdData[0].value, data[0].value, AdData[0].value===data[0].value)
+    console.log("defalut 설정 준비 중",data)
+    console.log("defalut 설정 준비 중",location.pathname ==='/')
     const adSelect =(data)=>{
       setSelectedAd(data);
       onValueChange(data)
     }
-    const data =[{label:'전체광고주', value:'0'},...AdData.map((item) => ({ label: item.name, value: item.value }))];
-  
     return (
-    // <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-    // <SelectPicker data={data} open={isMenuOpen} style={{ width: 224 }} cleanable={false} defaultValue={0} value={selectedAd} onChange={adSelect}/>
-    // </div>
-    <SelectPicker data={data} style={{ width: 224 }} cleanable={false} defaultValue={0} value={selectedAd} onChange={adSelect}/>
-    )
+      <>
+          <SelectPicker
+            data={data}
+            style={{ width: 224 }}
+            cleanable={false}
+            defaultValue={defaultValue}
+            value={selectedAd}
+            onSelect={adSelect}
+          />
+      </>
+    );
   };
   useEffect(() => {
     onValueChange(selectedAd);

@@ -11,6 +11,7 @@ import Main from "./test/temp/Main";
 import Apitest from "./test/temp/api-test/Apitest";
 import Working from "./test/temp/workingonit";
 import "./index.css";
+import ReportExam from './test/temp/Report/Exam';
 
 const { Content } = Layout;
 
@@ -35,7 +36,7 @@ const App = () => {
           <Layout >
             <Content
               style={{
-                background: '#edf1f5',
+                background: 'white',//content 배경 색
                 justifyContent: "space-between",
                 alignItems: "center",
                 position: "relative",
@@ -51,10 +52,10 @@ const App = () => {
                 <Route path="/temp/apitest" element={<Apitest/>}></Route>
                 <Route path="/temp/monitoring/alarm" element={<Working/>}></Route>
                 <Route path="/temp/monitoring/alarm-story"element={<Working/>}></Route>
-                <Route path="/temp/media/upload"element={<Working/>}></Route>
+                <Route path="/temp/report/Exam"element={<ReportExam/>}></Route>
                 <Route path="/temp/media/export"element={<Working/>}></Route>
                 <Route path="/temp/media/download"element={<Working/>}></Route>
-                <Route path="*"element={<Working/>}></Route>
+
               </Routes>
             </Content>
 

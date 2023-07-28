@@ -34,12 +34,12 @@ const Calendar = ({onValueChange}) => {
     }
   }, [startDate, endDate]);
   const ranges = [
-    {
-      label: "오늘",
-      value: [new Date(), new Date()],
-      placement: "left",
-      closeOverlay: false,
-    },
+    // {
+    //   label: "오늘",
+    //   value: [new Date(), new Date()],
+    //   placement: "left",
+    //   closeOverlay: false,
+    // },
     {
       label: "어제",
       value: [addDays(new Date(), -1), addDays(new Date(), -1)],
@@ -149,7 +149,7 @@ const Calendar = ({onValueChange}) => {
         onClean={resetRange}
         editable={false}
         onClose={CloseCal}
-        placement="bottomStart"
+        placement="auto"
         disabledDate={disabledAfterToday}
       />
     </CustomProvider>

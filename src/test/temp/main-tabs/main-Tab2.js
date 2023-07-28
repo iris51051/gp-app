@@ -11,9 +11,9 @@ const { Text } = Typography;
 
 const MainTad2 = () => {
   const dispop = 10;
-  const [adList, setAdList] = useState([]);
-  const [mdList, setMdList] = useState([]);
-  const [adsiteList, setAdStieList] = useState([]);
+  const [adFilter, setAdFilter] = useState([]);
+  const [mdFilter, setMdFilter] = useState([]);
+  const [siteFilter, setSiteFilter] = useState([]);
   // 광고주 선택 옵션
   const adoptions = [
     { label: "롯데푸드몰-PeopleDB", value: "롯데푸드몰-PeopleDB" },
@@ -60,16 +60,16 @@ const MainTad2 = () => {
 
   const adChange = (value) => {
     const AdfilteredValue = value.filter((option) => option !== "selectAll");
-    //제거하지 말것 selectAll 삭제 후 setAdList에 추가할 때 무한 루프에 들어감.
-    if (!isEqual(AdfilteredValue, adList)) {
-      setAdList(AdfilteredValue);
+    //제거하지 말것 selectAll 삭제 후 setAdFilter에 추가할 때 무한 루프에 들어감.
+    if (!isEqual(AdfilteredValue, adFilter)) {
+      setAdFilter(AdfilteredValue);
     }
   };
   const mdChange = (value) => {
     const MdfilteredValue = value.filter((option) => option !== "selectAll");
-    //제거하지 말것 selectAll 삭제 후 setAdList에 추가할 때 무한 루프에 들어감.
-    if (!isEqual(MdfilteredValue, mdList)) {
-      setMdList(MdfilteredValue);
+    //제거하지 말것 selectAll 삭제 후 setAdFilter에 추가할 때 무한 루프에 들어감.
+    if (!isEqual(MdfilteredValue, mdFilter)) {
+      setMdFilter(MdfilteredValue);
     }
   };
 
@@ -77,9 +77,9 @@ const MainTad2 = () => {
     const AdSitefilteredValue = value.filter(
       (option) => option !== "selectAll"
     );
-    //제거하지 말것 selectAll 삭제 후 setAdList에 추가할 때 무한 루프에 들어감.
-    if (!isEqual(AdSitefilteredValue, adsiteList)) {
-      setAdStieList(AdSitefilteredValue);
+    //제거하지 말것 selectAll 삭제 후 setAdFilter에 추가할 때 무한 루프에 들어감.
+    if (!isEqual(AdSitefilteredValue, siteFilter)) {
+      setSiteFilter(AdSitefilteredValue);
     }
   };
 
@@ -111,22 +111,22 @@ const MainTad2 = () => {
         <h4 className="selected-analysis-targer">선택한 분석 대상</h4>
         <div className="selected-analysis-targer-div">
           <span className="selected-analysis-targer-span">광고주 </span>
-          {adList.length <= dispop ? (
-            <p className="selected-analysis-targer-p">{adList.join(" / ")}</p>
+          {adFilter.length <= dispop ? (
+            <p className="selected-analysis-targer-p">{adFilter.join(" / ")}</p>
           ) : (
             <>
-              <p>{`${adList.slice(0, dispop).join(" / ")} 외 ${
-                adList.length - dispop
+              <p>{`${adFilter.slice(0, dispop).join(" / ")} 외 ${
+                adFilter.length - dispop
               }개`}</p>
             </>
           )}
           <span className="selected-analysis-targer-span">매체 </span>
-          {mdList.length <= dispop ? (
-            <p className="selected-analysis-targer-p">{mdList.join(", ")}</p>
+          {mdFilter.length <= dispop ? (
+            <p className="selected-analysis-targer-p">{mdFilter.join(", ")}</p>
           ) : (
             <>
-              <p>{`${mdList.slice(0, dispop).join(" / ")} 외 ${
-                mdList.length - dispop
+              <p>{`${mdFilter.slice(0, dispop).join(" / ")} 외 ${
+                mdFilter.length - dispop
               }개`}</p>
             </>
           )}

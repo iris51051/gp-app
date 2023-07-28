@@ -18,9 +18,9 @@ import adMediaData from "../data/AdMediaData";
 
 const { Text } = Typography;
 const Modules = () => {
-  const [adList, setAdList] = useState([]);
-  const [adsiteList, setAdStieList] = useState([]);
-  const [mdList, setMdList] = useState([]);
+  const [adFilter, setAdFilter] = useState([]);
+  const [siteFilter, setSiteFilter] = useState([]);
+  const [mdFilter, setMdFilter] = useState([]);
   const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
 
   const colors = [
@@ -39,18 +39,18 @@ const Modules = () => {
 
   const adChange = useCallback((value) => {
     const AdfilteredValue = value.filter((item) => value.includes(item.value)).map((item) => item.name);
-      setAdList(AdfilteredValue);
+      setAdFilter(AdfilteredValue);
   }, []);
 
   const mdChange = useCallback((value) => {
     const MdfilteredValue = value.filter((option) => option !== "selectAll");
-    setMdList(MdfilteredValue);
+    setMdFilter(MdfilteredValue);
   }, []);
   const adsiteChange = useCallback((value) => {
     const AdSitefilteredValue = value.filter(
       (option) => option !== "selectAll"
     );
-      setAdStieList(AdSitefilteredValue);
+      setSiteFilter(AdSitefilteredValue);
   }, []);
 
   return (

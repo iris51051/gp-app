@@ -14,6 +14,5 @@ export const AdData =[
     {value:"106816", name: '(주)교육지대'},
     {value:"106817", name: '미샤 에이블씨엔씨'},
     {value:"106839", name: '안성재_페이스북'},
-
 ]
 export default AdData;

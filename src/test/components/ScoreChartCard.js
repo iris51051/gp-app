@@ -386,7 +386,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     {
       key: 18,
       title: renderTitle('총 주문금액'),
-      value: totalRvn,
+      value: (totalRvn).toFixed(0),
       unit: "원",
       percent: ((totalRvn-totalSRvn)/(totalSRvn)*100).toFixed(0),
       data: RvnArr,
@@ -402,7 +402,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     {
       key: 20,
       title: renderTitle('총 구매단가'),
-      value: (totalRvn/totalOdr).toFixed(2),
+      value: (totalRvn/totalOdr).toFixed(0),
       unit: "원",
       percent: (((totalRvn/totalOdr)-(totalSRvn/totalSOdr))/(totalSRvn/totalSOdr)*100).toFixed(0),
       data: RpoArr,
@@ -411,16 +411,16 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       key: 21,
       title: renderTitle('총 회원가입수'),
       value: totalRgr,
-      unit: "원",
+      unit: "",
       percent: ((totalRgr-totalSRgr)/(totalSRgr)*100).toFixed(0),
       data: RgrArr,
     },
     {
       key: 22,
       title: renderTitle('총 회원가입률?'),
-      value: (totalMRvn/MrvnArr.length).toFixed(0),
-      unit: "원",
-      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      value: (totalRgr/totalMClick).toFixed(0),
+      unit: "%",
+      percent: (((totalRgr/totalMClick)-(totalSRgr/totalSMClick))/(totalSRgr/totalSMClick*100)).toFixed(0),
       data: RgrpmcArr,
     },
   ];

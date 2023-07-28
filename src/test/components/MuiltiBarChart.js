@@ -1,9 +1,9 @@
 import React from "react";
 import ECharts from "echarts-for-react";
 
-export const MultipleBarChart = ({ colors, adList, adoptions }) => {
+export const MultipleBarChart = ({ colors, adFilter, adoptions }) => {
   const filteredAdoptions = adoptions.filter((adoption) =>
-  adList.includes(adoption.value)
+  adFilter.includes(adoption.value)
 );
 const sourceArray = [["product", "총 광고비", "매출액", "ROAS(%)"]];
 filteredAdoptions.forEach((adoption) => {
@@ -123,7 +123,7 @@ series: [
   };
   return (
     <>
-    {adList.length >0 && sourceArray.length >1?
+    {adFilter.length >0 && sourceArray.length >1?
     <ECharts
       style={{ height: "350px", width: '100%' }}
       option={options}

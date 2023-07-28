@@ -180,3 +180,16 @@ export const AdSitefilter = (props) => (
 export const Mdfilter = (props) => (
   <DropdownFilter name="광고매체사" {...props} />
 );
+export const AdPlatform = (props) => (
+  <DropdownFilter name="광고 플랫폼" {...props} />
+);
+export const AdCampaign = (props) => (
+  <DropdownFilter name="캠페인" {...props} />
+);
+export const AdMaterial = (props) => (
+  <DropdownFilter name="소재유형" {...props} />
+);
+export const AdDevice = (props) => (
+  <DropdownFilter name="디바이스" {...props} />
+);
+

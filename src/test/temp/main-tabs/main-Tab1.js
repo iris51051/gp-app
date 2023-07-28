@@ -17,9 +17,9 @@ const { Text } = Typography;
 
 const MainTab1 = () => {
   const dispop = 10;
-  const [adList, setAdList] = useState([]);
-  const [adsiteList, setAdStieList] = useState([]);
-  const [mdList, setMdList] = useState([]);
+  const [adFilter, setAdFilter] = useState([]);
+  const [siteFilter, setSiteFilter] = useState([]);
+  const [mdFilter, setMdFilter] = useState([]);
   
   const [filterOptions, setFilterOptions] = useState([]);
 
@@ -164,16 +164,16 @@ const MainTab1 = () => {
     const AdfilteredValue = value.filter((option) => option !== "selectAll");
     //제거하지 말것 무한 루프에 들어감.
     //useMemo를 사용하면 해결이 가능하지만 코드가 길어짐.
-    if (!isEqual(AdfilteredValue, adList)) {
-      setAdList(AdfilteredValue);
+    if (!isEqual(AdfilteredValue, adFilter)) {
+      setAdFilter(AdfilteredValue);
     }
   };
   const mdChange = (value) => {
     const MdfilteredValue = value.filter((option) => option !== "selectAll");
     //제거하지 말것 무한 루프에 들어감.
     //useMemo를 사용하면 해결이 가능하지만 코드가 길어짐.
-    if (!isEqual(MdfilteredValue, mdList)) {
-      setMdList(MdfilteredValue);
+    if (!isEqual(MdfilteredValue, mdFilter)) {
+      setMdFilter(MdfilteredValue);
     }
   };
 
@@ -183,12 +183,12 @@ const MainTab1 = () => {
     );
     //제거하지 말것 무한 루프에 들어감.
     //useMemo를 사용하면 해결이 가능하지만 코드가 길어짐.
-    if (!isEqual(AdSitefilteredValue, adsiteList)) {
-      setAdStieList(AdSitefilteredValue);
+    if (!isEqual(AdSitefilteredValue, siteFilter)) {
+      setSiteFilter(AdSitefilteredValue);
     }
   };
   const updateFilter =()=>{
-    setFilterOptions([adList, adsiteList,mdList ]);
+    setFilterOptions([adFilter, siteFilter,mdFilter ]);
   }
   const colors = [
     "#4180ec",
@@ -245,16 +245,16 @@ const MainTab1 = () => {
         <h4 className="selected-analysis-targer">선택한 분석 대상</h4>
         <div className="selected-analysis-targer-div">
           <span className="selected-analysis-targer-span">광고사 </span>
-          {adList.length <= dispop ? (
+          {adFilter.length <= dispop ? (
         <div className="selected-analysis-target-p">
-          {adList.map((item) => (
+          {adFilter.map((item) => (
             <Tag key={item}>{item}</Tag>
           ))}
         </div>
       ) : (
         <>
           <div className="selected-analysis-targer-p">
-            {adList.slice(0, dispop).map((item) => (
+            {adFilter.slice(0, dispop).map((item) => (
               <Tag key={item}>{item}</Tag>
             ))}
             <span>...</span>
@@ -262,16 +262,16 @@ const MainTab1 = () => {
         </>
       )}
           <span className="selected-analysis-targer-span">매체사 </span>
-          {mdList.length <= dispop ? (
+          {mdFilter.length <= dispop ? (
         <div className="selected-analysis-target-p">
-          {mdList.map((item) => (
+          {mdFilter.map((item) => (
             <Tag key={item}>{item}</Tag>
           ))}
         </div>
       ) : (
         <>
           <div className="selected-analysis-targer-p">
-            {mdList.slice(0, dispop).map((item) => (
+            {mdFilter.slice(0, dispop).map((item) => (
               <Tag key={item}>{item}</Tag>
             ))}
             <span>...</span>
@@ -300,7 +300,7 @@ const MainTab1 = () => {
       </div>
       <div className="MultipleBarChartDiv">
         <h4>광고주별 광고 성과</h4>
-        <MultipleBarChart colors={colors} adoptions={adoptions} adList={adList}/>
+        <MultipleBarChart colors={colors} adoptions={adoptions} adFilter={adFilter}/>
       </div>
       <div>
       <AdResultTable/>
