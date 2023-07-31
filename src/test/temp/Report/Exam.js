@@ -72,6 +72,8 @@ const ExamReport =({colors})=>{
     ];
     
 
+
+    
       //siteFilter에 들어갈 데이터들의 중복 검사.
     useEffect(() => {
         const uniqueSiteValues = new Set(A_bizDetail.map((detail) => detail.pfno));
