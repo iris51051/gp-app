@@ -3,6 +3,7 @@ import ECharts from "echarts-for-react";
 import { Radio, Select } from "antd";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import { EmptyPieChart } from "./EmptyChart";
 
 /**
  ******************************* ScoreCart 숫자형 ******************************
@@ -390,21 +391,7 @@ export const LineChart = ({ colors }) => {
  *
  * */
 
-export const PieChart = ({ colors }) => {
-  //실제 데이터 (이름, 값)
-  const data = [
-    { value: 1048, name: "서울특별시" },
-    { value: 735, name: "부산광역시" },
-    { value: 580, name: "경기도" },
-    { value: 484, name: "경상남도" },
-    { value: 620, name: "경상북도" },
-    { value: 378, name: "대구광역시" },
-    { value: 921, name: "충청남도" },
-    { value: 513, name: "대전광역시" },
-    { value: 666, name: "충청북도" },
-    { value: 100, name: "기타" },
-  ];
-
+export const PieChart = ({ colors , data }) => {
   //data이름이 기타일 경우 지정색 고정
   const ColoredData = data.map((item) => ({
     ...item,
@@ -470,9 +457,12 @@ export const PieChart = ({ colors }) => {
 
   return (
     <div className="pieChartDiv" style={{width: "100%",height:"100%", marginLeft:'-50px'}}>
+      {data.length >0 ?
         <ECharts
           option={options}
         />
+        : <EmptyPieChart/>
+      }
     </div>
   );
 };

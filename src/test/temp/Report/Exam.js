@@ -24,21 +24,34 @@ import {PieChart} from "../../components/ChartComponent";
 const { Text } = Typography;
 const ExamReport =({colors})=>{
     const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
-    const [vatValue, setVatValue] = useState(true);
-    const [VatStatDateData, setVatStatDateData]= useState([]);
-    const [datas, setDatas] = useState([])
+    const [vatValue, setVatValue] = useState(true);   //vat포함 여부
+    const [datas, setDatas] = useState([])      //날자별 데이터
 
-    const [siteFilter, setSiteFilter] = useState([]);
-    const [mdFilter, setMdFilter] = useState([]);
-    const [dataType, setDataType] =useState();
+    const [siteFilter, setSiteFilter] = useState([]); //사이트
+    const [mdFilter, setMdFilter] = useState([]);     //광고매체사
+    const [dataType, setDataType] =useState();        //스크립트,매체
     
-    const [pfFilter, setPfFilter] = useState([]);
-    const [campFilter, setCampFilter] = useState([]);
-    const [adMtFilter, setAdMtFilter] = useState([]);
-    const [adDivFilter, setAdDivFilter] = useState([]);
-    const [data,setData] = useState([]);
+    const [pfFilter, setPfFilter] = useState([]);       //플랫폼
+    const [campFilter, setCampFilter] = useState([]);   //캠페인
+    const [adMtFilter, setAdMtFilter] = useState([]);   //소재
+    const [adDevFilter, setAdDevFilter] = useState([]); //디바이스
+    const [data,setData] = useState([]);                //총괄 데이터 
+
+  // console.log(pfFilter,campFilter,adMtFilter,adDevFilter,siteFilter,mdFilter,dataType)
+  // console.log('사이트 선택',siteFilter)
+  // console.log("캠페인 선택",campFilter)
+  // console.log('소재유형',adMtFilter)
+  // console.log('디바이스',adDevFilter)
+  // console.log('플랫폼',pfFilter)
+  // console.log('광고매체사',mdFilter)
+  // console.log('스크립트',dataType)
+  // console.log('Datas',datas)
 
 
+
+  
+
+    //확인 키를 눌렀을 때만 filter 적용 시킬 경우에 사용 해야할 부분
     const defaultFilterOptions = {
         AdSiteData: AdSiteData,
         adMediaData: adMediaData,
@@ -46,12 +59,20 @@ const ExamReport =({colors})=>{
         Datas : datas
       };
     const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
+    //확인 키를 눌렀을 때만 filter 적용 시킬 경우에 사용 해야할 부분
+
+
+
+
+
+
     const items = [
         { title: "AIR(매체 통합 리포트)", href: "/" },
         { title: "리포트" },
     ];
     
 
+      //siteFilter에 들어갈 데이터들의 중복 검사.
     useEffect(() => {
         const uniqueSiteValues = new Set(A_bizDetail.map((detail) => detail.pfno));
         const uniqueSites = AdSiteData.filter((site) => uniqueSiteValues.has(site.value));
@@ -60,8 +81,8 @@ const ExamReport =({colors})=>{
       
     const DateChange = useCallback((value) => {
         setDateValue(value);
-        //value의 0,1간의 날짜 차이
-        const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
+        // //value의 0,1간의 날짜 차이
+        // const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
         
         let StatData =[];
         for(const data of AbizStatData){
@@ -75,7 +96,7 @@ const ExamReport =({colors})=>{
             && new Date(value[1]).getMonth() ===new Date().getMonth()
             && new Date(value[1]).getFullYear()=== new Date().getFullYear()){
                 const newValue ={
-                "by_day": value[1],
+                "stat_day": value[1],
                 "m_rvn": 0,
                 "m_impr": 0,
                 "m_cost": 0,
@@ -115,7 +136,8 @@ const ExamReport =({colors})=>{
         }else{
             setDatas(StatData);
         }
-    }, [vatValue, VatStatDateData]);
+    }, [vatValue, AbizStatData]);
+    console.log("datas",datas)
     const adSite =[];
     const adProviders = [];
     const adPlatform = [];
@@ -243,19 +265,20 @@ const ExamReport =({colors})=>{
     ]
     const [ChartOption, setChartOption] = useState(ChartOptions[0].value);
     for (const data of A_bizDetail) {
-        // Check if the ad provider is not already present in the adProviders array
+        //A_bizDetail의 내용물을 data라는 새로운 객체로 지정.
+
+        //adSite에 있는 value와 data의 pfno가 동일한게 있는지 확인하는 과정
         const isAdProviderExist = adSite.some(
           (adSite) => adSite.value === data.pfno
         );
       
+        //동일한 데이터가 없다면 해당 데이터를 adSite에 저장.
         if (!isAdProviderExist) {
-          // If it's not present, add it to the adProviders array
           const SiteValue = AdSiteData.find((item)=> item.value === data.pfno);
           adSite.push({ name: SiteValue.name, value: SiteValue.value });
         }
       }
     for (const data of adProvider) {
-        // Check if the ad provider is not already present in the adProviders array
         const isAdProviderExist = adProviders.some(
           (provider) => provider.name === data.ad_provider
         );
@@ -265,47 +288,48 @@ const ExamReport =({colors})=>{
         }
       }
     for (const data of A_bizDetail) {
-        // Check if the ad provider is not already present in the adProviders array
         const isAdPlatformExist = adPlatform.some(
           (platfrom) => platfrom.name === data.ad_platform
         );
       
         if (!isAdPlatformExist) {
-          // If it's not present, add it to the adProviders array
-
           adPlatform.push({ name: data.ad_platform, value: data.ad_platform });
         }
       }
     for (const data of A_bizDetail) {
         if(data.campaign !==""){
-          // Check if the ad provider is not already present in the adProviders array
           const isAdcampaignExist = adCampaign.some(
             (campaign) => campaign.name === data.campaign
           );
         
           if (!isAdcampaignExist) {
-            // If it's not present, add it to the adProviders array
             adCampaign.push({ name: data.campaign, value: data.campaign });
           }
         }
       }
 
+    // const updateFilter = () => {
 
-    const updateFilter = () => {   
-
-        // Filter the AdData based on the selected adFilter names
-        const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
-        const filteredadMediaData =adMediaData.filter((item)=> mdFilter.includes(item.ad_provider));
+    //     // Filter the AdData based on the selected adFilter names
+    //     const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
+    //     const filteredadMediaData =adMediaData.filter((item)=> mdFilter.includes(item.ad_provider));
+    //     const filteredadPlatFromData =adMediaData.filter((item)=> pfFilter.includes(item.ad_provider));
+    //     const filteredadCampaignData =adMediaData.filter((item)=> campFilter.includes(item.ad_provider));
+    //     const filteredadMeterialData =adMediaData.filter((item)=> adMtFilter.includes(item.ad_provider));
+    //     const filteredadDeviceData =adMediaData.filter((item)=> adDevFilter.includes(item.ad_provider));
+    //     const filteredadDataTypeData =dataType;
         
-        // You can use the spread operator to update the filterOptions state
-        setFilterOptions((prevOptions) => ({
-          ...prevOptions,
-          AdSiteData:filteredAdSiteData,
-          adMediaData:filteredadMediaData,
-          Datas : datas,
-        })); 
-      };
-//대상, 필터 모음.
+    //     // You can use the spread operator to update the filterOptions state
+    //     setFilterOptions((prevOptions) => ({
+    //       ...prevOptions,
+    //       AdSiteData:filteredAdSiteData,
+    //       adMediaData:filteredadMediaData,
+    //       Datas : datas,
+    //     })); 
+    //   };
+
+
+    //대상, 필터 데이터 변경
       const adsiteChange = useCallback((value) => {
         const AdSitefilteredValue = value.filter((option) => option !== "selectAll");
       setSiteFilter(AdSitefilteredValue);
@@ -334,7 +358,7 @@ const ExamReport =({colors})=>{
 
       const AdDeviceChange = useCallback((value) => {
         const DevicefilteredValue = value.filter((option) => option !== "selectAll");
-        setAdDivFilter(DevicefilteredValue);
+        setAdDevFilter(DevicefilteredValue);
       }, []);
 
       const DataTypeChange = useCallback((value)=>{
@@ -345,11 +369,12 @@ const ExamReport =({colors})=>{
         setChartOption(value);
       },[])
       
-      
       const handleSwitchToggle =(value)=>{
         setVatValue(value)
       }
+      useEffect(() =>{
 
+      },[])
     return(
         <>
           <div className="MainContainer">
@@ -368,7 +393,7 @@ const ExamReport =({colors})=>{
               </div>
 
               <div style={{display:'flex', justifyContent:'end', paddingBottom:'10px'}}>
-                <Calendar onValueChange={DateChange}/>
+                <Calendar onValueChange={DateChange} />
               </div>
 
               <div className="WhiteBox">
@@ -394,12 +419,15 @@ const ExamReport =({colors})=>{
                                 <Datashow onValueChange={DataTypeChange} />
                                 <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>
 
-                                <Button className=""type="primary" onClick={updateFilter}>확인</Button>
+                                <Button className=""type="primary"
+                                //확인키에 대한 액션으로 필터 적용 시킬지 확인 후 해당 내용 삽입.
+                                //  onClick={updateFilter}   
+                                 >확인</Button>
                             </Space>
                     </div>
                 </div>
                 <div className="WhiteBox">
-                  <div style={{}}>
+                  <div>
                   <Select
                     className='ChartFilter'
                     showSearch

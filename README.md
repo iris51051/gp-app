@@ -67,7 +67,6 @@ npm install react-router-dome
 ## 라이브러리 추가
 
 npm install react-scripts
-npm i -g lodash
 npm install antd
 npm i rsuite --save
 npm i --save @fortawesome/free-solid-svg-icons

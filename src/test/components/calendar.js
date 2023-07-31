@@ -131,6 +131,8 @@ const Calendar = ({onValueChange}) => {
     let returnData =[];
     if (selectedDate[0] && selectedDate[1]) {
       returnData =[format(selectedDate[0], "yyyy-MM-dd"),format(selectedDate[1], "yyyy-MM-dd")]
+    }else{
+      returnData =[format(new Date(), "yyyy-MM-dd"),format(new Date(), "yyyy-MM-dd")]
     }
     onValueChange(returnData);
   }, [selectedDate, onValueChange]);
