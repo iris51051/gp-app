@@ -408,7 +408,7 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
     <>
 
     <div className="MainContainer">
-      <div className="WhiteBox">
+
         <div className="TitleBox">
         <Row className="title-Row">
           <Col xs={24}>
@@ -421,10 +421,10 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
             </div>
           </Col>
         </Row>
-        </div>
+
       </div>
       <div>
-        <div className="WhiteBox">
+        <div className="WhiteBox" style={{padding:"0px"}}>
           <div className="FilterSelDiv">
             <h6>필터 선택</h6>
             <Button

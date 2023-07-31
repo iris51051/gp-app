@@ -1,28 +1,39 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { Select } from "antd";
 import { VscTriangleDown } from "react-icons/vsc";
 
-const handleChange = (value) => {
 
-};
-export const Datashow = () => (
+export const Datashow = ({onValueChange}) => {
+  const options = [
+    {
+      key: "1",
+      value: 'script',
+      label: "스크립트 전환 데이터",
+    },
+    {
+      key: "2",
+      value: 'media',
+      label: "매체 전환 데이터 ",
+    },
+  ]
+  const [DataType, setDataType] =useState(options[0].value)
+  const handleChange = (value)=>{
+    setDataType(value);
+  }
+  useEffect(() => {
+    onValueChange(DataType);
+  }, [DataType, onValueChange]);
+  console.log("DataTypeDataTypeDataTypeDataTypeDataTypeDataTypeDataTypeDataTypeDataType",DataType)
+  return(
   <div>
     <Select
-      style={{ width: "100%" }}
+      style={{ width: "210px" }}
       suffixIcon={<VscTriangleDown style={{ color: "black" }} />}
       size="small"
-      defaultValue="1"
+      defaultValue={options[0].value}
       onChange={handleChange}
-      options={[
-        {
-          value: "1",
-          label: "스크립트 전환 데이터",
-        },
-        {
-          value: "2",
-          label: "매체 전환 데이터 ",
-        },
-      ]}
+      options={options}
     />
   </div>
-);
+  )
+    }

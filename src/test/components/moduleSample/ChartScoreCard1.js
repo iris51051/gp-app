@@ -12,7 +12,7 @@ import './index2.css'
 
 //BasicMultiLineChart
 
-export const BLchart = (colors) => {
+export const BLchart = ({colors}) => {
   const option = {
     title: {
       text: "Stacked Line",
@@ -40,35 +40,31 @@ export const BLchart = (colors) => {
     yAxis: {
       type: "value",
     },
+    color:colors,
     series: [
       {
         name: "Email",
         type: "line",
-        stack: "Total",
-        data: [120, 132, 101, 134, 90, 230, 210],
+        data: [500, 132, 101, 134, 90, 230, 210],
       },
       {
         name: "Union Ads",
         type: "line",
-        stack: "Total",
-        data: [220, 182, 191, 234, 290, 330, 310],
+        data: [10, 182, 191, 234, 290, 330, 310],
       },
       {
         name: "Video Ads",
         type: "line",
-        stack: "Total",
-        data: [150, 232, 201, 154, 190, 330, 410],
+        data: [150, 232, 201, 260, 190, 330, 410],
       },
       {
         name: "Direct",
         type: "line",
-        stack: "Total",
         data: [320, 332, 301, 334, 390, 330, 320],
       },
       {
         name: "Search Engine",
         type: "line",
-        stack: "Total",
         data: [820, 932, 901, 934, 1290, 1330, 1320],
       },
     ],
@@ -78,6 +74,7 @@ export const BLchart = (colors) => {
       style={{
         width: "65%",
       }}
+      color={colors}
       option={option}
     />
   );
@@ -175,76 +172,6 @@ export const ScoreCardChart = (colors) => {
     14300,
     17600,
     35200,
-    0,
-    1100,
-    0,
-    0,
-    0,
-    550,
-    550,
-    0,
-    550,
-    550,
-    550,
-    0,
-    0,
-    550,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    550,
-    0,
-    550,
-    0,
-    550,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
 ]
   const score = [
     {

@@ -8,7 +8,6 @@ export const MultipleBarChart = ({ colors, adFilter, adoptions }) => {
 const sourceArray = [["product", "총 광고비", "매출액", "ROAS(%)"]];
 filteredAdoptions.forEach((adoption) => {
   const { label, children } = adoption;
-
   if (children) {
     const totalAdSpendChild = children.find((child) => child.name === "총 광고비");
     const revenueChild = children.find((child) => child.name === "매출액");
@@ -130,12 +129,12 @@ series: [
       colors={colors}
     ></ECharts>
       :
-      <EmpryChart/>
+      <EmptyChart/>
   }
     </>
   );
 };
-export const EmpryChart =()=>{
+export const EmptyChart =()=>{
   const option = {
     silent: true,
     xAxis: {

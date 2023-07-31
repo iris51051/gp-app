@@ -34,7 +34,7 @@ const Modules = () => {
     "#b5cf14",
     "#eaab2f",
     "#bababa",
-  ].slice(0, 10);
+  ]
 
 
   const adChange = useCallback((value) => {
@@ -95,6 +95,8 @@ const Modules = () => {
       <h4>C.Type3</h4>
       <Type3/>
       <h2>4.차트</h2>
+      <h4>0.기본 라인차트</h4>
+      <BLchart colors={colors}/>
       <h4>A.라인차트</h4>
       <LineChart colors={colors}/>
       <h4>B.파이차트</h4>

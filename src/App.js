@@ -24,6 +24,18 @@ const App = () => {
   const selectAd =(value)=>{
     setSelectedAd(value)
   }
+  const colors = [
+    "#4180ec",
+    "#4fd9bc",
+    "#494e5f",
+    "#30c7e9",
+    "#6269e9",
+    "#00aaaa",
+    "#42c360",
+    "#b5cf14",
+    "#eaab2f",
+    "#bababa",
+  ].slice(0, 10);
 
   return (
     <BrowserRouter>
@@ -41,18 +53,21 @@ const App = () => {
                 alignItems: "center",
                 position: "relative",
                 top : 61,
-                left: 240,
-                width: '87.4%',
+                left: collapse ? 0 : 240,
+                width: collapse ? '100%' : '87.4%',
                 zIndex: 0,
               }}
             >
               <Routes>
-                {selectedAd === '0'? <Route path="/" element={<Main/>}></Route> : <Route path="/" element={<Working/>}></Route>}
-                <Route path="/temp/modules" element={<Modules />}></Route>
+                {/* {selectedAd === '0'? 
+                <Route path="/" element={<Main/>}></Route>
+                : <Route path="/" element={<Working/>}></Route>} */}
+                <Route path="/" element={<Main colors={colors}/>}></Route>
+                <Route path="/temp/modules" element={<Modules colors={colors}/>}></Route>
                 <Route path="/temp/apitest" element={<Apitest/>}></Route>
                 <Route path="/temp/monitoring/alarm" element={<Working/>}></Route>
                 <Route path="/temp/monitoring/alarm-story"element={<Working/>}></Route>
-                <Route path="/temp/report/Exam"element={<ReportExam/>}></Route>
+                <Route path="/temp/report/Exam"element={<ReportExam colors={colors}/>}></Route>
                 <Route path="/temp/media/export"element={<Working/>}></Route>
                 <Route path="/temp/media/download"element={<Working/>}></Route>
 

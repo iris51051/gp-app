@@ -97,7 +97,7 @@ code {
   background-color: white;
   border: 1px solid #e8ecee;
   margin-bottom: 20px;
-
+  padding:25px;
 }
 .CustomButton{
   font-size: 0px!important;

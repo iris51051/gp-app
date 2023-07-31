@@ -247,12 +247,15 @@
   width: 310px;
 }
 
-.type3Div .ant-table th,
-td {
+.type3Div .ant-table th{
+  border-right: 1px solid #e4e7ea;
+}
+.type3Div .ant-table td {
   border-right: 1px solid #e4e7ea;
 }
 
-.type3Div .total-row td {
+.type3Div
+.total-row td {
   border-top-style: double;
 }
 

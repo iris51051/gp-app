@@ -428,7 +428,7 @@ export const PieChart = ({ colors }) => {
 
     legend: {
       orient: "vertical",
-      right: "15%",
+      right: "0",
       bottom: "40",
       itemWidth: 9,
       itemHeight: 9,
@@ -440,7 +440,9 @@ export const PieChart = ({ colors }) => {
       {
         name: "Access From",
         type: "pie",
-        radius: "50%",
+        radius: "85%",
+        selectedMode: 'single',
+        selectedOffset: 15,
         label: {
           show: true,
           color: "#ffffff",
@@ -467,13 +469,10 @@ export const PieChart = ({ colors }) => {
   });
 
   return (
-    <div className="pieChartDiv">
-      <div className="pieChart">
+    <div className="pieChartDiv" style={{width: "100%",height:"100%", marginLeft:'-50px'}}>
         <ECharts
           option={options}
-          // opts={{ renderer: "svg", width: "auto", height: "auto" }}
         />
-      </div>
     </div>
   );
 };

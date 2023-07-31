@@ -21,12 +21,12 @@ const MDTransPie =({colors,data})=>{
           },
         legend: {
             orient: "vertical",
-            right: "0",
-            top: "140",
+            right: "1",
+            top: "0",
             itemWidth: 9,
             itemHeight: 9,
             textStyle: {
-              fontSize: 10,
+              fontSize: 13,
             },
           },
 
@@ -37,9 +37,9 @@ const MDTransPie =({colors,data})=>{
             {
               name: "Access From",
               type: "pie",
-              radius: "50%",
+              radius: "55%",
               selectedMode: 'multiple',
-              selectedOffset: 20,
+              selectedOffset: 10,
               label: {
                 show: true,
                 color: "#ffffff",
@@ -69,7 +69,7 @@ const MDTransPie =({colors,data})=>{
 
     return(
     <>
-        <Echarts option={option} color={colors} style={{width:'95%', height:'400px', marginLeft:'-50px'}}/>
+        <Echarts option={option} color={colors} style={{width:'100%', height:'400px',marginLeft:"-30px"}}/>
     </>
     )
 }

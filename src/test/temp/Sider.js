@@ -6,7 +6,7 @@ import {
 } from "@ant-design/icons";
 import { Link,useLocation  } from "react-router-dom";
 import { SelectPicker } from "rsuite";
-import { Layout, Menu, Divider } from "antd";
+import { Layout, Menu, Divider,Select } from "antd";
 import AdData from "../data/AdData";
 
 
@@ -83,7 +83,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
   },
 
   ]
-  const [selectedAd,setSelectedAd] = useState('0');
+  const [selectedAd,setSelectedAd] = useState();
 
 
   const Adselect = () => {
@@ -96,11 +96,13 @@ const Lnb = ({ collapsed ,onValueChange}) => {
         { label: "전체광고주", value: "0" },
         ...AdData.map((item) => ({ label: item.name, value: item.value })),
       ];
-      defaultValue = "0"; // Set the default value to "0" if the current path is "/"
+      defaultValue = '0'; // Set the default value to "0" if the current path is "/"
+
     } else {
       data = AdData.map((item) => ({ label: item.name, value: item.value }));
       const ad = AdData.find((item) => item.value === location.pathname.split("/")[2]);
-      defaultValue = ad ? ad.value : ""; // Find the corresponding ad value in AdData based on the current path
+      defaultValue =AdData[0].value; // Find the corresponding ad value in AdData based on the current path
+
     }
     console.log("defalut 설정 준비 중",AdData[0].value, data[0].value, AdData[0].value===data[0].value)
     console.log("defalut 설정 준비 중",data)
@@ -111,14 +113,26 @@ const Lnb = ({ collapsed ,onValueChange}) => {
     }
     return (
       <>
-          <SelectPicker
+          {/* <SelectPicker
             data={data}
             style={{ width: 224 }}
             cleanable={false}
             defaultValue={defaultValue}
             value={selectedAd}
             onSelect={adSelect}
-          />
+          /> */}
+            <Select
+              showSearch
+              style={{
+                width: 200,
+              }}
+              options={data}
+              placeholder="Search to Select"
+              optionFilterProp="children"
+              defaultValue={defaultValue}
+              filterOption={(input, option) => (option?.label ?? '').includes(input)}>
+
+              </Select>
       </>
     );
   };
