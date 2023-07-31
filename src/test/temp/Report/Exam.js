@@ -80,7 +80,7 @@ const ExamReport =({colors})=>{
       }, [A_bizDetail]);
       
     const DateChange = useCallback((value) => {
-        setDateValue(value);
+ 
         // //value의 0,1간의 날짜 차이
         // const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
         
