@@ -430,7 +430,6 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
 
 
   const HandleChangeValue = (checkedValues) => {
-    console.log("checkedValuescheckedValuescheckedValuescheckedValues",checkedValues)
     const newValue = parseInt(checkedValues)
     if(defaultCheckedKeys.includes(newValue)){
     }else if (chartCardList.includes(newValue)) {
@@ -441,7 +440,6 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
   };
   const RenderValue = (value,unit,key)=>{
     if (key === 19) {
-      console.log('RendervalueRendervalueRendervalueRendervalue',value)
       if (value > 0) {
         const formattedValue = new Intl.NumberFormat(undefined, {
           minimumFractionDigits: 2,
@@ -465,7 +463,6 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     }
     }
   }
-  console.log("chartCardListchartCardListchartCardListchartCardList",chartCardList)
 
   const ScoreCardSelector = {
     display : collapsed ? "none" : "flex",
@@ -590,7 +587,6 @@ const AreaLineChart = ({ datas }) => {
     }
   });
   
-  console.log("datas~~~~~~~~~",datas)
   const options = {
     tooltip: {
       backgroundColor: "#636465",

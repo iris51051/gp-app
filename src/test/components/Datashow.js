@@ -23,7 +23,6 @@ export const Datashow = ({onValueChange}) => {
   useEffect(() => {
     onValueChange(DataType);
   }, [DataType, onValueChange]);
-  console.log("DataTypeDataTypeDataTypeDataTypeDataTypeDataTypeDataTypeDataTypeDataType",DataType)
   return(
   <div>
     <Select

@@ -92,8 +92,7 @@ const Main = () => {
     });
     setVatStatDateData([...updatedData])
     setVatByDateData([...updatedByData])
-    console.log("초기랜더링할 때 vat 추가요!!!!!!!!!",updatedByData)
-    console.log("초기랜더링할 때 vat 추가요!!!!!!!!!",updatedData)
+
 },[]);
 
   const coll1Change = () => {
@@ -214,7 +213,7 @@ const Main = () => {
     })); 
   };
 
-console.log(".filterOptions.Datas",filterOptions.Datas)
+
 
   const adChange = useCallback((value) => {
     const AdfilteredValue = AdData.filter((item) => value.includes(item.value)).map((item) => item.name);
@@ -236,7 +235,7 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
     setDateValue(value);
     //value의 0,1간의 날짜 차이
     const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
-    console.log("daysDifference",daysDifference)
+
     // //비교군의 날짜 산정
     //종료 일시
     const StatEndDate = new Date(value[0]);
@@ -318,14 +317,11 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
             
           }
       }
-      console.log('ByData요!!!!!!!!!!!!!!!!!!!!!!',new Date())
-      console.log(new Date(value[1]).getFullYear()=== new Date().getFullYear())
-      console.log(new Date(value[1]).getDate() === new Date().getDate(), new Date(value[1]).getMonth() ===new Date().getMonth() ,new Date(value[1]).getFullYear() === new Date().getFullYear)
 
     for(const data of StatDateData){
       const stat_date = data.stat_date;
       if(stat_date>=`${format(StatStartDate,"yyyy-MM-dd")}` && stat_date <=`${format(StatEndDate,"yyyy-MM-dd")}`){
-        console.log(1);
+
         StatData.push(data);
       }
     }
@@ -352,13 +348,10 @@ console.log(".filterOptions.Datas",filterOptions.Datas)
         });
     
         setDatas([updatedByData,updatedStatData]);
-        console.log('VatData 내용 ::::::',updatedByData,updatedStatData)
       }else{
         setDatas([ByData,StatData]);
-        console.log('SatData 내용 ::::::',StatData,ByData)
       }
   }, [vatValue, VatStatDateData, VatByDateData]);
-  console.log("날짜 선택에 관한 datas!!!!!!!!!!!!!!!!",datas)
 
 
 

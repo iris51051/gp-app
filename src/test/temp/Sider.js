@@ -19,7 +19,6 @@ const Lnb = ({ collapsed ,onValueChange}) => {
 
   const location = useLocation();
   const currentPath = location.pathname;
-  console.log('currentPath',currentPath)
   
   const sideItems =[{
     key: "0",
@@ -104,9 +103,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
       defaultValue =AdData[0].value; // Find the corresponding ad value in AdData based on the current path
 
     }
-    console.log("defalut 설정 준비 중",AdData[0].value, data[0].value, AdData[0].value===data[0].value)
-    console.log("defalut 설정 준비 중",data)
-    console.log("defalut 설정 준비 중",location.pathname ==='/')
+
     const adSelect =(data)=>{
       setSelectedAd(data);
       onValueChange(data)

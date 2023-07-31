@@ -8,7 +8,6 @@ const Apitest = () => {
     const getDataAndLog = async () => {
       const data = await fetchData();
       if (data) {
-        console.log('Received data:', data);
       }
     };
 

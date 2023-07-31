@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import ECharts from "echarts-for-react";
-export const EmptyChart =()=>{
+export const EmptyLineChart =()=>{
     const option = {
         grid: {
             top:15,
@@ -78,6 +78,49 @@ export const EmptyChart =()=>{
       ]
     };
     
+    return (
+      <>
+      <ECharts
+      style={{ height: "350px"}} option={option}
+    ></ECharts>
+    </>
+    )
+  }
+  export const EmptyPieChart =()=>{
+    const option = {
+        graphic: [
+        {
+          zlevel:10,
+          type: 'text',
+          left: 'center',
+          top: 'center',
+          style: {
+            text: '데이터가 없습니다.',
+            fill: 'black',
+            fontSize: 18,
+            fontWeight: 'bold',
+          },
+          silent: true,
+        },
+        {
+          type: 'rect',
+          left: '10%',
+          right: '10%',
+          top: '10%',
+          bottom: '10%',
+          style: {
+            fill: 'gray',
+          },
+        },
+      ],
+  series: [
+    {
+      type: 'pie',
+      radius: '85%',
+      selectedOffset: 10,
+    }
+  ]
+};
     return (
       <>
       <ECharts

@@ -55,22 +55,18 @@ const ExamReport =({colors})=>{
     useEffect(() => {
         const uniqueSiteValues = new Set(A_bizDetail.map((detail) => detail.pfno));
         const uniqueSites = AdSiteData.filter((site) => uniqueSiteValues.has(site.value));
-        console.log('Unique Site objects for A_bizDetail:', uniqueSites);
         setSiteFilter(uniqueSites);
       }, [A_bizDetail]);
       
-    console.log("siteFiltersiteFiltersiteFiltersiteFiltersiteFiltersiteFiltersiteFiltersiteFiltersiteFiltersiteFilter",siteFilter)
     const DateChange = useCallback((value) => {
         setDateValue(value);
         //value의 0,1간의 날짜 차이
         const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
-        console.log("daysDifference",daysDifference)
         
         let StatData =[];
         for(const data of AbizStatData){
             const stat_date = data.stat_date;
             if(stat_date>=`${format(new Date(value[0]),"yyyy-MM-dd")}` && stat_date <=`${format(new Date(value[1]),"yyyy-MM-dd")}`){
-            console.log(1);
             StatData.push(data);
           }
         }
@@ -116,10 +112,8 @@ const ExamReport =({colors})=>{
             });
             
             setDatas(updatedStatData);
-            console.log('VatData 내용 ::::::',updatedStatData)
         }else{
             setDatas(StatData);
-            console.log('SatData 내용 ::::::',StatData)
         }
     }, [vatValue, VatStatDateData]);
     const adSite =[];
@@ -311,26 +305,51 @@ const ExamReport =({colors})=>{
           Datas : datas,
         })); 
       };
+//대상, 필터 모음.
+      const adsiteChange = useCallback((value) => {
+        const AdSitefilteredValue = value.filter((option) => option !== "selectAll");
+      setSiteFilter(AdSitefilteredValue);
+       
+        },[]);
 
-    const mdChange = useCallback((value) => {
+      const mdChange = useCallback((value) => {
         const MdfilteredValue = value.filter((option) => option !== "selectAll");
         setMdFilter(MdfilteredValue);
       }, []);
-      const adsiteChange = useCallback((value) => {
-        const AdSitefilteredValue = value.filter(
-          (option) => option !== "selectAll"
-        );
-          setSiteFilter(AdSitefilteredValue);
+      
+      const pfChange = useCallback((value) => {
+        const PffilteredValue = value.filter((option) => option !== "selectAll");
+        setPfFilter(PffilteredValue);
       }, []);
+
+      const CampChange = useCallback((value) => {
+        const CampfilteredValue = value.filter((option) => option !== "selectAll");
+        setCampFilter(CampfilteredValue);
+      }, []);
+
+      const AdMtChange = useCallback((value) => {
+        const MeterialfilteredValue = value.filter((option) => option !== "selectAll");
+        setAdMtFilter(MeterialfilteredValue);
+      }, []);
+
+      const AdDeviceChange = useCallback((value) => {
+        const DevicefilteredValue = value.filter((option) => option !== "selectAll");
+        setAdDivFilter(DevicefilteredValue);
+      }, []);
+
+      const DataTypeChange = useCallback((value)=>{
+        setDataType(value);
+      },[])
+      
+      const ChartFilter = useCallback((value) => {
+        setChartOption(value);
+      },[])
+      
+      
       const handleSwitchToggle =(value)=>{
         setVatValue(value)
       }
-    const ChartFilter = useCallback((value) => {
-      setChartOption(value);
-    },[])
-    const DataTypeChange = useCallback((value)=>{
-      setDataType(value);
-    },[])
+
     return(
         <>
           <div className="MainContainer">
@@ -348,7 +367,7 @@ const ExamReport =({colors})=>{
                   </Row>
               </div>
 
-              <div style={{display:'flex', justifyContent:'end'}}>
+              <div style={{display:'flex', justifyContent:'end', paddingBottom:'10px'}}>
                 <Calendar onValueChange={DateChange}/>
               </div>
 
@@ -360,8 +379,8 @@ const ExamReport =({colors})=>{
                                 </Text>
                                 <AdSitefilter options={adSite} onValueChange={adsiteChange} />
                                 <Mdfilter options={adProviders} onValueChange={mdChange} />
-                                <AdPlatform options={adPlatform} onValueChange={mdChange} />
-                                <AdCampaign options={adCampaign} onValueChange={mdChange} />
+                                <AdPlatform options={adPlatform} onValueChange={pfChange} />
+                                <AdCampaign options={adCampaign} onValueChange={CampChange} />
                             </Space>
                             <br/>
                             <div style={{paddingTop:"20px"}}>
@@ -370,17 +389,15 @@ const ExamReport =({colors})=>{
                                     필터&nbsp;
                                     <FontAwesomeIcon icon={faCircleChevronRight} />
                                 </Text>
-                                <AdMaterial options={adMaterial} onValueChange={mdChange} />
-                                <AdDevice options={adDevice} onValueChange={mdChange} />
+                                <AdMaterial options={adMaterial} onValueChange={AdMtChange} />
+                                <AdDevice options={adDevice} onValueChange={AdDeviceChange} />
                                 <Datashow onValueChange={DataTypeChange} />
                                 <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>
 
                                 <Button className=""type="primary" onClick={updateFilter}>확인</Button>
                             </Space>
-                            </div>
-
+                    </div>
                 </div>
-
                 <div className="WhiteBox">
                   <div style={{}}>
                   <Select
@@ -397,6 +414,7 @@ const ExamReport =({colors})=>{
                     onChange={ChartFilter}
                     >
                     </Select>
+                    <br/>
                     <span>{ChartOption}</span>
                     <br/>
                     <span>{dataType}</span>
@@ -408,7 +426,7 @@ const ExamReport =({colors})=>{
                       <Divider style={{height:'300px'}}type='vertical' />
                       </div>
                       <div style={{width:"30%"}}>
-                      <PieChart colors={colors} ></PieChart>
+                      <PieChart colors={colors} data={data}></PieChart>
                       </div>
                     </div>
                   </div>

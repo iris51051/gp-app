@@ -299,7 +299,7 @@ export const ScoreCardChart = (colors) => {
     );
     // setChartCardList([...defaultCheckedKeys, ...newValue]);
     setChartCardList([...newValue]);
-    console.log("chartCardList", chartCardList);
+
   };
   const closeDropdown = () => {
     setDropdownVisible(false);

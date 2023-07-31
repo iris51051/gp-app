@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import ECharts from "echarts-for-react";
-import {EmptyChart} from "./EmptyChart";
+import {EmptyLineChart} from "./EmptyChart";
 
 const BLchart = ({colors,data}) => {
     const option = {
@@ -85,7 +85,7 @@ const BLchart = ({colors,data}) => {
         <>
         {data.length >0 ?
         <BLchart data={data} colors={colors}/>
-        :<EmptyChart />}
+        :<EmptyLineChart />}
         </>
     )
   }
