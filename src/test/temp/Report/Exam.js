@@ -193,7 +193,7 @@ const ExamReport =({colors})=>{
       },
       {
         key: 7,
-        label: '주물율',
+        label: '주문율',
         value: 'odr_per_m_cost',
       },
       {
