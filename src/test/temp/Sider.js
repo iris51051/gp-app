@@ -149,7 +149,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
         top: 61,
         left: 0,
         right: 0,
-        zIndex: 1,
+        zIndex: 4,
       }}
       width= '240px'
       collapsedWidth="0"

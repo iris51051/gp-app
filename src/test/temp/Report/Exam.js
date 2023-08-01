@@ -13,7 +13,7 @@ import AbizStatData from '../../data/A_bizData/A_bizSatData';
 import A_bizDetail from '../../data/A_bizData/A_bizDetail';
 import {adProvider} from '../../data/A_bizData/Ad_Provider';
 //모듈
-import { Adfilter, Mdfilter, AdSitefilter,AdPlatform,AdCampaign,AdMaterial,AdDevice  } from "../../components/filter.js";
+import {Mdfilter, AdSitefilter,AdPlatform,AdCampaign,AdMaterial,AdDevice  } from "../../components/filter.js";
 import {Datashow} from "../../components/Datashow";
 import Breadcrumb from "../../components/Breadcrumd";
 import Calendar from "../../components/calendar.js";
@@ -27,6 +27,7 @@ const ExamReport =({colors})=>{
     const [vatValue, setVatValue] = useState(true);   //vat포함 여부
     const [datas, setDatas] = useState([])      //날자별 데이터
 
+    
     const [siteFilter, setSiteFilter] = useState([]); //사이트
     const [mdFilter, setMdFilter] = useState([]);     //광고매체사
     const [dataType, setDataType] =useState();        //스크립트,매체
@@ -35,7 +36,7 @@ const ExamReport =({colors})=>{
     const [campFilter, setCampFilter] = useState([]);   //캠페인
     const [adMtFilter, setAdMtFilter] = useState([]);   //소재
     const [adDevFilter, setAdDevFilter] = useState([]); //디바이스
-    const [data,setData] = useState([]);                //총괄 데이터 
+    const [data,setData] = useState([]);                //총괄 데이터
 
   // console.log(pfFilter,campFilter,adMtFilter,adDevFilter,siteFilter,mdFilter,dataType)
   // console.log('사이트 선택',siteFilter)
@@ -49,7 +50,6 @@ const ExamReport =({colors})=>{
 
 
 
-  
 
     //확인 키를 눌렀을 때만 filter 적용 시킬 경우에 사용 해야할 부분
     const defaultFilterOptions = {
@@ -61,18 +61,10 @@ const ExamReport =({colors})=>{
     const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
     //확인 키를 눌렀을 때만 filter 적용 시킬 경우에 사용 해야할 부분
 
-
-
-
-
-
     const items = [
         { title: "AIR(매체 통합 리포트)", href: "/" },
         { title: "리포트" },
     ];
-    
-
-
     
       //siteFilter에 들어갈 데이터들의 중복 검사.
     useEffect(() => {
@@ -81,47 +73,29 @@ const ExamReport =({colors})=>{
         setSiteFilter(uniqueSites);
       }, [A_bizDetail]);
       
+    const updateData = useCallback(() => {
+
+      
+    },[siteFilter,mdFilter,dataType,pfFilter,campFilter,adMtFilter,adDevFilter,vatValue,datas])
     const DateChange = useCallback((value) => {
  
         // //value의 0,1간의 날짜 차이
         // const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
         
         let StatData =[];
+        
         for(const data of AbizStatData){
-            const stat_date = data.stat_date;
-            if(stat_date>=`${format(new Date(value[0]),"yyyy-MM-dd")}` && stat_date <=`${format(new Date(value[1]),"yyyy-MM-dd")}`){
-            StatData.push(data);
+          const stat_date = data.stat_date;
+          const ad_provider = data.ad_provider;
+          if(stat_date >= `${format(new Date(value[0]), "yyyy-MM-dd")}` &&
+          stat_date <= `${format(new Date(value[1]), "yyyy-MM-dd")}`){
+              const testData =StatData.filter((item)=>item.stat_date === stat_date)
+              if(!testData.find((item)=>item.ad_provider === ad_provider)){
+                StatData.push(data);
+              }
           }
-        }
-        if(new Date(value[1])!== new Date(value[0])){
-            if(new Date(value[1]).getDate() === new Date().getDate()
-            && new Date(value[1]).getMonth() ===new Date().getMonth()
-            && new Date(value[1]).getFullYear()=== new Date().getFullYear()){
-                const newValue ={
-                "stat_day": value[1],
-                "m_rvn": 0,
-                "m_impr": 0,
-                "m_cost": 0,
-                "m_odr": 0,
-                "m_rgr": 0,
-                "land": 0,
-                "rvn": 0,
-                "m_cart": 0,
-                "odr": 0,
-                "rgr": 0,
-                "m_conv": 0,
-                "m_click": 0,
-                "m_cpc": 0,
-                "m_ctr": 0,
-                "m_crt": 0,
-                "m_roas": 0,
-                "rvn_per_odr": 0,
-                "rgr_per_m_click": 0,
-                "odr_per_m_cost": 0,
-                "roas": 0}
-                StatData.push(newValue);
-            }
-        }
+      }
+        console.log("StatData",StatData)
         if(vatValue){
             const updatedStatData = StatData.map((item) => {
                 return {
@@ -266,6 +240,7 @@ const ExamReport =({colors})=>{
       },
     ]
     const [ChartOption, setChartOption] = useState(ChartOptions[0].value);
+    const [SelectedChartOption, setSelectedChartOption] = useState([ChartOptions[0]]);
     for (const data of A_bizDetail) {
         //A_bizDetail의 내용물을 data라는 새로운 객체로 지정.
 
@@ -369,14 +344,17 @@ const ExamReport =({colors})=>{
       
       const ChartFilter = useCallback((value) => {
         setChartOption(value);
+        console.log("value","value")
+        const updateData = ChartOptions.filter((item) => item.value === value)
+        setSelectedChartOption(updateData);
+        console.log("updateData",updateData)
       },[])
+      console.log("SelectedChartOptionExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExma",SelectedChartOption)
+      console.log("mdFilterExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExma",mdFilter)
       
       const handleSwitchToggle =(value)=>{
         setVatValue(value)
       }
-      useEffect(() =>{
-
-      },[])
     return(
         <>
           <div className="MainContainer">
@@ -438,7 +416,6 @@ const ExamReport =({colors})=>{
                     }}
                     defaultValue={ChartOptions[0].value}
                     options={ChartOptions}
-                    placeholder="Search to Select"
                     optionFilterProp="children"
                     filterOption={(input, option) => (option?.label ?? '').includes(input)}
                     onChange={ChartFilter}
@@ -450,7 +427,7 @@ const ExamReport =({colors})=>{
                     <span>{dataType}</span>
                     <div style={{display:'flex', justifyContent:'start', alignContent:'center'}}>
                       <div style={{width:'70%'}}>
-                      <MultiLinechart data={data} colors={colors}/>
+                      <MultiLinechart data={datas} mdFilter={mdFilter} SelectedChartOption={SelectedChartOption} colors={colors}/>
                       </div>
                       <div>
                       <Divider style={{height:'300px'}}type='vertical' />

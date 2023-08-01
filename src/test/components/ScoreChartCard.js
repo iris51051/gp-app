@@ -464,12 +464,16 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     }
   }
 
-  const ScoreCardSelector = {
+
+
+
+  const ScoreCardSelectorStyle = {
     display : collapsed ? "none" : "flex",
     paddingLeft : collapsed ? "0px" : "20px",
     paddingRight : collapsed ? "0px" : "20px",
     alignItems: "center",
     width : '100%',
+    transition: 'top 0.3s ease',
   };
 
   const renderAreaLineChart =(item)=>{
@@ -503,17 +507,15 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       return <LineOutlined />
     }
   }
-  const radioStyle = {
-    fontSize: "12px", 
-  }
+
 
   return (
     <>
         <div className="ScoreCardSelector"
-          style={ScoreCardSelector}
+          style={ScoreCardSelectorStyle}
           >
-          <div className="ScoreSelectorDiv">
-            <table className="ScoreCardSelectorTable">
+          <div className="ScoreSelectorDiv" >
+            <table className="ScoreCardSelectorTable" >
               <tr>
                 <th style={{width:'10%'}}>지표 항목 선택</th>
                 <td>

@@ -10,13 +10,13 @@ import addMonths from "date-fns/addMonths";
 import koKR from "rsuite/locales/ko_KR";
 
 const Calendar = ({onValueChange}) => {
-  const [selectedDate, setSelectedDate] = useState([new Date(), new Date()]);
+  const [selectedDate, setSelectedDate] = useState([addDays(new Date(), -1), addDays(new Date(), -1)]);
   const [PickedRange, setPickedRange] = useState([new Date(), new Date()]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const today = new Date(); 
-  const disabledAfterToday = (date) => {
-    return date > today;
+
+  const disabledIncludeAfterToday = (date) => {
+    return date >= new Date();
   };
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -48,7 +48,6 @@ const Calendar = ({onValueChange}) => {
     },
     {
       label: "최근 7일",
-      // value: [subDays(new Date(), 6), new Date()],
       value: [subDays(new Date(), 7), new Date()],
       placement: "left",
       closeOverlay: false,
@@ -152,7 +151,7 @@ const Calendar = ({onValueChange}) => {
         editable={false}
         onClose={CloseCal}
         placement="auto"
-        disabledDate={disabledAfterToday}
+        disabledDate={disabledIncludeAfterToday}
       />
     </CustomProvider>
   );

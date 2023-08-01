@@ -6,6 +6,7 @@ import { Layout, theme,Affix } from "antd";
 import { useState } from "react";
 import Header from "./test/temp/Header";
 import Sider from "./test/temp/Sider";
+import Bottom from "./test/temp/Bottom";
 import Modules from "./test/temp/modules";
 import Main from "./test/temp/Main";
 import Apitest from "./test/temp/api-test/Apitest";
@@ -56,6 +57,7 @@ const App = () => {
                 left: collapse ? 0 : 240,
                 width: collapse ? '100%' : '87.4%',
                 zIndex: 0,
+                transition: "left 0.2s ease-in-out"
               }}
             >
               <Routes>
@@ -73,7 +75,7 @@ const App = () => {
 
               </Routes>
             </Content>
-
+            <Bottom/>
           </Layout>
         </Layout>
       </Layout>
