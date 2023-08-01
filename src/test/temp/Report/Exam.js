@@ -100,17 +100,25 @@ const ExamReport =({colors})=>{
             const updatedStatData = StatData.map((item) => {
                 return {
                 ...item,
-                m_rvn: item.m_rvn + item.m_rvn * 0.1,
-                rvn: item.rvn + item.rvn * 0.1,
-                m_cost: item.m_cost + item.m_cost * 0.1,
-                m_cpc: item.m_cpc + item.m_cpc * 0.1,
-                rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
+                m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
+                rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
+                m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
+                m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
+                rvn_per_odr: (item.rvn_per_odr + item.rvn_per_odr * 0.1).toFixed(0),
+                m_ctr : (item.m_ctr*100).toFixed(2),
               };
             });
             
             setDatas(updatedStatData);
         }else{
-            setDatas(StatData);
+          const updatedStatData = StatData.map((item) => {
+            return {
+            ...item,
+            m_ctr : (item.m_ctr*100).toFixed(2),
+          };
+        });
+        
+            setDatas(updatedStatData);
         }
     }, [vatValue, AbizStatData]);
     console.log("datas",datas)
@@ -433,7 +441,7 @@ const ExamReport =({colors})=>{
                       <Divider style={{height:'300px'}}type='vertical' />
                       </div>
                       <div style={{width:"30%"}}>
-                      <PieChart colors={colors} data={data}></PieChart>
+                      <PieChart colors={colors} SelectedChartOption={SelectedChartOption}  data={datas}></PieChart>
                       </div>
                     </div>
                   </div>

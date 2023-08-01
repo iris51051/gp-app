@@ -10,13 +10,33 @@ const BLchart = ({ colors, data, SelectedChartOption,mdFilter }) => {
   // Extracting xAxis and yAxis data from the filtered data
   const xAxisData = [...new Set(data.map((item) => item.stat_date))];
   for(const newData of data){
-    const stat_date = data.stat_date;
-    const ad_provider = data.ad_provider;
+    const stat_date = newData.stat_date;
     const DateArr = data.filter((item)=>item.stat_date === stat_date);
-    // if(DateArr.length < seriesNames.length){
-    //     const filtered_provider = seriesNames.filter((item)=> item !==DateArr.)
-    // }
+    console.log("DateArr테스트요!!!!!!!!!!!!!!!!!",DateArr.ad_provider);
+    if(DateArr.length < seriesNames.length){
+      const adProviders = DateArr.map(item => item.ad_provider);
+      const addProvider = seriesNames.filter((item)=>!adProviders.includes(item));
+        console.log('addProvideraddProvideraddProvideraddProvider',addProvider)
+        for(const newData of  addProvider){
+          // data.push({
+          //   stat_date: stat_date,
+          //   ad_provider : newData,
+          //  [SelectedChartOption[0].value] : '0',
+          // })          
+          const newObj = {
+            stat_date: stat_date,
+            ad_provider: newData,
+          };
+          newObj[SelectedChartOption[0].value] = 0;
+          data.unshift(newObj);
+        }
+    }
   }
+  data.sort((a, b) => {
+    const dateA = new Date(a.stat_date);
+    const dateB = new Date(b.stat_date);
+    return dateA - dateB;
+  });
   console.log("seriesNames",seriesNames)
   console.log('data', data);
   const option = {
@@ -30,7 +50,7 @@ const BLchart = ({ colors, data, SelectedChartOption,mdFilter }) => {
       bottom: -5,
     },
     grid: {
-      top: 30,
+      top: 10,
       left: 50,
       right: 20,
       bottom: 40,
@@ -50,7 +70,7 @@ const BLchart = ({ colors, data, SelectedChartOption,mdFilter }) => {
       name, 
       type: "line",
       data: data.filter((item) => item.ad_provider === name)
-                         .map((item) => item[SelectedChartOption[0].value]),
+                        .map((item) => item[SelectedChartOption[0].value]),
     })),
   };
 

@@ -391,79 +391,109 @@ export const LineChart = ({ colors }) => {
  *
  * */
 
-export const PieChart = ({ colors , data }) => {
+export const PieChart = ({ colors , data, SelectedChartOption }) => {
   //data이름이 기타일 경우 지정색 고정
-  const ColoredData = data.map((item) => ({
-    ...item,
-    itemStyle: {
-      color:
-        item.name === "기타"
-          ? "#bababa"
-          : colors[data.findIndex((d) => d.name === item.name)],
-    },
-  }));
-
-  const [options] = useState({
-    tooltip: {
-      trigger: "item",
-      formatter: "{c}",
-      textStyle: {
-        fontSize: 14,
-        color: "#000000",
-      },
-    },
-
-    legend: {
-      orient: "vertical",
-      right: "0",
-      bottom: "40",
-      itemWidth: 9,
-      itemHeight: 9,
-      textStyle: {
-        fontSize: 10,
-      },
-    },
-    series: [
-      {
-        name: "Access From",
-        type: "pie",
-        radius: "85%",
-        selectedMode: 'single',
-        selectedOffset: 15,
-        label: {
-          show: true,
-          color: "#ffffff",
-          align: "center",
-          position: "inside",
-          formatter: "{d}%",
-          fontSize: 9,
-        },
-        labelLine: { show: false },
-        data: ColoredData,
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: "rgba(0, 0, 0, 0.5)",
-          },
-        },
-        itemStyle: {
-          borderWidth: "1",
-          borderColor: "#ffffff",
-        },
-      },
-    ],
-  });
-
-  return (
-    <div className="pieChartDiv" style={{width: "100%",height:"100%", marginLeft:'-50px'}}>
-      {data.length >0 ?
-        <ECharts
-          option={options}
-        />
-        : <EmptyPieChart/>
+  // console.log('PieChartPieChart',data);
+  // console.log('SelectedChartOption',SelectedChartOption);
+  // const ColoredData = data.map((item) => ({
+  //   ...item,
+  //   itemStyle: {
+  //     color:
+  //       item.name === "기타"
+  //         ? "#bababa"
+  //         : colors[data.findIndex((d) => d.name === item.name)],
+  //   },
+  // }));
+    // 1. Filter the data based on "SelectedChartOption[0].value"
+    const selectedValue = SelectedChartOption[0]?.value;
+    const filteredData = data.map((item) => ({
+      ad_provider: item.ad_provider,
+      [selectedValue]: item[selectedValue],
+    }));
+  
+    // 2. Group the filtered data by "ad_provider" and calculate the sum of "m_impr" for each group
+    const groupedData = filteredData.reduce((result, item) => {
+      const { ad_provider, [selectedValue]: value } = item;
+      if (!result[ad_provider]) {
+        result[ad_provider] = 0;
       }
-    </div>
+      result[ad_provider] += parseInt(value, 10);
+      return result;
+    }, {});
+  
+    // 3. Convert the grouped data into a format suitable for the pie chart
+    const pieChartData = Object.keys(groupedData).map((ad_provider) => ({
+      name: ad_provider,
+      value: groupedData[ad_provider],
+    }));
+    pieChartData.sort((a, b) => b.value - a.value);
+const option = {
+tooltip: {
+    trigger: "item",
+    textStyle: {
+      fontSize: 10,
+      color: "#000000",
+    },
+  },
+legend: {
+    orient: "vertical",
+    right: "1",
+    top: "0",
+    itemWidth: 9,
+    itemHeight: 9,
+    textStyle: {
+      fontSize: 13,
+    },
+  },
+
+grid: {
+    left: -20, // Adjust the left position of the chart
+  },
+series: [
+    {
+      type: "pie",
+      radius: "75%",
+      selectedMode: 'multiple',
+      selectedOffset: 10,
+      color: colors,
+      label: {
+        show: true,
+        color: "#ffffff",
+        align: "center",
+        position: "inside",
+        formatter: function(params) {
+          return `${params.percent.toFixed(1)}%`;
+        },
+        fontSize: 9,
+        textBorderColor: 'black',
+        textBorderWidth: 3
+      },
+      labelLine: { show: false },
+      data: pieChartData,
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: "rgba(0, 0, 0, 0.5)",
+        },
+      },
+      itemStyle: {
+        borderWidth: "1",
+        borderColor: "#ffffff",
+      },
+    },
+  ],
+};
+
+return(
+<>
+  <div className="pieChartDiv" style={{width: "100%",height:"100%", marginLeft:'-30px'}}>
+    {data.length >0 ?
+      <ECharts option={option}/>
+      : <EmptyPieChart/>
+    }
+  </div>
+</>
   );
 };
 
