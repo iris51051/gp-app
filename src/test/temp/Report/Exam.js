@@ -430,9 +430,7 @@ const ExamReport =({colors})=>{
                     >
                     </Select>
                     <br/>
-                    <span>{ChartOption}</span>
                     <br/>
-                    <span>{dataType}</span>
                     <div style={{display:'flex', justifyContent:'start', alignContent:'center'}}>
                       <div style={{width:'70%'}}>
                       <MultiLinechart data={datas} mdFilter={mdFilter} SelectedChartOption={SelectedChartOption} colors={colors}/>
