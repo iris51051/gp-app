@@ -1,49 +1,71 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ECharts from "echarts-for-react";
 import { EmptyLineChart } from "./EmptyChart";
 
 const BLchart = ({ colors, data, SelectedChartOption,mdFilter }) => {
+  const [seriesNames, setSeriesNames] = useState([]);
 
-  const seriesNames = mdFilter.filter(provider => data.some(item => item.ad_provider === provider));
 
-  const xAxisData = [...new Set(data.map((item) => item.stat_date))];
-  for(const newData of data){
-    const stat_date = newData.stat_date;
-    const DateArr = data.filter((item)=>item.stat_date === stat_date);
-    if(DateArr.length < seriesNames.length){
-      const adProviders = DateArr.map(item => item.ad_provider);
-      const addProvider = seriesNames.filter((item)=>!adProviders.includes(item));
-        for(const newData of  addProvider){      
-          const newObj = {
-            stat_date: stat_date,
-            ad_provider: newData,
-          };
-          if(SelectedChartOption[0].value === 'm_conv/click'){
-            newObj['m_conv'] = 0;
-            newObj['m_click'] = 0;
-            data.unshift(newObj);
-          }else{
-            newObj[SelectedChartOption[0].value] = 0;
-            data.unshift(newObj);
-          }
-        }
+  useEffect(() => {
+    const newSeriesNames = mdFilter.filter((provider) =>
+      data.some((item) => item.ad_provider === provider)
+    );
+    setSeriesNames(newSeriesNames); // Update the series names with the new values
+  }, [data, SelectedChartOption, mdFilter]);
+
+const xAxisData = [...new Set(data.map((item) => item.stat_date))];
+
+for (const newData of data) {
+  const stat_date = newData.stat_date;
+  const DateArr = data.filter((item) => item.stat_date === stat_date);
+  if (DateArr.length < seriesNames.length) {
+    const adProviders = DateArr.map((item) => item.ad_provider);
+    const addProvider = seriesNames.filter(
+      (item) => !adProviders.includes(item)
+    );
+    for (const newData of addProvider) {
+      const newObj = {
+        stat_date: stat_date,
+        ad_provider: newData,
+      };
+      if (SelectedChartOption[0].value === "m_conv/click") {
+        newObj["m_conv"] = 0;
+        newObj["m_click"] = 0;
+        data.unshift(newObj);
+      } else {
+        newObj[SelectedChartOption[0].value] = 0;
+        data.unshift(newObj);
+      }
     }
   }
-
+}
+  //그래프에 표시될 data의 stat_date를 오름차순으로 정렬
   data.sort((a, b) => {
     const dateA = new Date(a.stat_date);
     const dateB = new Date(b.stat_date);
     return dateA - dateB;
   });
   const adProviderSums = seriesNames.reduce((sums, provider) => {
+    if(SelectedChartOption[0].value ==='m_ctr'){
+      sums[provider] = data.reduce((sum, item) => {
+        if (item.ad_provider === provider) {
+          sum += item[SelectedChartOption[0].value];
+        }
+        return sum;
+      }, 0);
+
+    }else{
     sums[provider] = data.reduce((sum, item) => {
       if (item.ad_provider === provider) {
         sum += item[SelectedChartOption[0].value];
       }
       return sum;
     }, 0);
-    return sums;
+  }
+
+    return( sums);
+
   }, {});
   // seriesNames.sort((a, b) => adProviderSums[b] - adProviderSums[a]);
   const defaultSeriesOrder = ['ADN PC', 'DABLE', 'FACEBOOK', '구글', '네이버', '카카오', '페이스북'];
@@ -98,10 +120,10 @@ const BLchart = ({ colors, data, SelectedChartOption,mdFilter }) => {
       trigger: "axis",
       formatter: function (params) {
         let tooltipContent = `${params[0].name}<br/>`;
+        let formattedValue="";
+
         for (const series of params) {
           const value = series.value;
-          let formattedValue;
-  
           if (SelectedChartOption[0].value === 'm_conv/click') {
             if(value>0){
             formattedValue = `${value}%`; // Add percentage sign for 'm_conv/click' series
@@ -128,7 +150,7 @@ const BLchart = ({ colors, data, SelectedChartOption,mdFilter }) => {
           }
           tooltipContent += `${series.marker}${series.seriesName}: ${formattedValue}<br/>`;
         }
-  
+
         return tooltipContent;
       },
     },
@@ -191,6 +213,7 @@ export const MultiLinechart = ({ data, colors, SelectedChartOption, mdFilter }) 
           SelectedChartOption={SelectedChartOption}
           colors={colors}
           mdFilter={mdFilter}
+          notMerge={true}
         />
       ) : (
         <EmptyLineChart />

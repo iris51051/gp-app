@@ -98,6 +98,8 @@ const ExamReport =({colors})=>{
 
   const DataTypeChange = useCallback((value)=>{
     setDataType(value);
+    setSelectedChartOption(ChartOptions[0])
+    ChartFilter(ChartOptions[0].value)
     if(value ==='script'){
       setChartOptions([
         {
@@ -250,9 +252,10 @@ const ExamReport =({colors})=>{
       }, [A_bizDetail]);
       
       
-      console.log('datepick이전의 datas',datas)
+      console.log('날짜 선택 이전의 datasdatasdatasdatas',datas)
+
     const DateChange = useCallback((value) => {
- 
+      setDatas(''); 
         // //value의 0,1간의 날짜 차이
         // const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
         
@@ -269,8 +272,9 @@ const ExamReport =({colors})=>{
               }
           }
       }
-      console.log('순수statData',StatData)
-        if(vatValue){
+      console.log('statdatas1',StatData)
+      if(vatValue){
+        console.log('statdatas2',StatData)
             const updatedStatData = StatData.map((item) => {
                 return {
                 ...item,
@@ -282,8 +286,8 @@ const ExamReport =({colors})=>{
                 m_ctr : (item.m_ctr*100).toFixed(2),
               };
             });
+            console.log('updatedStatData',updatedStatData)
             setDatas(updatedStatData);
-            console.log('updatedStatData VatStataData',updatedStatData)
         }else{
           const updatedStatData = StatData.map((item) => {
             return {
@@ -293,9 +297,9 @@ const ExamReport =({colors})=>{
         });
             setDatas(updatedStatData);
         }
-        console.log('최종statData',StatData)
+
     }, [vatValue, AbizStatData,ChartOptions,SelectedChartOption]);
-    console.log('datepick 이후의 datas',datas)
+    console.log('날짜 선택 이후의 datas',datas)
     const adSite =[];
     const adProviders = [];
     const adPlatform = [];
@@ -437,13 +441,14 @@ const ExamReport =({colors})=>{
       const ChartFilter = useCallback((value) => {
         const updateData = ChartOptions.filter((item) => item.value === value)
         setSelectedChartOption(updateData);
-        console.log('updateData',updateData);
       },[ChartOptions])
       
       const handleSwitchToggle =(value)=>{
         setVatValue(value)
       }
-      console.log('최종datas',datas)
+
+
+      console.log('datas',datas)
     return(
         <>
           <div className="MainContainer">
@@ -508,6 +513,7 @@ const ExamReport =({colors})=>{
                     optionFilterProp="children"
                     filterOption={(input, option) => (option?.label ?? '').includes(input)}
                     onChange={ChartFilter}
+                    value={SelectedChartOption}
                     >
                     </Select>
                     <br/>

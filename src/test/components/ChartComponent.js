@@ -391,119 +391,160 @@ export const LineChart = ({ colors }) => {
  *
  * */
 
-export const PieChart = ({ colors , data, SelectedChartOption }) => {
-  console.log("Piedata",data)
-    const selectedValue = SelectedChartOption[0]?.value;
-    let filteredData ='';
-    if(SelectedChartOption[0]?.value === 'm_conv/click'){ 
-      filteredData = data.map((item) => ({
-          ad_provider: item.ad_provider,
-          [selectedValue]: item.m_click !==0 ? ((item.m_conv / item.m_click)*100).toFixed(2):0,
-        }));
-    }else if(SelectedChartOption[0]?.value === 'm_ctr'){
-      filteredData = data.map((item) => ({
-        ad_provider: item.ad_provider,
-        [selectedValue]: item.m_impr !==0 ? item.m_click/item.m_impr : 0
-      }));
-    }else{
+ export const PieChart = ({ colors, data, SelectedChartOption }) => {
+  const sumProperty = (data, property) => {
+    return data.reduce((total, item) => {
+      if (item.hasOwnProperty(property)) {
+        return total + item[property];
+      }
+      return total;
+    }, 0);
+  };
+
+
+  const calculateSumsByAdProvider = (data, property) => {
+    const sums = {};
+    data.forEach((item) => {
+      const ad_provider = item.ad_provider;
+      const value = item[property] || 0;
+      if (sums[ad_provider] === undefined) {
+        sums[ad_provider] = value;
+      } else {
+        sums[ad_provider] += value;
+      }
+    });
+    return sums;
+  };
+
+  const selectedValue = SelectedChartOption[0]?.value;
+  let filteredData;
+
+  if (selectedValue === 'm_conv/click') {
+    filteredData = data.map((item) => ({
+      ad_provider: item.ad_provider,
+      [selectedValue]: item.m_click !== 0 ? ((item.m_conv / item.m_click) * 100).toFixed(2) : 0,
+    }));
+  } else if (selectedValue === 'm_ctr') {
+    const totalClicksByAdProvider = calculateSumsByAdProvider(data, 'm_click');
+    const totalImpressionsByAdProvider = calculateSumsByAdProvider(data, 'm_impr');
+    const processedProviders = new Set(); // Set to track processed ad_providers
+  
+    filteredData = data.reduce((result, item) => {
+      const ad_provider = item.ad_provider;
+      if (!processedProviders.has(ad_provider)) {
+        const value = totalImpressionsByAdProvider[ad_provider] !== 0
+          ? (totalClicksByAdProvider[ad_provider] / totalImpressionsByAdProvider[ad_provider] * 100).toFixed(2)
+          : 0;
+  
+        result.push({
+          ad_provider: ad_provider,
+          [selectedValue]: value,
+        });
+  
+        processedProviders.add(ad_provider); // Mark ad_provider as processed
+      }
+  
+      return result;
+    }, []);
+  }  else {
     filteredData = data.map((item) => ({
       ad_provider: item.ad_provider,
       [selectedValue]: item[selectedValue],
     }));
   }
-    const groupedData = filteredData.reduce((result, item) => {
-      const { ad_provider, [selectedValue]: value } = item;
-
-      if (!result[ad_provider]) {
-        result[ad_provider] = 0;
-      }
-      result[ad_provider] += parseInt(value, 10);
-      return result;
-    }, {});
-  
-    const pieChartData = Object.keys(groupedData).map((ad_provider) => ({
-      name: ad_provider,
-      value: groupedData[ad_provider] || 0,
-    }));
-    const defaultSeriesOrder = ['ADN PC', 'DABLE', 'FACEBOOK', '구글', '네이버', '카카오', '페이스북'];
-
-    pieChartData.sort((a, b) => {
-      if (b.value === a.value) {
-        const indexA = defaultSeriesOrder.indexOf(a.name);
-        const indexB = defaultSeriesOrder.indexOf(b.name);
-        return indexA - indexB;
-      }
-    
-      return b.value - a.value;
-    });
-
-const option = {
-tooltip: {
-    trigger: "item",
-    textStyle: {
-      fontSize: 10,
-      color: "#000000",
-    },
-  },
-legend: {
-    orient: "vertical",
-    right: "1",
-    top: "0",
-    itemWidth: 9,
-    itemHeight: 9,
-    textStyle: {
-      fontSize: 13,
-    },
-  },
-
-grid: {
-    left: -20, // Adjust the left position of the chart
-  },
-series: [
-    {
-      type: "pie",
-      radius: "90%",
-      selectedMode: 'multiple',
-      selectedOffset: 10,
-      color: colors,
-      label: {
-        show: true,
-        color: "#ffffff",
-        align: "center",
-        position: "inside",
-        formatter: function(params) {
-          return `${params.percent.toFixed(1)}%`;
-        },
-        fontSize: 9,
-        textBorderColor: 'black',
-        textBorderWidth: 3
-      },
-      labelLine: { show: false },
-      data: pieChartData,
-      emphasis: {
-        itemStyle: {
-          shadowBlur: 10,
-          shadowOffsetX: 0,
-          shadowColor: "rgba(0, 0, 0, 0.5)",
-        },
-      },
-      itemStyle: {
-        borderWidth: "1",
-        borderColor: "#ffffff",
-      },
-    },
-  ],
-};
-
-return(
-<>
-  <div className="pieChartDiv" style={{width: "100%",height:"100%", marginLeft:'-30px'}}>
-    {data.length >0 ?
-      <ECharts option={option}/>
-      : <EmptyPieChart/>
+  const groupedData = filteredData.reduce((result, item) => {
+    const { ad_provider, [selectedValue]: value } = item;
+    if (!result[ad_provider]) {
+      result[ad_provider] = 0;
     }
-  </div>
-</>
+    result[ad_provider] += parseFloat(value);
+    return result;
+  }, {});
+  
+  const pieChartData = Object.keys(groupedData).map((ad_provider) => ({
+    name: ad_provider,
+    value: groupedData[ad_provider] || 0,
+  }));
+
+  const defaultSeriesOrder = ['ADN PC', 'DABLE', 'FACEBOOK', '구글', '네이버', '카카오', '페이스북'];
+
+  pieChartData.sort((a, b) => {
+    if (b.value === a.value) {
+      const indexA = defaultSeriesOrder.indexOf(a.name);
+      const indexB = defaultSeriesOrder.indexOf(b.name);
+      return indexA - indexB;
+    }
+
+    return b.value - a.value;
+  });
+
+  const option = {
+    tooltip: {
+      trigger: "item",
+      textStyle: {
+        fontSize: 10,
+        color: "#000000",
+      },
+    },
+    legend: {
+      orient: "vertical",
+      right: "1",
+      top: "0",
+      itemWidth: 9,
+      itemHeight: 9,
+      textStyle: {
+        fontSize: 13,
+      },
+    },
+    grid: {
+      left: -20, // Adjust the left position of the chart
+    },
+    series: [
+      {
+        type: "pie",
+        radius: "90%",
+        selectedMode: 'multiple',
+        selectedOffset: 10,
+        color: colors,
+        label: {
+          show: true,
+          color: "#ffffff",
+          align: "center",
+          position: "inside",
+          formatter: function (params) {
+            return `${params.percent.toFixed(1)}%`;
+          },
+          fontSize: 9,
+          textBorderColor: 'black',
+          textBorderWidth: 3,
+        },
+        labelLine: { show: false },
+        data: pieChartData,
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: "rgba(0, 0, 0, 0.5)",
+          },
+        },
+        itemStyle: {
+          borderWidth: "1",
+          borderColor: "#ffffff",
+        },
+      },
+    ],
+  };
+
+  return (
+    <>
+      <div className="pieChartDiv" style={{ width: "100%", height: "100%", marginLeft: '-30px' }}>
+        {data.length > 0 ? (
+          <ECharts option={option} />
+        ) : (
+          <EmptyPieChart />
+        )}
+      </div>
+    </>
   );
 };
 
