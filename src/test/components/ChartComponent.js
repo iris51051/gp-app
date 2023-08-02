@@ -392,28 +392,28 @@ export const LineChart = ({ colors }) => {
  * */
 
 export const PieChart = ({ colors , data, SelectedChartOption }) => {
-  //data이름이 기타일 경우 지정색 고정
-  // console.log('PieChartPieChart',data);
-  // console.log('SelectedChartOption',SelectedChartOption);
-  // const ColoredData = data.map((item) => ({
-  //   ...item,
-  //   itemStyle: {
-  //     color:
-  //       item.name === "기타"
-  //         ? "#bababa"
-  //         : colors[data.findIndex((d) => d.name === item.name)],
-  //   },
-  // }));
-    // 1. Filter the data based on "SelectedChartOption[0].value"
+  console.log("Piedata",data)
     const selectedValue = SelectedChartOption[0]?.value;
-    const filteredData = data.map((item) => ({
+    let filteredData ='';
+    if(SelectedChartOption[0]?.value === 'm_conv/click'){ 
+      filteredData = data.map((item) => ({
+          ad_provider: item.ad_provider,
+          [selectedValue]: item.m_click !==0 ? ((item.m_conv / item.m_click)*100).toFixed(2):0,
+        }));
+    }else if(SelectedChartOption[0]?.value === 'm_ctr'){
+      filteredData = data.map((item) => ({
+        ad_provider: item.ad_provider,
+        [selectedValue]: item.m_impr !==0 ? item.m_click/item.m_impr : 0
+      }));
+    }else{
+    filteredData = data.map((item) => ({
       ad_provider: item.ad_provider,
       [selectedValue]: item[selectedValue],
     }));
-  
-    // 2. Group the filtered data by "ad_provider" and calculate the sum of "m_impr" for each group
+  }
     const groupedData = filteredData.reduce((result, item) => {
       const { ad_provider, [selectedValue]: value } = item;
+
       if (!result[ad_provider]) {
         result[ad_provider] = 0;
       }
@@ -421,12 +421,22 @@ export const PieChart = ({ colors , data, SelectedChartOption }) => {
       return result;
     }, {});
   
-    // 3. Convert the grouped data into a format suitable for the pie chart
     const pieChartData = Object.keys(groupedData).map((ad_provider) => ({
       name: ad_provider,
-      value: groupedData[ad_provider],
+      value: groupedData[ad_provider] || 0,
     }));
-    pieChartData.sort((a, b) => b.value - a.value);
+    const defaultSeriesOrder = ['ADN PC', 'DABLE', 'FACEBOOK', '구글', '네이버', '카카오', '페이스북'];
+
+    pieChartData.sort((a, b) => {
+      if (b.value === a.value) {
+        const indexA = defaultSeriesOrder.indexOf(a.name);
+        const indexB = defaultSeriesOrder.indexOf(b.name);
+        return indexA - indexB;
+      }
+    
+      return b.value - a.value;
+    });
+
 const option = {
 tooltip: {
     trigger: "item",
@@ -452,7 +462,7 @@ grid: {
 series: [
     {
       type: "pie",
-      radius: "75%",
+      radius: "90%",
       selectedMode: 'multiple',
       selectedOffset: 10,
       color: colors,

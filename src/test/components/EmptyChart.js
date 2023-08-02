@@ -116,7 +116,7 @@ export const EmptyLineChart =()=>{
   series: [
     {
       type: 'pie',
-      radius: '80%',
+      radius: '90%',
       selectedOffset: 10,
     }
   ]

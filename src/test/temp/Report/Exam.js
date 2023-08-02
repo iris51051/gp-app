@@ -26,7 +26,54 @@ const ExamReport =({colors})=>{
     const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
     const [vatValue, setVatValue] = useState(true);   //vat포함 여부
     const [datas, setDatas] = useState([])      //날자별 데이터
-
+    const [ChartOptions, setChartOptions] = useState([
+      {
+        key: 1,
+        label: '노출수',
+        value: 'm_impr',
+      },
+      {
+        key: 2,
+        label: '클릭수',
+        value: 'm_click',
+      },
+      {
+        key: 3,
+        label: 'CTR',
+        value: 'm_ctr',
+      },
+      {
+        key: 4,
+        label: 'CPC',
+        value: 'm_cpc',
+      },
+      {
+        key: 5,
+        label: '광고비',
+        value: 'm_cost',
+      },
+      {
+        key: 6,
+        label: '전환수',
+        value: 'm_conv',
+      },
+      {
+        key: 7,
+        label: '전환율',
+        value: 'm_conv/click',
+      },
+      {
+        key: 8,
+        label: '매출액',
+        value: 'm_rvn',
+      },
+      {
+        key: 9,
+        label: 'ROAS',
+        value: 'm_roas',
+      },
+    ])
+    
     
     const [siteFilter, setSiteFilter] = useState([]); //사이트
     const [mdFilter, setMdFilter] = useState([]);     //광고매체사
@@ -36,10 +83,11 @@ const ExamReport =({colors})=>{
     const [campFilter, setCampFilter] = useState([]);   //캠페인
     const [adMtFilter, setAdMtFilter] = useState([]);   //소재
     const [adDevFilter, setAdDevFilter] = useState([]); //디바이스
-    const [data,setData] = useState([]);                //총괄 데이터
+    
+    const [SelectedChartOption, setSelectedChartOption] = useState([ChartOptions[0]]);
 
-  // console.log(pfFilter,campFilter,adMtFilter,adDevFilter,siteFilter,mdFilter,dataType)
-  // console.log('사이트 선택',siteFilter)
+    // console.log(pfFilter,campFilter,adMtFilter,adDevFilter,siteFilter,mdFilter,dataType)
+    // console.log('사이트 선택',siteFilter)
   // console.log("캠페인 선택",campFilter)
   // console.log('소재유형',adMtFilter)
   // console.log('디바이스',adDevFilter)
@@ -48,18 +96,146 @@ const ExamReport =({colors})=>{
   // console.log('스크립트',dataType)
   // console.log('Datas',datas)
 
-
-
-
-    //확인 키를 눌렀을 때만 filter 적용 시킬 경우에 사용 해야할 부분
-    const defaultFilterOptions = {
-        AdSiteData: AdSiteData,
-        adMediaData: adMediaData,
-        vatValue: vatValue,
-        Datas : datas
-      };
-    const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
-    //확인 키를 눌렀을 때만 filter 적용 시킬 경우에 사용 해야할 부분
+  const DataTypeChange = useCallback((value)=>{
+    setDataType(value);
+    if(value ==='script'){
+      setChartOptions([
+        {
+          key: 1,
+          label: '노출수',
+          value: 'm_impr',
+        },
+        {
+          key: 2,
+          label: '클릭수',
+          value: 'm_click',
+        },
+        {
+          key: 3,
+          label: 'CTR',
+          value: 'm_ctr',
+        },
+        {
+          key: 4,
+          label: 'CPC',
+          value: 'm_cpc',
+        },
+        {
+          key: 5,
+          label: '광고비',
+          value: 'm_cost',
+        },
+        {
+          key: 6,
+          label: '주문수',
+          value: 'odr',
+        },
+        {
+          key: 7,
+          label: '주문율',
+          value: 'odr_per_m_cost',
+        },
+        {
+          key: 8,
+          label: '주문금액',
+          value: 'rvn',
+        },
+        {
+          key: 9,
+          label: 'ROAS',
+          value: 'roas',
+        },
+        {
+          key: 10,
+          label: '구매단가',
+          value: 'rvn_per_odr',
+        },
+        {
+          key: 11,
+          label: '회원가입수',
+          value: 'rgr',
+        },
+        {
+          key: 12,
+          label: '회원가입율',
+          value: 'rgr_per_m_click',
+        },
+        {
+          key: 13,
+          label: '추천수',
+          value: 'g1',
+        },
+        {
+          key: 14,
+          label: '예약수',
+          value: 'g2',
+        },
+        {
+          key: 15,
+          label: 'dddd',
+          value: 'g3',
+        },
+        {
+          key: 16,
+          label: '전화걸기',
+          value: 'g4',
+        },
+        {
+          key: 17,
+          label: '회사소개서 다운',
+          value: 'g5',
+        },
+      ])
+    }else{
+      setChartOptions([
+        {
+          key: 1,
+          label: '노출수',
+          value: 'm_impr',
+        },
+        {
+          key: 2,
+          label: '클릭수',
+          value: 'm_click',
+        },
+        {
+          key: 3,
+          label: 'CTR',
+          value: 'm_ctr',
+        },
+        {
+          key: 4,
+          label: 'CPC',
+          value: 'm_cpc',
+        },
+        {
+          key: 5,
+          label: '광고비',
+          value: 'm_cost',
+        },
+        {
+          key: 6,
+          label: '전환수',
+          value: 'm_conv',
+        },
+        {
+          key: 7,
+          label: '전환율',
+          value: 'm_conv/click',
+        },
+        {
+          key: 8,
+          label: '매출액',
+          value: 'm_rvn',
+        },
+        {
+          key: 9,
+          label: 'ROAS',
+          value: 'm_roas',
+        },
+      ])
+    }
+  },[])
 
     const items = [
         { title: "AIR(매체 통합 리포트)", href: "/" },
@@ -73,10 +249,8 @@ const ExamReport =({colors})=>{
         setSiteFilter(uniqueSites);
       }, [A_bizDetail]);
       
-    const updateData = useCallback(() => {
-
       
-    },[siteFilter,mdFilter,dataType,pfFilter,campFilter,adMtFilter,adDevFilter,vatValue,datas])
+      console.log('datepick이전의 datas',datas)
     const DateChange = useCallback((value) => {
  
         // //value의 0,1간의 날짜 차이
@@ -95,7 +269,7 @@ const ExamReport =({colors})=>{
               }
           }
       }
-        console.log("StatData",StatData)
+      console.log('순수statData',StatData)
         if(vatValue){
             const updatedStatData = StatData.map((item) => {
                 return {
@@ -108,8 +282,8 @@ const ExamReport =({colors})=>{
                 m_ctr : (item.m_ctr*100).toFixed(2),
               };
             });
-            
             setDatas(updatedStatData);
+            console.log('updatedStatData VatStataData',updatedStatData)
         }else{
           const updatedStatData = StatData.map((item) => {
             return {
@@ -117,11 +291,11 @@ const ExamReport =({colors})=>{
             m_ctr : (item.m_ctr*100).toFixed(2),
           };
         });
-        
             setDatas(updatedStatData);
         }
-    }, [vatValue, AbizStatData]);
-    console.log("datas",datas)
+        console.log('최종statData',StatData)
+    }, [vatValue, AbizStatData,ChartOptions,SelectedChartOption]);
+    console.log('datepick 이후의 datas',datas)
     const adSite =[];
     const adProviders = [];
     const adPlatform = [];
@@ -160,95 +334,8 @@ const ExamReport =({colors})=>{
         value : 2,
       },
     ];
-    const ChartOptions = [
-      {
-        key: 1,
-        label: '노출수',
-        value: 'm_impr',
-      },
-      {
-        key: 2,
-        label: '클릭수',
-        value: 'm_click',
-      },
-      {
-        key: 3,
-        label: 'CTR',
-        value: 'm_ctr',
-      },
-      {
-        key: 4,
-        label: 'CPC',
-        value: 'm_cpc',
-      },
-      {
-        key: 5,
-        label: '광고비',
-        value: 'm_cost',
-      },
-      {
-        key: 6,
-        label: '주문수',
-        value: 'odr',
-      },
-      {
-        key: 7,
-        label: '주문율',
-        value: 'odr_per_m_cost',
-      },
-      {
-        key: 8,
-        label: '주문금액',
-        value: 'rvn',
-      },
-      {
-        key: 9,
-        label: 'ROAS',
-        value: 'roas',
-      },
-      {
-        key: 10,
-        label: '구매단가',
-        value: 'rvn_per_odr',
-      },
-      {
-        key: 11,
-        label: '회원가입수',
-        value: 'rgr',
-      },
-      {
-        key: 12,
-        label: '회원가입율',
-        value: 'rgr_per_m_click',
-      },
-      {
-        key: 13,
-        label: '추천수',
-        value: 'g1',
-      },
-      {
-        key: 14,
-        label: '예약수',
-        value: 'g2',
-      },
-      {
-        key: 15,
-        label: 'dddd',
-        value: 'g3',
-      },
-      {
-        key: 16,
-        label: '전화걸기',
-        value: 'g4',
-      },
-      {
-        key: 17,
-        label: '회사소개서 다운',
-        value: 'g5',
-      },
-    ]
-    const [ChartOption, setChartOption] = useState(ChartOptions[0].value);
-    const [SelectedChartOption, setSelectedChartOption] = useState([ChartOptions[0]]);
+
+  
     for (const data of A_bizDetail) {
         //A_bizDetail의 내용물을 data라는 새로운 객체로 지정.
 
@@ -267,7 +354,6 @@ const ExamReport =({colors})=>{
         const isAdProviderExist = adProviders.some(
           (provider) => provider.name === data.ad_provider
         );
-      
         if (!isAdProviderExist) {
           adProviders.push({ name: data.ad_provider, value: data.ad_provider });
         }
@@ -346,23 +432,18 @@ const ExamReport =({colors})=>{
         setAdDevFilter(DevicefilteredValue);
       }, []);
 
-      const DataTypeChange = useCallback((value)=>{
-        setDataType(value);
-      },[])
+     
       
       const ChartFilter = useCallback((value) => {
-        setChartOption(value);
-        console.log("value","value")
         const updateData = ChartOptions.filter((item) => item.value === value)
         setSelectedChartOption(updateData);
-        console.log("updateData",updateData)
-      },[])
-      console.log("SelectedChartOptionExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExma",SelectedChartOption)
-      console.log("mdFilterExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExmaExma",mdFilter)
+        console.log('updateData',updateData);
+      },[ChartOptions])
       
       const handleSwitchToggle =(value)=>{
         setVatValue(value)
       }
+      console.log('최종datas',datas)
     return(
         <>
           <div className="MainContainer">
