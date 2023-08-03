@@ -54,23 +54,63 @@ const ExamReport =({colors})=>{
       },
       {
         key: 6,
-        label: '전환수',
-        value: 'm_conv',
+        label: '주문수',
+        value: 'odr',
       },
       {
         key: 7,
-        label: '전환율',
-        value: 'm_conv/click',
+        label: '주문율',
+        value: 'odr_per_m_cost',
       },
       {
         key: 8,
-        label: '매출액',
-        value: 'm_rvn',
+        label: '주문금액',
+        value: 'rvn',
       },
       {
         key: 9,
         label: 'ROAS',
-        value: 'm_roas',
+        value: 'roas',
+      },
+      {
+        key: 10,
+        label: '구매단가',
+        value: 'rvn_per_odr',
+      },
+      {
+        key: 11,
+        label: '회원가입수',
+        value: 'rgr',
+      },
+      {
+        key: 12,
+        label: '회원가입율',
+        value: 'rgr_per_m_click',
+      },
+      {
+        key: 13,
+        label: '추천수',
+        value: 'g1',
+      },
+      {
+        key: 14,
+        label: '예약수',
+        value: 'g2',
+      },
+      {
+        key: 15,
+        label: 'dddd',
+        value: 'g3',
+      },
+      {
+        key: 16,
+        label: '전화걸기',
+        value: 'g4',
+      },
+      {
+        key: 17,
+        label: '회사소개서 다운',
+        value: 'g5',
       },
     ])
     

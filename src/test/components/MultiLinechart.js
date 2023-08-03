@@ -5,7 +5,7 @@ import { EmptyLineChart } from "./EmptyChart";
 
 const BLchart = ({ colors, datas, SelectedChartOption,mdFilter,seriesNames }) => {
 
-
+const selectedOption = SelectedChartOption[0].value
 const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
 
 
@@ -21,6 +21,7 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
       }
 
       //비어있는 데이터 채우기
+      //ad_providersms 실제 페이지에 사용시 Exam에서 mfFilter로 선택된 데이터를 받아오도록 바꿔줘야함.
       if(DateArr.length < ad_provider.length){
         const existProvider = DateArr.map(item => item.ad_provider);
         const addProvider = ad_provider.filter((item) => !existProvider.includes(item))
@@ -31,12 +32,12 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
             ad_provider : newData,
           }
 
-          if (SelectedChartOption[0].value === "m_conv/click") {
+          if (selectedOption === "m_conv/click") {
             newObj["m_conv"] = 0;
             newObj["m_click"] = 0;
             datas.push(newObj);
           } else {
-            newObj[SelectedChartOption[0].value] = 0;
+            newObj[selectedOption] = 0;
             datas.push(newObj);
           }
         }
@@ -49,32 +50,100 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
     const dateB = new Date(b.stat_date);
     return dateA - dateB;
   });
-  const adProviderSums = seriesNames.reduce((sums, provider) => {
-    if(SelectedChartOption[0].value ==='m_ctr'){
-      sums[provider] = datas.reduce((sum, item) => {
+  const adProviderRes = seriesNames.reduce((results, provider) => {
+    if (selectedOption === 'm_ctr') {
+      const { totClick, totImpression } = datas.reduce((totals, item) => {
         if (item.ad_provider === provider) {
-          sum += item[SelectedChartOption[0].value];
+          totals.totClick += parseInt(item.m_click) >0? parseInt(item.m_click) : 0;
+          totals.totImpression += parseInt(item.m_impr) >0? parseInt(item.m_impr) : 0 ;
         }
-        return sum;
-      }, 0);
+
+        return totals;
+      }, { totClick: 0, totImpression: 0 });
+      results[provider] = totImpression !== 0 ? totClick / totImpression : 0;
+
+    }else if(selectedOption ==='m_cpc'){
+      const { totClick, totCost } = datas.reduce((totals, item) => {
+        if (item.ad_provider === provider) {
+          totals.totClick += parseInt(item.m_click) >0? parseInt(item.m_click) : 0;
+          totals.totCost += parseInt(item.m_cost) >0? parseInt(item.m_cost) : 0 ;
+        }
+        return totals;
+      }, { totClick: 0, totCost: 0 });
+      results[provider] = totClick !== 0 ?  totCost/totClick : 0;
+
+    }else if(selectedOption ==='m_roas'){
+      const { totRvn, totCost } = datas.reduce((totals, item) => {
+        if (item.ad_provider === provider) {
+          totals.totRvn += parseInt(item.m_rvn) > 0? parseInt(item.m_rvn) : 0;
+          totals.totCost += parseInt(item.m_cost) >0? parseInt(item.m_cost) : 0 ;
+        }
+        return totals;
+      }, { totRvn: 0, totCost: 0 });
+      results[provider] = totCost !== 0 ?  totRvn/totCost : 0;
+
+
+    }else if(selectedOption ==='roas'){
+      const { totRvn, totCost } = datas.reduce((totals, item) => {
+        if (item.ad_provider === provider) {
+          totals.totRvn += parseInt(item.rvn) > 0? parseInt(item.rvn) : 0;
+          totals.totCost += parseInt(item.m_cost) >0? parseInt(item.m_cost) : 0 ;
+        }
+        return totals;
+      }, { totRvn: 0, totCost: 0 });
+      results[provider] = totCost !== 0 ?  totRvn/totCost : 0;
+
+
+    }else if(selectedOption ==='odr_per_m_cost'){
+      const { totOdr, totCost } = datas.reduce((totals, item) => {
+        if (item.ad_provider === provider) {
+          totals.totOdr += parseInt(item.odr) > 0? parseInt(item.odr) : 0;
+          totals.totCost += parseInt(item.m_cost) >0? parseInt(item.m_cost) : 0 ;
+        }
+        return totals;
+      }, { totOdr: 0, totCost: 0 });
+      results[provider] = totCost !== 0 ?  totOdr/totCost : 0;
+
+
+    }else if(selectedOption ==='rvn_per_odr'){
+      const { totRvn, totOdr } = datas.reduce((totals, item) => {
+        if (item.ad_provider === provider) {
+          totals.totRvn += parseInt(item.rvn) > 0? parseInt(item.rvn) : 0;
+          totals.totOdr += parseInt(item.odr) >0? parseInt(item.odr) : 0 ;
+        }
+        return totals;
+      }, { totRvn: 0, totOdr: 0 });
+      results[provider] = totOdr !== 0 ?  totRvn/totOdr : 0;
+
+
+    }else if(selectedOption ==='rgr_per_m_click'){
+      const { totRgr, totClick } = datas.reduce((totals, item) => {
+        if (item.ad_provider === provider) {
+          totals.totRgr += parseInt(item.rgr) > 0? parseInt(item.rgr) : 0;
+          totals.totClick += parseInt(item.m_click) >0? parseInt(item.m_click) : 0 ;
+        }
+        return totals;
+      }, { totRgr: 0, totClick: 0 });
+      results[provider] = totClick !== 0 ?  totRgr/totClick : 0;
+
 
     }else{
-    sums[provider] = datas.reduce((sum, item) => {
+      results[provider] = datas.reduce((result, item) => {
       if (item.ad_provider === provider) {
-        sum += item[SelectedChartOption[0].value];
+        result += parseInt(item[selectedOption]) >0? parseInt(item[selectedOption]):0;
       }
-      return sum;
+      return result;
     }, 0);
   }
 
-    return( sums);
-
+    return( results);
   }, {});
+  console.log('LineadProviderRes',adProviderRes)
   // seriesNames.sort((a, b) => adProviderSums[b] - adProviderSums[a]);
   const defaultSeriesOrder = ['ADN PC', 'DABLE', 'FACEBOOK', '구글', '네이버', '카카오', '페이스북'];
   seriesNames.sort((a, b) => {
-    const sumA = adProviderSums[a] || 0; // If sum is undefined, set it to 0
-    const sumB = adProviderSums[b] || 0; // If sum is undefined, set it to 0
+    const sumA = adProviderRes[a] || 0; // If sum is undefined, set it to 0
+    const sumB = adProviderRes[b] || 0; // If sum is undefined, set it to 0
   
     if (sumA === sumB) {
       const indexA = defaultSeriesOrder.indexOf(a);
@@ -92,19 +161,19 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
    
   const adProviderColors = {};
   seriesNames.forEach((provider, index) => {
-    adProviderColors[provider] = colors[index % colors.length];
+    adProviderColors[provider] = colors[index];
   });
 
   const DataRender =(name)=>{
     const getData = datas.filter((item) => item.ad_provider === name)
-  if(SelectedChartOption[0].value === 'm_conv/click'){
+  if(selectedOption === 'm_conv/click'){
     return getData.map((item) => {
       const m_conv = item.m_conv || 0; // Handle cases where m_conv is missing or null
       const m_click = item.m_click || 1; // To prevent division by zero
       const ratio = m_conv / m_click;
       return (ratio * 100).toFixed(2);
     });
-  }else if(SelectedChartOption[0].value === 'm_roas'){
+  }else if(selectedOption === 'm_roas'){
     return getData.map((item) => {
     const m_roas = item.m_roas || 0;
     return (m_roas * 100).toFixed(2);
@@ -112,7 +181,7 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
   }
   else{
     return getData.map((item) => {
-      const ratio = item[SelectedChartOption[0].value] || 0; // Handle cases where m_conv is missing or null
+      const ratio = item[selectedOption] || 0; // Handle cases where m_conv is missing or null
       return ratio;
     });
     }
@@ -124,16 +193,20 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
       formatter: function (params) {
         let tooltipContent = `${params[0].name}<br/>`;
         let formattedValue="";
-
+        params.sort((a, b) => {
+          const aIndex = seriesNames.indexOf(a.seriesName);
+          const bIndex = seriesNames.indexOf(b.seriesName);
+          return aIndex - bIndex;
+      });
         for (const series of params) {
           const value = series.value;
-          if (SelectedChartOption[0].value === 'm_conv/click') {
+          if (selectedOption === 'm_conv/click') {
             if(value>0){
             formattedValue = `${value}%`; // Add percentage sign for 'm_conv/click' series
             }else{
               formattedValue ='-';
             }
-          } else if (SelectedChartOption[0].value === 'm_rvn' || SelectedChartOption[0].value === 'm_cost') {
+          } else if (selectedOption === 'm_rvn' || selectedOption === 'm_cost' || selectedOption ==='m_cpc' || selectedOption === 'rvn_per_odr' || selectedOption ==='rvn') {
             if(value >0){
             formattedValue = Intl.NumberFormat('ko-KR', {
               style: 'currency',

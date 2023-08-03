@@ -392,109 +392,146 @@ export const LineChart = ({ colors }) => {
  * */
 
  export const PieChart = ({ colors, datas, SelectedChartOption }) => {
-  const sumProperty = (datas, property) => {
-    return datas.reduce((total, item) => {
-      if (item.hasOwnProperty(property)) {
-        return total + item[property];
-      }
-      return total;
-    }, 0);
-  };
-
-
-  const calculateSumsByAdProvider = (datas, property) => {
-    const sums = {};
-    datas.forEach((item) => {
-      const ad_provider = item.ad_provider;
-      const value = item[property] || 0;
-      if (sums[ad_provider] === undefined) {
-        sums[ad_provider] = value;
-      } else {
-        sums[ad_provider] += value;
-      }
-    });
-    return sums;
-  };
-
-  const selectedValue = SelectedChartOption[0]?.value;
-  let filteredData;
-
-  if (selectedValue === 'm_conv/click') {
-    filteredData = datas.map((item) => ({
-      ad_provider: item.ad_provider,
-      [selectedValue]: item.m_click !== 0 ? ((item.m_conv / item.m_click) * 100).toFixed(2) : 0,
-    }));
-  } else if (selectedValue === 'm_ctr') {
-    const totalClicksByAdProvider = calculateSumsByAdProvider(datas, 'm_click');
-    const totalImpressionsByAdProvider = calculateSumsByAdProvider(datas, 'm_impr');
-    const processedProviders = new Set(); // Set to track processed ad_providers
-  
-    filteredData = datas.reduce((result, item) => {
-      const ad_provider = item.ad_provider;
-      if (!processedProviders.has(ad_provider)) {
-        const value = totalImpressionsByAdProvider[ad_provider] !== 0
-          ? (totalClicksByAdProvider[ad_provider] / totalImpressionsByAdProvider[ad_provider] * 100).toFixed(2)
-          : 0;
-  
-        result.push({
-          ad_provider: ad_provider,
-          [selectedValue]: value,
-        });
-  
-        processedProviders.add(ad_provider); // Mark ad_provider as processed
-      }
-  
-      return result;
-    }, []);
-  }  else {
-    filteredData = datas.map((item) => ({
-      ad_provider: item.ad_provider,
-      [selectedValue]: item[selectedValue],
-    }));
-  }
-  const groupedData = filteredData.reduce((result, item) => {
-    const { ad_provider, [selectedValue]: value } = item;
-    if (!result[ad_provider]) {
-      result[ad_provider] = 0;
+  console.log('datas',datas)
+  const selectedOption = SelectedChartOption[0].value;
+  const seriesNames =[]
+  datas.forEach(item => {
+    if(!seriesNames.includes(item.ad_provider)){
+      seriesNames.push(item.ad_provider)
     }
-    result[ad_provider] += parseFloat(value);
-    return result;
-  }, {});
+  })
+  console.log('seriesNames',seriesNames)
   
-  const pieChartData = Object.keys(groupedData).map((ad_provider) => ({
-    name: ad_provider,
-    value: groupedData[ad_provider] || 0,
-  }));
+  const adProviderRes = seriesNames.reduce((results, provider) => {
+    if (selectedOption === 'm_ctr') {
+      const { totClick, totImpression } = datas.reduce((totals, item) => {
+        if (item.ad_provider === provider) {
+          totals.totClick += parseInt(item.m_click) >0? parseInt(item.m_click) : 0;
+          totals.totImpression += parseInt(item.m_impr) >0? parseInt(item.m_impr) : 0 ;
+        }
+        return totals;
+      }, { totClick: 0, totImpression: 0 });
+      results[provider] = totImpression !== 0 ? (totClick/totImpression*100).toFixed(2) : 0;
 
+    }else if(selectedOption ==='m_cpc'){
+      const { totClick, totCost } = datas.reduce((totals, item) => {
+        if (item.ad_provider === provider) {
+          totals.totClick += parseInt(item.m_click) >0? parseInt(item.m_click) : 0;
+          totals.totCost += parseInt(item.m_cost) >0? parseInt(item.m_cost) : 0 ;
+        }
+        return totals;
+      }, { totClick: 0, totCost: 0 });
+      results[provider] = totClick !== 0 ?  (totCost/totClick).toFixed(2) : 0;
+
+    }else if(selectedOption ==='m_roas'){
+      const { totRvn, totCost } = datas.reduce((totals, item) => {
+        if (item.ad_provider === provider) {
+          totals.totRvn += parseInt(item.m_rvn) > 0? parseInt(item.m_rvn) : 0;
+          totals.totCost += parseInt(item.m_cost) >0? parseInt(item.m_cost) : 0 ;
+        }
+        return totals;
+      }, { totRvn: 0, totCost: 0 });
+      results[provider] = totCost !== 0 ?  (totRvn/totCost).toFixed(2) : 0;
+
+
+    }else if(selectedOption ==='roas'){
+      const { totRvn, totCost } = datas.reduce((totals, item) => {
+        if (item.ad_provider === provider) {
+          totals.totRvn += parseInt(item.rvn) > 0? parseInt(item.rvn) : 0;
+          totals.totCost += parseInt(item.m_cost) >0? parseInt(item.m_cost) : 0 ;
+        }
+        return totals;
+      }, { totRvn: 0, totCost: 0 });
+      results[provider] = totCost !== 0 ?  (totRvn/totCost).toFixed(2) : 0;
+
+
+    }else if(selectedOption ==='odr_per_m_cost'){
+      const { totOdr, totCost } = datas.reduce((totals, item) => {
+        if (item.ad_provider === provider) {
+          totals.totOdr += parseInt(item.odr) > 0? parseInt(item.odr) : 0;
+          totals.totCost += parseInt(item.m_cost) >0? parseInt(item.m_cost) : 0 ;
+        }
+        return totals;
+      }, { totOdr: 0, totCost: 0 });
+      results[provider] = totCost !== 0 ?  (totOdr/totCost).toFixed(0) : 0;
+
+
+    }else if(selectedOption ==='rvn_per_odr'){
+      const { totRvn, totOdr } = datas.reduce((totals, item) => {
+        if (item.ad_provider === provider) {
+          totals.totRvn += parseInt(item.rvn) > 0? parseInt(item.rvn) : 0;
+          totals.totOdr += parseInt(item.odr) >0? parseInt(item.odr) : 0 ;
+        }
+        return totals;
+      }, { totRvn: 0, totOdr: 0 });
+      results[provider] = totOdr !== 0 ?  (totRvn/totOdr).toFixed(0) : 0;
+
+
+    }else if(selectedOption ==='rgr_per_m_click'){
+      const { totRgr, totClick } = datas.reduce((totals, item) => {
+        if (item.ad_provider === provider) {
+          totals.totRgr += parseInt(item.rgr) > 0? parseInt(item.rgr) : 0;
+          totals.totClick += parseInt(item.m_click) >0? parseInt(item.m_click) : 0 ;
+        }
+        return totals;
+      }, { totRgr: 0, totClick: 0 });
+      results[provider] = totClick !== 0 ?  (totRgr/totClick).toFixed(0) : 0;
+
+
+    }else{
+      results[provider] = datas.reduce((result, item) => {
+      if (item.ad_provider === provider) {
+        result += parseInt(item[selectedOption]) >0? parseInt(item[selectedOption]):0;
+      }
+      return result;
+    }, 0);
+  }
+
+    return( results);
+  }, {});
+console.log('PieadProviderRes',adProviderRes)
   const defaultSeriesOrder = ['ADN PC', 'DABLE', 'FACEBOOK', '구글', '네이버', '카카오', '페이스북'];
-
-  pieChartData.sort((a, b) => {
-    if (b.value === a.value) {
-      const indexA = defaultSeriesOrder.indexOf(a.name);
-      const indexB = defaultSeriesOrder.indexOf(b.name);
+  seriesNames.sort((a, b) => {
+    const sumA = adProviderRes[a] || 0; // If sum is undefined, set it to 0
+    const sumB = adProviderRes[b] || 0; // If sum is undefined, set it to 0
+  
+    if (sumA === sumB) {
+      const indexA = defaultSeriesOrder.indexOf(a);
+      const indexB = defaultSeriesOrder.indexOf(b);
+  
+      if (indexA === -1) return 1; // If not found in defaultSeriesOrder, move it to the end
+      if (indexB === -1) return -1; // If not found in defaultSeriesOrder, move it to the end
+  
       return indexA - indexB;
     }
+  
+    return sumB - sumA;
+  });
 
-    return b.value - a.value;
+  const adProviderColors = {};
+  seriesNames.forEach((provider, index) => {
+    adProviderColors[provider] = colors[index];
   });
 
   const option = {
     tooltip: {
       trigger: "item",
       textStyle: {
-        fontSize: 10,
+        fontSize: 15,
         color: "#000000",
       },
+      formatter: `{b}: {c} ({d})`,
     },
     legend: {
       orient: "vertical",
-      right: "1",
+      right: "-6",
       top: "0",
       itemWidth: 9,
       itemHeight: 9,
       textStyle: {
-        fontSize: 13,
+        fontSize: 16,
       },
+      data: seriesNames,
     },
     grid: {
       left: -20, // Adjust the left position of the chart
@@ -502,7 +539,7 @@ export const LineChart = ({ colors }) => {
     series: [
       {
         type: "pie",
-        radius: "90%",
+        radius: "85%",
         selectedMode: 'multiple',
         selectedOffset: 10,
         color: colors,
@@ -514,12 +551,16 @@ export const LineChart = ({ colors }) => {
           formatter: function (params) {
             return `${params.percent.toFixed(1)}%`;
           },
-          fontSize: 9,
+          fontSize: 15,
           textBorderColor: 'black',
           textBorderWidth: 3,
         },
         labelLine: { show: false },
-        data: pieChartData,
+        data:  seriesNames.map(provider => ({
+          name: provider,
+          value: adProviderRes[provider], // Use the adProviderRes values as data
+          itemStyle: { color: adProviderColors[provider] }, // Use the adProviderColors for colors
+        })),
         emphasis: {
           itemStyle: {
             shadowBlur: 10,

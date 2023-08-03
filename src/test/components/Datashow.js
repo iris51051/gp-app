@@ -7,13 +7,13 @@ export const Datashow = ({onValueChange}) => {
   const options = [
     {
       key: "1",
-      value: 'media',
-      label: "매체 전환 데이터 ",
+      value: 'script',
+      label: "스크립트 전환 데이터",
     },
     {
       key: "2",
-      value: 'script',
-      label: "스크립트 전환 데이터",
+      value: 'media',
+      label: "매체 전환 데이터 ",
     },
   ]
   const [DataType, setDataType] =useState(options[0].value)
