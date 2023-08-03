@@ -391,9 +391,9 @@ export const LineChart = ({ colors }) => {
  *
  * */
 
- export const PieChart = ({ colors, data, SelectedChartOption }) => {
-  const sumProperty = (data, property) => {
-    return data.reduce((total, item) => {
+ export const PieChart = ({ colors, datas, SelectedChartOption }) => {
+  const sumProperty = (datas, property) => {
+    return datas.reduce((total, item) => {
       if (item.hasOwnProperty(property)) {
         return total + item[property];
       }
@@ -402,9 +402,9 @@ export const LineChart = ({ colors }) => {
   };
 
 
-  const calculateSumsByAdProvider = (data, property) => {
+  const calculateSumsByAdProvider = (datas, property) => {
     const sums = {};
-    data.forEach((item) => {
+    datas.forEach((item) => {
       const ad_provider = item.ad_provider;
       const value = item[property] || 0;
       if (sums[ad_provider] === undefined) {
@@ -420,16 +420,16 @@ export const LineChart = ({ colors }) => {
   let filteredData;
 
   if (selectedValue === 'm_conv/click') {
-    filteredData = data.map((item) => ({
+    filteredData = datas.map((item) => ({
       ad_provider: item.ad_provider,
       [selectedValue]: item.m_click !== 0 ? ((item.m_conv / item.m_click) * 100).toFixed(2) : 0,
     }));
   } else if (selectedValue === 'm_ctr') {
-    const totalClicksByAdProvider = calculateSumsByAdProvider(data, 'm_click');
-    const totalImpressionsByAdProvider = calculateSumsByAdProvider(data, 'm_impr');
+    const totalClicksByAdProvider = calculateSumsByAdProvider(datas, 'm_click');
+    const totalImpressionsByAdProvider = calculateSumsByAdProvider(datas, 'm_impr');
     const processedProviders = new Set(); // Set to track processed ad_providers
   
-    filteredData = data.reduce((result, item) => {
+    filteredData = datas.reduce((result, item) => {
       const ad_provider = item.ad_provider;
       if (!processedProviders.has(ad_provider)) {
         const value = totalImpressionsByAdProvider[ad_provider] !== 0
@@ -447,7 +447,7 @@ export const LineChart = ({ colors }) => {
       return result;
     }, []);
   }  else {
-    filteredData = data.map((item) => ({
+    filteredData = datas.map((item) => ({
       ad_provider: item.ad_provider,
       [selectedValue]: item[selectedValue],
     }));
@@ -538,7 +538,7 @@ export const LineChart = ({ colors }) => {
   return (
     <>
       <div className="pieChartDiv" style={{ width: "100%", height: "100%", marginLeft: '-30px' }}>
-        {data.length > 0 ? (
+        {datas.length > 0 ? (
           <ECharts option={option} />
         ) : (
           <EmptyPieChart />

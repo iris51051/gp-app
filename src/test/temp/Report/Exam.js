@@ -250,31 +250,37 @@ const ExamReport =({colors})=>{
         const uniqueSites = AdSiteData.filter((site) => uniqueSiteValues.has(site.value));
         setSiteFilter(uniqueSites);
       }, [A_bizDetail]);
-      
-      
-      console.log('날짜 선택 이전의 datasdatasdatasdatas',datas)
+
 
     const DateChange = useCallback((value) => {
-      setDatas(''); 
         // //value의 0,1간의 날짜 차이
         // const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
         
-        let StatData =[];
-        
+        const StatData=[]
+        // console.log("StatData선언 이후의 StatData", StatData)
+        const start_date = format(new Date(value[0]), "yyyy-MM-dd");
+        const end_date = format(new Date(value[1]), "yyyy-MM-dd");
+        const ad_provider = [];
         for(const data of AbizStatData){
           const stat_date = data.stat_date;
-          const ad_provider = data.ad_provider;
-          if(stat_date >= `${format(new Date(value[0]), "yyyy-MM-dd")}` &&
-          stat_date <= `${format(new Date(value[1]), "yyyy-MM-dd")}`){
-              const testData =StatData.filter((item)=>item.stat_date === stat_date)
-              if(!testData.find((item)=>item.ad_provider === ad_provider)){
-                StatData.push(data);
-              }
+          if( stat_date>= start_date && stat_date <= end_date){
+            const provider = data.ad_provider;
+            if(!ad_provider.includes(provider)){
+            ad_provider.push(provider);
           }
+          }
+        }
+        // console.log("ad_provider",ad_provider)
+        for(const data of AbizStatData){
+          // console.log("data",data)
+          const stat_date = data.stat_date;
+            if( stat_date>= start_date && stat_date <= end_date){
+                  StatData.push(data);
+                  // console.log(data);
+            }
       }
-      console.log('statdatas1',StatData)
       if(vatValue){
-        console.log('statdatas2',StatData)
+
             const updatedStatData = StatData.map((item) => {
                 return {
                 ...item,
@@ -286,7 +292,6 @@ const ExamReport =({colors})=>{
                 m_ctr : (item.m_ctr*100).toFixed(2),
               };
             });
-            console.log('updatedStatData',updatedStatData)
             setDatas(updatedStatData);
         }else{
           const updatedStatData = StatData.map((item) => {
@@ -297,9 +302,12 @@ const ExamReport =({colors})=>{
         });
             setDatas(updatedStatData);
         }
+      // const updateData = StatData.filter((item) => ad_provider.includes(item.ad_provider));
+
+      //     setDatas(updateData.filter((item) => ad_provider.includes(item.ad_provider)));
 
     }, [vatValue, AbizStatData,ChartOptions,SelectedChartOption]);
-    console.log('날짜 선택 이후의 datas',datas)
+
     const adSite =[];
     const adProviders = [];
     const adPlatform = [];
@@ -383,27 +391,6 @@ const ExamReport =({colors})=>{
         }
       }
 
-    // const updateFilter = () => {
-
-    //     // Filter the AdData based on the selected adFilter names
-    //     const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
-    //     const filteredadMediaData =adMediaData.filter((item)=> mdFilter.includes(item.ad_provider));
-    //     const filteredadPlatFromData =adMediaData.filter((item)=> pfFilter.includes(item.ad_provider));
-    //     const filteredadCampaignData =adMediaData.filter((item)=> campFilter.includes(item.ad_provider));
-    //     const filteredadMeterialData =adMediaData.filter((item)=> adMtFilter.includes(item.ad_provider));
-    //     const filteredadDeviceData =adMediaData.filter((item)=> adDevFilter.includes(item.ad_provider));
-    //     const filteredadDataTypeData =dataType;
-        
-    //     // You can use the spread operator to update the filterOptions state
-    //     setFilterOptions((prevOptions) => ({
-    //       ...prevOptions,
-    //       AdSiteData:filteredAdSiteData,
-    //       adMediaData:filteredadMediaData,
-    //       Datas : datas,
-    //     })); 
-    //   };
-
-
     //대상, 필터 데이터 변경
       const adsiteChange = useCallback((value) => {
         const AdSitefilteredValue = value.filter((option) => option !== "selectAll");
@@ -448,7 +435,7 @@ const ExamReport =({colors})=>{
       }
 
 
-      console.log('datas',datas)
+
     return(
         <>
           <div className="MainContainer">
@@ -469,7 +456,6 @@ const ExamReport =({colors})=>{
               <div style={{display:'flex', justifyContent:'end', paddingBottom:'10px'}}>
                 <Calendar onValueChange={DateChange} />
               </div>
-
               <div className="WhiteBox">
                     <Space size="large">
                        <Text strong level={4}>
@@ -520,13 +506,13 @@ const ExamReport =({colors})=>{
                     <br/>
                     <div style={{display:'flex', justifyContent:'start', alignContent:'center'}}>
                       <div style={{width:'70%'}}>
-                      <MultiLinechart data={datas} mdFilter={mdFilter} SelectedChartOption={SelectedChartOption} colors={colors}/>
+                      <MultiLinechart datas={datas} mdFilter={mdFilter} SelectedChartOption={SelectedChartOption} colors={colors}/>
                       </div>
                       <div>
                       <Divider style={{height:'300px'}}type='vertical' />
                       </div>
                       <div style={{width:"30%"}}>
-                      <PieChart colors={colors} SelectedChartOption={SelectedChartOption}  data={datas}></PieChart>
+                      <PieChart colors={colors} SelectedChartOption={SelectedChartOption}  datas={datas}></PieChart>
                       </div>
                     </div>
                   </div>

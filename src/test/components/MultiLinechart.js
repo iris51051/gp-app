@@ -3,52 +3,55 @@ import { useState, useEffect } from "react";
 import ECharts from "echarts-for-react";
 import { EmptyLineChart } from "./EmptyChart";
 
-const BLchart = ({ colors, data, SelectedChartOption,mdFilter }) => {
-  const [seriesNames, setSeriesNames] = useState([]);
+const BLchart = ({ colors, datas, SelectedChartOption,mdFilter,seriesNames }) => {
 
 
-  useEffect(() => {
-    const newSeriesNames = mdFilter.filter((provider) =>
-      data.some((item) => item.ad_provider === provider)
-    );
-    setSeriesNames(newSeriesNames); // Update the series names with the new values
-  }, [data, SelectedChartOption, mdFilter]);
+const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
 
-const xAxisData = [...new Set(data.map((item) => item.stat_date))];
 
-for (const newData of data) {
-  const stat_date = newData.stat_date;
-  const DateArr = data.filter((item) => item.stat_date === stat_date);
-  if (DateArr.length < seriesNames.length) {
-    const adProviders = DateArr.map((item) => item.ad_provider);
-    const addProvider = seriesNames.filter(
-      (item) => !adProviders.includes(item)
-    );
-    for (const newData of addProvider) {
-      const newObj = {
-        stat_date: stat_date,
-        ad_provider: newData,
-      };
-      if (SelectedChartOption[0].value === "m_conv/click") {
-        newObj["m_conv"] = 0;
-        newObj["m_click"] = 0;
-        data.unshift(newObj);
-      } else {
-        newObj[SelectedChartOption[0].value] = 0;
-        data.unshift(newObj);
+    for (const newData of datas) {
+      const stat_date = newData.stat_date;
+      const DateArr = datas.filter((item) => item.stat_date === stat_date);
+      const ad_provider = [];
+      for(const data of datas){
+          const provider = data.ad_provider;
+          if(!ad_provider.includes(provider)){
+          ad_provider.push(provider);
+        }
+      }
+
+      //비어있는 데이터 채우기
+      if(DateArr.length < ad_provider.length){
+        const existProvider = DateArr.map(item => item.ad_provider);
+        const addProvider = ad_provider.filter((item) => !existProvider.includes(item))
+        for(const newData of addProvider){
+
+          const newObj ={
+            stat_date : stat_date,
+            ad_provider : newData,
+          }
+
+          if (SelectedChartOption[0].value === "m_conv/click") {
+            newObj["m_conv"] = 0;
+            newObj["m_click"] = 0;
+            datas.push(newObj);
+          } else {
+            newObj[SelectedChartOption[0].value] = 0;
+            datas.push(newObj);
+          }
+        }
       }
     }
-  }
-}
+
   //그래프에 표시될 data의 stat_date를 오름차순으로 정렬
-  data.sort((a, b) => {
+  datas.sort((a, b) => {
     const dateA = new Date(a.stat_date);
     const dateB = new Date(b.stat_date);
     return dateA - dateB;
   });
   const adProviderSums = seriesNames.reduce((sums, provider) => {
     if(SelectedChartOption[0].value ==='m_ctr'){
-      sums[provider] = data.reduce((sum, item) => {
+      sums[provider] = datas.reduce((sum, item) => {
         if (item.ad_provider === provider) {
           sum += item[SelectedChartOption[0].value];
         }
@@ -56,7 +59,7 @@ for (const newData of data) {
       }, 0);
 
     }else{
-    sums[provider] = data.reduce((sum, item) => {
+    sums[provider] = datas.reduce((sum, item) => {
       if (item.ad_provider === provider) {
         sum += item[SelectedChartOption[0].value];
       }
@@ -93,7 +96,7 @@ for (const newData of data) {
   });
 
   const DataRender =(name)=>{
-    const getData = data.filter((item) => item.ad_provider === name)
+    const getData = datas.filter((item) => item.ad_provider === name)
   if(SelectedChartOption[0].value === 'm_conv/click'){
     return getData.map((item) => {
       const m_conv = item.m_conv || 0; // Handle cases where m_conv is missing or null
@@ -202,18 +205,28 @@ for (const newData of data) {
   );
 };
 
-export const MultiLinechart = ({ data, colors, SelectedChartOption, mdFilter }) => {
+export const MultiLinechart = ({ datas, colors, SelectedChartOption, mdFilter }) => {
   // Filter the data based on mdFilter
+  const [seriesNames, setSeriesNames] = useState([]);
+
+  useEffect(() => {
+    const newSeriesNames = mdFilter.filter((provider) =>
+      datas.some((item) => item.ad_provider === provider)
+    );
+
+    setSeriesNames(newSeriesNames); // Update the series names with the new values
+  }, [datas, SelectedChartOption, mdFilter]);
 
   return (
     <>
-      {data.length > 0 ? (
+      {datas.length > 0 ? (
         <BLchart
-          data={data}
+          datas={datas}
           SelectedChartOption={SelectedChartOption}
           colors={colors}
           mdFilter={mdFilter}
           notMerge={true}
+          seriesNames={seriesNames}
         />
       ) : (
         <EmptyLineChart />
