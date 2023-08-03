@@ -525,7 +525,7 @@ console.log('PieadProviderRes',adProviderRes)
     legend: {
       orient: "vertical",
       right: "-6",
-      top: "0",
+      top: "middle",
       itemWidth: 9,
       itemHeight: 9,
       textStyle: {
