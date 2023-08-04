@@ -156,7 +156,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
       >
       <div className="demo-logo-vertical" />
       <div className="sider-selector">
-        <span>광고주 선택</span>
+        <span style={{fontSize:'14px', color:'white'}}>광고주 선택</span>
         <Adselect />
       </div>
       <Divider style={{ borderColor: "#273240" }} />

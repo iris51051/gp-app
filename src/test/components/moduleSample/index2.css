@@ -260,9 +260,10 @@
 }
 
 .type3Div .ant-table-row-expand-icon-cell {
-  border-right: none;
+  border-right: none !important;
   width: 43px;
 }
+
 
 .type3Div .selectText {
   font-weight: 400;
