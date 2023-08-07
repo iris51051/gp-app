@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React,{useEffect, useState} from "react";
 import {
   UploadOutlined,
@@ -15,12 +16,14 @@ import AdData from "../data/AdData";
 const { Sider } = Layout;
 
 const Lnb = ({ collapsed ,onValueChange}) => {
-
-
+  // const [data,setData] = useState();
+  
+  
+  
   const location = useLocation();
   const currentPath = location.pathname;
-  
-  const sideItems =[{
+  const sideItems =[
+    {
     key: "0",
     icon: <UserOutlined />,
     value : "/",
@@ -57,11 +60,11 @@ const Lnb = ({ collapsed ,onValueChange}) => {
           <Link to="/temp/monitoring/alarm-setting">알람 설정</Link>
           ),
         },
-      {
-        key: "4-2",
-        value : "/temp/monitoring/alarm-story",
-        label: (
-          <Link to="/temp/monitoring/alarm-story">
+        {
+          key: "4-2",
+          value : "/temp/monitoring/alarm-story",
+          label: (
+            <Link to="/temp/monitoring/alarm-story">
             알람 실행 스토리
           </Link>
         ),
@@ -80,31 +83,47 @@ const Lnb = ({ collapsed ,onValueChange}) => {
     value :"/temp/media/download",
     label: <Link to="/temp/media/download">매체 데이터 다운로드</Link>,
   },
+  
+]
+const [selectedAd,setSelectedAd] = useState(
 
-  ]
-  const [selectedAd,setSelectedAd] = useState();
+);
+const MatchedKey = sideItems.filter((item)=>item.value === currentPath).map((item)=>item.key);
+const [sideItemsValue, setSideItemsValue] = useState(MatchedKey)
 
 
-  const Adselect = () => {
-
+const Adselect = () => {
+  
     let data;
     let defaultValue;
     const navigate = useNavigate();
-
+    const [search, setsearch] = useState(location.search)
+    console.log("location",)
     if (location.pathname === "/") {
       data = [
         { label: "전체광고주", value: "0" },
         ...AdData.map((item) => ({ label: item.name, value: item.value })),
       ];
+      if(search === ''){
       defaultValue = '0'; // Set the default value to "0" if the current path is "/"
-
+      }else{
+        setSelectedAd(search.split('=')[1])
+      }
     } else {
       data = AdData.map((item) => ({ label: item.name, value: item.value }));
+      // const ad = AdData.find((item) => item.value === location.pathname.split("/")[2]);
+      // defaultValue =AdData[0].value; // Find the corresponding ad value in AdData based on the current path
+      if(search === ''){
       defaultValue = data[0]; 
-      if (selectedAd && selectedAd.value === "0") {
-        setSelectedAd(data[0]);
+      }else{
+        if (selectedAd && selectedAd.value === "0") {
+          setSelectedAd(data[0]);
+        }else{
+          setSelectedAd(search.split('=')[1])
+        }
       }
     }
+
     const adSelect =(data)=>{
       setSelectedAd(data);
       onValueChange(data)
@@ -118,7 +137,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
 
     const handleSelectChange = (value, option) => {
       setSelectedAd(option);
-    }
+    };
     return (
       <>
             <Select
@@ -127,23 +146,29 @@ const Lnb = ({ collapsed ,onValueChange}) => {
                 width: 200,
               }}
               options={data}
-              placeholder="Search to Select"
               optionFilterProp="children"
               defaultValue={defaultValue}
-     value={selectedAd}
+              value={selectedAd}
               filterOption={(input, option) => (option?.label ?? '').includes(input)}
-     onChange={(value, option) => {
-      handleToMove(value);
-      handleSelectChange(value, option);
-      }}>
+              onChange={(value, option) => {
+                handleToMove(value);
+                handleSelectChange(value, option);
+                }}>
               </Select>
       </>
     );
   };
+
+
+
   useEffect(() => {
     onValueChange(selectedAd);
   }, [selectedAd,onValueChange]);
 
+  useEffect(() => {
+    setSideItemsValue(MatchedKey)
+  },[currentPath]);
+ 
   return (
 <>
     <Sider
@@ -170,7 +195,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
       <Menu
         theme="dark"
         mode="inline"
-        defaultSelectedKeys={["0"]}
+        defaultSelectedKeys={sideItemsValue}
         items={sideItems}
         // selectedKeys={(sideItems.find((item)=> item.value === currentPath)).key}
         />
@@ -178,5 +203,4 @@ const Lnb = ({ collapsed ,onValueChange}) => {
         </>
   );
 };
-
 export default Lnb;

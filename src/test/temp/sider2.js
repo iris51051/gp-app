@@ -4,7 +4,7 @@ import {
   UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
-import { Link,useLocation, useNavigate   } from "react-router-dom";
+import { Link,useLocation, useNavigate  } from "react-router-dom";
 import { SelectPicker } from "rsuite";
 import { Layout, Menu, Divider,Select } from "antd";
 import AdData from "../data/AdData";
@@ -15,8 +15,6 @@ import AdData from "../data/AdData";
 const { Sider } = Layout;
 
 const Lnb = ({ collapsed ,onValueChange}) => {
-
-
   const location = useLocation();
   const currentPath = location.pathname;
   
@@ -90,7 +88,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
     let data;
     let defaultValue;
     const navigate = useNavigate();
-
+    
     if (location.pathname === "/") {
       data = [
         { label: "전체광고주", value: "0" },
@@ -100,15 +98,18 @@ const Lnb = ({ collapsed ,onValueChange}) => {
 
     } else {
       data = AdData.map((item) => ({ label: item.name, value: item.value }));
+     
       defaultValue = data[0]; 
       if (selectedAd && selectedAd.value === "0") {
         setSelectedAd(data[0]);
       }
     }
+
     const adSelect =(data)=>{
       setSelectedAd(data);
       onValueChange(data)
     }
+
     const handleToMove = (clientSeq) => {
       navigate({
         pathname: currentPath,
@@ -118,7 +119,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
 
     const handleSelectChange = (value, option) => {
       setSelectedAd(option);
-    }
+    };
     return (
       <>
             <Select
@@ -178,5 +179,4 @@ const Lnb = ({ collapsed ,onValueChange}) => {
         </>
   );
 };
-
 export default Lnb;
