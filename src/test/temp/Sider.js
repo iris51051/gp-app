@@ -16,10 +16,18 @@ const { Sider } = Layout;
 
 const Lnb = ({ collapsed ,onValueChange}) => {
 
-
-  const location = useLocation();
-  const currentPath = location.pathname;
   
+  const location = useLocation();
+
+  const [currentPage, setCurrentPage] = useState()
+  const [currentPath, setCurrentPath] = useState()
+  
+  useEffect(() => {
+    setCurrentPage(location.search.split('=')[1])
+    setCurrentPath(location.pathname)
+  },[])
+  
+
   const sideItems =[{
     key: "0",
     icon: <UserOutlined />,
@@ -96,7 +104,14 @@ const Lnb = ({ collapsed ,onValueChange}) => {
         { label: "전체광고주", value: "0" },
         ...AdData.map((item) => ({ label: item.name, value: item.value })),
       ];
-      defaultValue = '0'; // Set the default value to "0" if the current path is "/"
+      if(currentPage === undefined || currentPage === ''){
+        setSelectedAd(data[0])
+      }
+      else{
+        const value = data.findIndex((item)=> item.value===currentPage)
+        setSelectedAd()
+      }
+
 
     } else {
       data = AdData.map((item) => ({ label: item.name, value: item.value }));
@@ -105,6 +120,10 @@ const Lnb = ({ collapsed ,onValueChange}) => {
         setSelectedAd(data[0]);
       }
     }
+    
+    console.log("currentPath",currentPath);
+    console.log("currentPage",currentPage);
+    console.log("data",data.findIndex((item)=> item.value===currentPage));
     const adSelect =(data)=>{
       setSelectedAd(data);
       onValueChange(data)
