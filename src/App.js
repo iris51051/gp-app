@@ -61,9 +61,6 @@ const App = () => {
               }}
             >
               <Routes>
-                {/* {selectedAd === '0'? 
-                <Route path="/" element={<Main/>}></Route>
-                : <Route path="/" element={<Working/>}></Route>} */}
                 <Route path="/" element={<Main colors={colors}/>}></Route>
                 <Route path="/temp/modules" element={<Modules colors={colors}/>}></Route>
                 <Route path="/temp/apitest" element={<Apitest/>}></Route>

@@ -1,11 +1,10 @@
-import React,{useEffect, useState} from "react";
+import React,{useCallback, useEffect, useMemo, useState} from "react";
 import {
   UploadOutlined,
   UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Link,useLocation, useNavigate   } from "react-router-dom";
-import { SelectPicker } from "rsuite";
 import { Layout, Menu, Divider,Select } from "antd";
 import AdData from "../data/AdData";
 
@@ -13,84 +12,87 @@ import AdData from "../data/AdData";
 
 
 const { Sider } = Layout;
-
-const Lnb = ({ collapsed ,onValueChange}) => {
-
-  
-  const location = useLocation();
-
-  const [currentPage, setCurrentPage] = useState()
-  const [currentPath, setCurrentPath] = useState()
-  
-  useEffect(() => {
-    setCurrentPage(location.search.split('=')[1])
-    setCurrentPath(location.pathname)
-  },[])
-  
-
-  const sideItems =[{
-    key: "0",
-    icon: <UserOutlined />,
-    value : "/",
-    label: <Link to="/">통합대시보드</Link>,
-  },
-  {
-    key: "1",
-    icon: <VideoCameraOutlined />,
-    value : "/temp/modules",
-    label: <Link to="/temp/modules">모듈샘플</Link>,
-  },
-  {
-    key: "2",
-    icon: <UploadOutlined />,
-    value : "/temp/apitest",
-    label: <Link to="/temp/apitest">API테스트 페이지</Link>,
-  },
-  {
-    key: "3",
-    icon: <UploadOutlined />,
-    value : "/temp/report/Exam",
-    label: <Link to="/temp/report/Exam">리포트</Link>,
-  },
-  {
-    key: "4",
-    icon: <UploadOutlined />,
-    value : "/temp/monitoring/alarm",
-    label: <Link to="/temp/monitoring/alarm">모니터링 알람</Link>,
-    children: [
-      {
-        key: "4-1",
-        value : "/temp/monitoring/alarm-setting",
-        label: (
-          <Link to="/temp/monitoring/alarm-setting">알람 설정</Link>
-          ),
-        },
-      {
-        key: "4-2",
-        value : "/temp/monitoring/alarm-story",
-        label: (
-          <Link to="/temp/monitoring/alarm-story">
-            알람 실행 스토리
-          </Link>
+const sideItems =[{
+  key: "0",
+  icon: <UserOutlined />,
+  value : "/",
+  label: <Link to="/">통합대시보드</Link>,
+},
+{
+  key: "1",
+  icon: <VideoCameraOutlined />,
+  value : "/temp/modules",
+  label: <Link to="/temp/modules">모듈샘플</Link>,
+},
+{
+  key: "2",
+  icon: <UploadOutlined />,
+  value : "/temp/apitest",
+  label: <Link to="/temp/apitest">API테스트 페이지</Link>,
+},
+{
+  key: "3",
+  icon: <UploadOutlined />,
+  value : "/temp/report/Exam",
+  label: <Link to="/temp/report/Exam">리포트</Link>,
+},
+{
+  key: "4",
+  icon: <UploadOutlined />,
+  value : "/temp/monitoring/alarm",
+  label: <Link to="/temp/monitoring/alarm">모니터링 알람</Link>,
+  children: [
+    {
+      key: "4-1",
+      value : "/temp/monitoring/alarm-setting",
+      label: (
+        <Link to="/temp/monitoring/alarm-setting">알람 설정</Link>
         ),
       },
-    ],
-  },
-  {
-    key: "5",
-    icon: <UploadOutlined />,
-    value : "/temp/media/export",
-    label: <Link to="/temp/media/export">매체 데이터 내보내기</Link>,
-  },
-  {
-    key: "6",
-    icon: <UploadOutlined />,
-    value :"/temp/media/download",
-    label: <Link to="/temp/media/download">매체 데이터 다운로드</Link>,
-  },
+    {
+      key: "4-2",
+      value : "/temp/monitoring/alarm-story",
+      label: (
+        <Link to="/temp/monitoring/alarm-story">
+          알람 실행 스토리
+        </Link>
+      ),
+    },
+  ],
+},
+{
+  key: "5",
+  icon: <UploadOutlined />,
+  value : "/temp/media/export",
+  label: <Link to="/temp/media/export">매체 데이터 내보내기</Link>,
+},
+{
+  key: "6",
+  icon: <UploadOutlined />,
+  value :"/temp/media/download",
+  label: <Link to="/temp/media/download">매체 데이터 다운로드</Link>,
+},
+]
 
-  ]
+
+const Lnb = ({ collapsed ,onValueChange}) => {
+  const location = useLocation();
+  
+  const currentPath = location.pathname;
+  const currentPage = (location.search).split('=')[1]
   const [selectedAd,setSelectedAd] = useState();
+  const [selectedSider, setSelectedSider] = useState(sideItems.filter((item)=>item.value === currentPath).map((item)=>item.key));
+
+  useEffect(() => {
+    setSelectedSider(sideItems.filter((item)=>item.value === currentPath).map((item)=>item.key))
+  }, [location,currentPath])
+  
+
+
+  console.log('selectedSider',selectedSider)
+
+
+  console.log('location',location)
 
 
   const Adselect = () => {
@@ -98,35 +100,34 @@ const Lnb = ({ collapsed ,onValueChange}) => {
     let data;
     let defaultValue;
     const navigate = useNavigate();
-
-    if (location.pathname === "/") {
-      data = [
-        { label: "전체광고주", value: "0" },
-        ...AdData.map((item) => ({ label: item.name, value: item.value })),
-      ];
-      if(currentPage === undefined || currentPage === ''){
-        setSelectedAd(data[0])
+      if (currentPath === "/") {
+        data = [
+          { label: "전체광고주", value: "0" },
+          ...AdData.map((item) => ({ label: item.name, value: item.value })),
+        ];
+        if(currentPage === undefined || currentPage === ''){
+          setSelectedAd(data[0].value)
+        }
+        else{
+          const value = data.findIndex((item)=> item.value===currentPage)
+          setSelectedAd(currentPage)
+        }
+      } else {
+        data = [...AdData.map((item) => ({ label: item.name, value: item.value }))];
+        if (location.search === '') {
+          setSelectedAd(data[0].value);
+        }else{
+          const value = data.findIndex((item)=> item.value===currentPage)
+          setSelectedAd(currentPage);
+        }
       }
-      else{
-        const value = data.findIndex((item)=> item.value===currentPage)
-        setSelectedAd()
-      }
 
 
-    } else {
-      data = AdData.map((item) => ({ label: item.name, value: item.value }));
-      defaultValue = data[0]; 
-      if (selectedAd && selectedAd.value === "0") {
-        setSelectedAd(data[0]);
-      }
-    }
-    
-    console.log("currentPath",currentPath);
-    console.log("currentPage",currentPage);
-    console.log("data",data.findIndex((item)=> item.value===currentPage));
-    const adSelect =(data)=>{
-      setSelectedAd(data);
-      onValueChange(data)
+    const adSelect =(option)=>{
+      const index = data.findIndex((item)=>item.value = option.value)
+      setSelectedAd(option.value);
+      onValueChange(option)
+      handleToMove(option.value)
     }
     const handleToMove = (clientSeq) => {
       navigate({
@@ -135,9 +136,6 @@ const Lnb = ({ collapsed ,onValueChange}) => {
       });
     };
 
-    const handleSelectChange = (value, option) => {
-      setSelectedAd(option);
-    }
     return (
       <>
             <Select
@@ -148,20 +146,17 @@ const Lnb = ({ collapsed ,onValueChange}) => {
               options={data}
               placeholder="Search to Select"
               optionFilterProp="children"
-              defaultValue={defaultValue}
-     value={selectedAd}
+              value={selectedAd}
               filterOption={(input, option) => (option?.label ?? '').includes(input)}
-     onChange={(value, option) => {
-      handleToMove(value);
-      handleSelectChange(value, option);
-      }}>
+              onChange={(value, option) => {
+                adSelect(option)
+                }}>
               </Select>
       </>
     );
   };
-  useEffect(() => {
-    onValueChange(selectedAd);
-  }, [selectedAd,onValueChange]);
+  
+
 
   return (
 <>
@@ -189,7 +184,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
       <Menu
         theme="dark"
         mode="inline"
-        defaultSelectedKeys={["0"]}
+        defaultSelectedKeys={selectedSider}
         items={sideItems}
         // selectedKeys={(sideItems.find((item)=> item.value === currentPath)).key}
         />
