@@ -64,6 +64,13 @@ npm install xlsx
 
 npm install react-router-dome
 
+
+## Axios
+
+비동기 통신
+
+npm install -save axios
+
 ## 라이브러리 추가
 
 npm install react-scripts
@@ -78,4 +85,4 @@ npm i echarts-for-react
 npm install xlsx
 npm install react-router-dome
 npm install date-fns
-
+npm install -save axios
