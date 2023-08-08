@@ -392,7 +392,6 @@ export const LineChart = ({ colors }) => {
  * */
 
  export const PieChart = ({ colors, datas, SelectedChartOption }) => {
-  console.log('datas',datas)
   const selectedOption = SelectedChartOption[0].value;
   const seriesNames =[]
   datas.forEach(item => {
@@ -400,8 +399,7 @@ export const LineChart = ({ colors }) => {
       seriesNames.push(item.ad_provider)
     }
   })
-  console.log('seriesNames',seriesNames)
-  
+ 
   const adProviderRes = seriesNames.reduce((results, provider) => {
     if (selectedOption === 'm_ctr') {
       const { totClick, totImpression } = datas.reduce((totals, item) => {
@@ -489,7 +487,6 @@ export const LineChart = ({ colors }) => {
 
     return( results);
   }, {});
-console.log('PieadProviderRes',adProviderRes)
   const defaultSeriesOrder = ['ADN PC', 'DABLE', 'FACEBOOK', '구글', '네이버', '카카오', '페이스북'];
   seriesNames.sort((a, b) => {
     const sumA = adProviderRes[a] || 0; // If sum is undefined, set it to 0

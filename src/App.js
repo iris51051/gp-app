@@ -61,7 +61,7 @@ const App = () => {
               }}
             >
               <Routes>
-                <Route path="/" element={<Main colors={colors}/>}></Route>
+                <Route path="/" element={<Main selectedAd={selectedAd} colors={colors}/>}></Route>
                 <Route path="/temp/modules" element={<Modules colors={colors}/>}></Route>
                 <Route path="/temp/apitest" element={<Apitest/>}></Route>
                 <Route path="/temp/monitoring/alarm" element={<Working/>}></Route>

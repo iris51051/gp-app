@@ -8,7 +8,7 @@ const { Header } = Layout;
 
 const Gnb = ({ onValueChange }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [top, setTop] = useState(0);
+  const [move, setMove] = useState("");
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -97,6 +97,9 @@ const Gnb = ({ onValueChange }) => {
     onValueChange(collapsed);
   }, [collapsed, onValueChange]);
 
+  const movePage =()=>{
+    setMove(0)
+  }
   return (
     <Layout>
         <Header
@@ -107,7 +110,7 @@ const Gnb = ({ onValueChange }) => {
         >
           <div className="top-left-part" ref={leftpartRef}>
 
-          <Link to={{ pathname: "/", search: "?clientSeq=0" }} className="Logo">
+          <Link to={{ pathname: "/"}} className="Logo" onClick={movePage}>
             <div style={{height:'60px'}}>
             <img
               src={process.env.PUBLIC_URL + "/admin-logo-dark.png"}

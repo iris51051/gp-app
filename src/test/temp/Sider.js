@@ -82,32 +82,27 @@ const Lnb = ({ collapsed ,onValueChange}) => {
   const [currentPage, setCurrentPage] = useState((location.search).split('=')[1]);
   const [selectedAd,setSelectedAd] = useState();
   const [selectedSider, setSelectedSider] = useState(sideItems.filter((item)=>item.value === currentPath).map((item)=>item.key));
-  const [selectordata, setSelectordata] = useState([ { label: "전체광고주", value: 0 },...AdData.map((item) => ({ label: item.name, value: item.value }))])
+  const defaultData = [ { label: "전체광고주", value: 0 },...AdData.map((item) => ({ label: item.name, value: item.value }))]
+  const [selectordata, setSelectordata] = useState(defaultData)
   // let selectordata;
  
 
   useEffect(() => {
     setSelectedSider(sideItems.filter((item)=>item.value === currentPath).map((item)=>item.key))
     setCurrentPage((location.search).split('=')[1]);
+    if(currentPath === '/'){
+      setSelectordata(defaultData)
+    }else{
+      const newValue = defaultData.filter((item)=>item.value !== 0)
+      setSelectordata(newValue)
+    }
   }, [location,currentPath])
-
-
-  
-  
-
-
-  console.log('selectedSider',selectedSider)
-
-
-  console.log('location',location)
-
 
   const Adselect = () => {
 
     // let selectordata;
     const navigate = useNavigate();
-
-
+    
     useEffect(() => {
       if (currentPath === "/") {
         if(currentPage >0){
@@ -120,38 +115,10 @@ const Lnb = ({ collapsed ,onValueChange}) => {
         if (currentPage >0 ) {
           setSelectedAd(currentPage);
         }else{
-          setSelectedAd(selectordata[1].value);
+          setSelectedAd(selectordata[0].value);
         }
       }
     }, [location, currentPage, currentPath])
-
-    
-      // if (currentPath === "/") {
-      //   selectordata = [
-      //     { label: "전체광고주", value: "0" },
-      //     ...AdData.map((item) => ({ label: item.name, value: item.value })),
-      //   ];
-      //   if(currentPage === undefined || currentPage === ''){
-      //     setSelectedAd(selectordata[0].value)
-      //   }
-      //   else{
-      //     const value = selectordata.findIndex((item)=> item.value===currentPage)
-      //     setSelectedAd(currentPage)
-      //   }
-      // } else {
-      //   selectordata = [...AdData.map((item) => ({ label: item.name, value: item.value }))];
-      //   if (currentPage === '' || currentPage === '0' ) {
-      //     const value = selectordata.findIndex((item)=> item.value===currentPage)
-      //     console.log("value",value)
-      //     setSelectedAd(selectordata[0].value);
-      //   }else{
-      //     const value = selectordata.findIndex((item)=> item.value===currentPage)
-      //     console.log("value",value)
-      //     setSelectedAd(currentPage);
-      //   }
-      // }
-
-
     const adSelect =(option)=>{
       setSelectedAd(option.value);
       onValueChange(option)
@@ -185,7 +152,6 @@ const Lnb = ({ collapsed ,onValueChange}) => {
     );
   };
 
-  console.log("selectedAd",selectedAd)
   return (
 <>
     <Sider

@@ -138,7 +138,7 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
 
     return( results);
   }, {});
-  console.log('LineadProviderRes',adProviderRes)
+
   // seriesNames.sort((a, b) => adProviderSums[b] - adProviderSums[a]);
   const defaultSeriesOrder = ['ADN PC', 'DABLE', 'FACEBOOK', '구글', '네이버', '카카오', '페이스북'];
   seriesNames.sort((a, b) => {

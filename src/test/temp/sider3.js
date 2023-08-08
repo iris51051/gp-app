@@ -98,7 +98,7 @@ const Adselect = () => {
     let defaultValue;
     const navigate = useNavigate();
     const [search, setsearch] = useState(location.search)
-    console.log("location",)
+
     if (location.pathname === "/") {
       data = [
         { label: "전체광고주", value: "0" },

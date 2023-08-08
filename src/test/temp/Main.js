@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Col, Tabs, Row,Space, Typography, Button,Switch,Tag,Radio} from "antd";
-import Breadcrumb from "../components/Breadcrumd";
-import { IoMdTimer } from "react-icons/io";
-import MainTab1 from "./main-tab/main-Tab1";
-import MainTab2 from "./main-tab/main-Tab2";
 import {PlusSquareOutlined,MinusSquareOutlined} from '@ant-design/icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
+import format from "date-fns/format";
+import { IoMdTimer } from "react-icons/io";
+import { useLocation} from "react-router-dom";
+
+
+import Breadcrumb from "../components/Breadcrumd";
+import MainTab1 from "./main-tab/main-Tab1";
+import MainTab2 from "./main-tab/main-Tab2";
 import Calendar from "../components/calendar.js";
 import { Adfilter, Mdfilter, AdSitefilter } from "../components/filter.js";
 import ScoreCardChartComp from "../components/ScoreChartCard";
@@ -15,7 +19,6 @@ import AdSiteData from "../data/AdSiteData";
 import adMediaData from "../data/AdMediaData";
 import {ByDateData} from "../data/ByDateData";
 import {StatDateData} from "../data/StatDateData";
-import format from "date-fns/format";
 
 //날짜 기반 데  이터
 // const { StatDateData, VatStatDateData } = StatDateDatas(); //vat 미포함, vat 포함 기준 데이터
@@ -38,7 +41,9 @@ for (const data of adMediaData) {
 const { TabPane } = Tabs;
 const { Text } = Typography;
 
-const Main = () => {
+const Main = ({selectedAd}) => {
+  const location = useLocation();
+  const currentAd = (location.search).split('=')[1]
   
   const items = [
     { title: "AIR(매체 통합 리포트)", href: "/" },
@@ -102,97 +107,6 @@ const Main = () => {
     setCollapsed2(!collapsed2);
   };
 
-
-  // const adoptions = [
-
-  //   { label: "광고비 없음", value: "광고비 없음", children: [
-  //     { name: "매출액",value :  230000}
-  //   ]},
-  //   { label: "매출액 없음", value: "매출액 없음", children: [
-  //     { name: "광고비",value :  230000}
-  //   ]},
-  //   { label: "둘 다 없음", value: "둘 다 없음" },
-  //   { label: "롯데푸드몰", value: "롯데푸드몰",children: [
-  //     { name: "총 광고비", value : 130000},
-  //     { name: "매출액",value :  230000}
-  //   ]},
-  //   { label: "모바일미샤", value: "모바일미샤",children: [
-  //     { name: "총 광고비", value : 100000},
-  //     { name: "매출액",value : 210000 }
-  //   ]},
-  //   { label: "비즈스프링", value: "비즈스프링_",children: [
-  //     { name: "총 광고비", value : 100000},
-  //     { name: "매출액",value : 130000 }
-  //   ]},
-  //   { label: "A 비즈스프링", value: "A 비즈스프링",children: [
-  //     { name: "총 광고비", value : 103000},
-  //     { name: "매출액",value : 120000 }
-  //   ]},
-  //   {
-  //     label: "네스프레소",
-  //     value: "네스프레소",children: [
-  //       { name: "총 광고비", value : 200000},
-  //       { name: "매출액",value : 340000 }
-  //     ]},
-  //   { label: "라이프하우스", value: "라이프하우스",children: [
-  //     { name: "총 광고비", value : 300000},
-  //     { name: "매출액",value : 230000 }
-  //   ]},
-  //   { label: "테스트", value: "테스트" ,children: [
-  //     { name: "총 광고비", value : 180000},
-  //     { name: "매출액",value : 300000 }
-  //   ]},
-  //   { label: "재테스트", value: "재테스트" ,children: [
-  //     { name: "총 광고비", value : 210000},
-  //     { name: "매출액",value : 450000 }
-  //   ]},
-  //   { label: "oniontest", value: "oniontest" ,children: [
-  //     { name: "총 광고비", value : 600000},
-  //     { name: "매출액",value : 1000000 }
-  //   ]},
-  //   { label: "(주)교육지대", value: "(주)교육지대" ,children: [
-  //     { name: "총 광고비", value : 324500},
-  //     { name: "매출액",value : 543000 }
-  //   ]},
-  //   { label: "미샤", value: "미샤" ,children: [
-  //     { name: "총 광고비", value : 203000},
-  //     { name: "매출액",value : 452000 }
-  //   ]},
-  // ];
-  // const adsiteoptions = [
-  //   { label: "족보닷컴", value: "족보닷컴" },
-  //   { label: "족보닷컴 모바일", value: "족보닷컴 모바일" },
-  //   { label: "에이블샵", value: "에이블샵" },
-  //   { label: "미샤 모바일", value: "미샤 모바일" },
-  //   { label: "족보클라우드", value: "족보클라우드" },
-  //   { label: "BIZSPRING 웹사이트", value: "BIZSPRING 웹사이트" },
-  //   { label: "비즈스프링_대행사", value: "비즈스프링_대행사" },
-  //   { label: "비즈스프링", value: "비즈스프링" },
-  //   { label: "네스프레소", value: "네스프레소" },
-  //   { label: "lifehouses", value: "lifehouses" },
-  //   { label: "TAM", value: "TAM" },
-  //   { label: "진실 테스트 220726", value: "진실 테스트 220726" },
-  //   { label: "국가대표광고", value: "국가대표광고" },
-  //   { label: "[재홍 테스트 230103]", value: "[재홍 테스트 230103]" },
-  //   { label: "test.com", value: "test.com" },
-  //   { label: "wjyang", value: "wjyang" },
-  //   { label: "biz.com", value: "biz.com" },
-  //   { label: "M롯데푸드몰", value: "M롯데푸드몰" },
-  // ];
-
-  // 광고매체사 옵션
-  // const mdoptions = [
-  //   { label: "네이버", value: "네이버" },
-  //   { label: "카카오", value: "카카오" },
-  //   { label: "페이스북", value: "페이스북" },
-  //   { label: "ADN PC", value: "ADN PC" },
-  //   { label: "DABLE", value: "DABLE" },
-  //   { label: "모비온", value: "모비온" },
-  //   { label: "구글", value: "트구글위터" },
-  //   { label: "FACEBOOK", value: "FACEBOOK" },
-  // ];
-
-
   //모든 필터 선택된 상태로 초기 로딩.
  
  
@@ -246,41 +160,7 @@ const Main = () => {
     setByDateValue([`${format(StatStartDate,"yyyy-MM-dd")}`,`${format(StatEndDate,"yyyy-MM-dd")}`]);
       let ByData = [];
       let StatData =[];
-    //데이터 Vat 추가 방법1
-    //StatDateData에서 불러온 데이터 자체를 처음부터 Vat추가해서 비교한 날짜 데이터로 가져오는 방법
-    // 한번에 많은양의 데이터 불러올 시 시간이 오래 걸릴수도 있다?
-    //   if(vatValue){
-    //     for(const data of VatByDateData){
-    //       const by_day = data.by_day;
-    //       if(by_day>=value[0] && by_day <=value[1]){
-    //         ByData.push(data);
-    //       }
-    //     }
-    //     for(const data of VatStatDateData){
-    //       const stat_date = data.stat_date;
-    //       if(stat_date>=`${format(StatStartDate,"yyyy-MM-dd")}` && stat_date <=`${format(StatEndDate,"yyyy-MM-dd")}`){
-    //         StatData.push(data);
-    //       }
-    //     }
-    //   }else{
-    //   for(const data of ByDateData ){
-    //       const by_day = data.by_day;
-    //       if(by_day>=value[0] && by_day <=value[1]){
-    //         ByData.push(data);
-    //       }
-    //     }
-    //   for(const data of StatDateData){
-    //       const stat_date = data.stat_date;
-    //       if(stat_date>=`${format(StatStartDate,"yyyy-MM-dd")}` && stat_date <=`${format(StatEndDate,"yyyy-MM-dd")}`){
-    //         StatData.push(data);
-    //       }
-    //     }
-    // }
-    //데이터 Vat 추가 방법2
-    //StatDateData에서 작성된 순정 데이터(DB,Axio....)에서 날짜를 비교한 후 추려진 데이터에 대해서만 Vat 추가 할지 선택
-    //매번 날짜 기준으로 데이터를 조회 할 때 마다 vat를 계산해줘야한다.
-
-
+   
     for(const data of ByDateData){
       const by_day = data.by_day;
       if(by_day>=value[0] && by_day <=value[1]){
@@ -436,9 +316,13 @@ const Main = () => {
                 대상&nbsp;
                 <FontAwesomeIcon icon={faCircleChevronRight} />
               </Text>
+              {currentAd >0 ?
+                ''
+              :              <>
               <Adfilter className="test" options={AdData} onValueChange={adChange} />
               <AdSitefilter options={AdSiteData} onValueChange={adsiteChange} />
               <Mdfilter options={adProviders} onValueChange={mdChange} />
+              </>}
               <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>
             </Space>
             <br/>
