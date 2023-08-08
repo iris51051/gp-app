@@ -107,14 +107,13 @@ const Gnb = ({ onValueChange }) => {
         >
           <div className="top-left-part" ref={leftpartRef}>
 
-          <Link to="/" className="Logo">
+          <Link to={{ pathname: "/", search: "?clientSeq=0" }} className="Logo">
             <div style={{height:'60px'}}>
             <img
               src={process.env.PUBLIC_URL + "/admin-logo-dark.png"}
               alt="home"
               className="light-logo"              
               />
-
             <img
               src={process.env.PUBLIC_URL + "/admin-text-dark.png"}
               alt="home"

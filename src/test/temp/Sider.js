@@ -79,13 +79,20 @@ const Lnb = ({ collapsed ,onValueChange}) => {
   const location = useLocation();
   
   const currentPath = location.pathname;
-  const currentPage = (location.search).split('=')[1]
+  const [currentPage, setCurrentPage] = useState((location.search).split('=')[1]);
   const [selectedAd,setSelectedAd] = useState();
   const [selectedSider, setSelectedSider] = useState(sideItems.filter((item)=>item.value === currentPath).map((item)=>item.key));
+  const [selectordata, setSelectordata] = useState([ { label: "전체광고주", value: 0 },...AdData.map((item) => ({ label: item.name, value: item.value }))])
+  // let selectordata;
+ 
 
   useEffect(() => {
     setSelectedSider(sideItems.filter((item)=>item.value === currentPath).map((item)=>item.key))
+    setCurrentPage((location.search).split('=')[1]);
   }, [location,currentPath])
+
+
+  
   
 
 
@@ -97,38 +104,60 @@ const Lnb = ({ collapsed ,onValueChange}) => {
 
   const Adselect = () => {
 
-    let data;
-    let defaultValue;
+    // let selectordata;
     const navigate = useNavigate();
+
+
+    useEffect(() => {
       if (currentPath === "/") {
-        data = [
-          { label: "전체광고주", value: "0" },
-          ...AdData.map((item) => ({ label: item.name, value: item.value })),
-        ];
-        if(currentPage === undefined || currentPage === ''){
-          setSelectedAd(data[0].value)
-        }
-        else{
-          const value = data.findIndex((item)=> item.value===currentPage)
+        if(currentPage >0){
           setSelectedAd(currentPage)
         }
+        else{
+          setSelectedAd(0)
+        }
       } else {
-        data = [...AdData.map((item) => ({ label: item.name, value: item.value }))];
-        if (location.search === '') {
-          setSelectedAd(data[0].value);
-        }else{
-          const value = data.findIndex((item)=> item.value===currentPage)
+        if (currentPage >0 ) {
           setSelectedAd(currentPage);
+        }else{
+          setSelectedAd(selectordata[1].value);
         }
       }
+    }, [location, currentPage, currentPath])
+
+    
+      // if (currentPath === "/") {
+      //   selectordata = [
+      //     { label: "전체광고주", value: "0" },
+      //     ...AdData.map((item) => ({ label: item.name, value: item.value })),
+      //   ];
+      //   if(currentPage === undefined || currentPage === ''){
+      //     setSelectedAd(selectordata[0].value)
+      //   }
+      //   else{
+      //     const value = selectordata.findIndex((item)=> item.value===currentPage)
+      //     setSelectedAd(currentPage)
+      //   }
+      // } else {
+      //   selectordata = [...AdData.map((item) => ({ label: item.name, value: item.value }))];
+      //   if (currentPage === '' || currentPage === '0' ) {
+      //     const value = selectordata.findIndex((item)=> item.value===currentPage)
+      //     console.log("value",value)
+      //     setSelectedAd(selectordata[0].value);
+      //   }else{
+      //     const value = selectordata.findIndex((item)=> item.value===currentPage)
+      //     console.log("value",value)
+      //     setSelectedAd(currentPage);
+      //   }
+      // }
 
 
     const adSelect =(option)=>{
-      const index = data.findIndex((item)=>item.value = option.value)
       setSelectedAd(option.value);
       onValueChange(option)
       handleToMove(option.value)
     }
+
     const handleToMove = (clientSeq) => {
       navigate({
         pathname: currentPath,
@@ -143,7 +172,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
               style={{
                 width: 200,
               }}
-              options={data}
+              options={selectordata}
               placeholder="Search to Select"
               optionFilterProp="children"
               value={selectedAd}
@@ -155,9 +184,8 @@ const Lnb = ({ collapsed ,onValueChange}) => {
       </>
     );
   };
-  
 
-
+  console.log("selectedAd",selectedAd)
   return (
 <>
     <Sider
@@ -186,7 +214,6 @@ const Lnb = ({ collapsed ,onValueChange}) => {
         mode="inline"
         defaultSelectedKeys={selectedSider}
         items={sideItems}
-        // selectedKeys={(sideItems.find((item)=> item.value === currentPath)).key}
         />
     </Sider>
         </>
