@@ -41,9 +41,12 @@ for (const data of adMediaData) {
 const { TabPane } = Tabs;
 const { Text } = Typography;
 
-const Main = ({selectedAd}) => {
+const Main = () => {
   const location = useLocation();
   const currentAd = (location.search).split('=')[1]
+  
+  
+  console.log('currentAd',currentAd)
   
   const items = [
     { title: "AIR(매체 통합 리포트)", href: "/" },
