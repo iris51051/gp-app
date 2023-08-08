@@ -1,9 +1,8 @@
-// DataFetchComponent.js
+// ApiReq.js
 
 import axios from 'axios';
 
-const fetchData = async () => {
-
+const ApiReq = async () => {
   const data = JSON.stringify({
       //데이터 저장소
       rptNo: '1000000',
@@ -75,11 +74,20 @@ const header = {
       data,
       header
     );
-    return response.data.data;
+    return response.data;
   } catch (error) {
     console.error('Error fetching data:', error);
     return null;
   }
 };
-
-export default fetchData;
+export const FullData =()=>{
+    const getData = async ()=>{
+        const data = await ApiReq();
+        if(data){
+            console.log(data);
+            return data;
+        }
+    }
+    return getData();
+}
+export default ApiReq;
