@@ -140,6 +140,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
     return (
       <>
             <Select
+              className="lnb-side-ad-selector"
               showSearch
               style={{
                 width: 200,
@@ -150,7 +151,12 @@ const Lnb = ({ collapsed ,onValueChange}) => {
               filterOption={(input, option) => (option?.label ?? '').includes(input)}
               onChange={(value, option) => {
                 adSelect(option)
-                }}>
+                }}
+                dropdownStyle={{
+                  position:"fixed",
+                  top:130,
+                }}
+                >
               </Select>
       </>
     );
@@ -187,10 +193,9 @@ const Lnb = ({ collapsed ,onValueChange}) => {
       setSelectedSider([]);
       setOpenKeys([]);
     }
-  
-    // ... (rest of your useEffect logic)
+    //페이지 이동 시 화면 최상단으로 이동.
+    window.scrollTo(0, 0);
   }, [location]);
-
 
   return (
 <>
