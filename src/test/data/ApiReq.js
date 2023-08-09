@@ -2,9 +2,9 @@
 
 import axios from 'axios';
 
-const ApiReq = async () => {
-  const body ={
-     //데이터 저장소
+const ApiReq = async ({currentAd}) => {
+  const filter ={
+     //데이터 저장소,필수
      rptNo: '1000000',
      //필수 요소
      lookupTp: 'agg',
@@ -58,17 +58,17 @@ const ApiReq = async () => {
      //필수요소
      agencySeq: '1',
      //광고주 번호
-     clientSeq: '106659',
+     clientSeq: currentAd,
      //해당 광고주의 사이트
      //pfno 설정하지 않고 dimCd에 요청시 해당하는 광고주의 모든 pfno데이터 불러옴.
      // pfno: ['300021','23884'],
      //불러올 데이터 양.
-     size: 500,
+     size: 100000,
   }
-  const data = JSON.stringify(
-        body
+  const body = JSON.stringify(
+        filter
 //     {
-//       //데이터 저장소
+//       //데이터 저장소//필수
 //       rptNo: '1000000',
 //       //필수 요소
 //       lookupTp: 'agg',
@@ -121,7 +121,7 @@ const ApiReq = async () => {
 //       sort: [{ field: 'land', order: 'asc' }],
 //       //필수요소
 //       agencySeq: '1',
-//       //광고주 번호
+//       //광고주 번호//필수
 //       clientSeq: '106659',
 //       //해당 광고주의 사이트
 //       //pfno 설정하지 않고 dimCd에 요청시 해당하는 광고주의 모든 pfno데이터 불러옴.
@@ -136,23 +136,16 @@ const header = {
   try {
     const response = await axios.post(
       'http://122.99.192.144:9080/report/data',
-      data,
+      body,
       header
     );
-    return response.data;
+    console.log('불러오기 성공!')
+    return response.data.data;
   } catch (error) {
+    console.log('불러오기 실패!!!!!!!!!!!!!!!!!!!!!')
     console.error('Error fetching data:', error);
     return null;
   }
 };
-export const FullData =()=>{
-    const getData = async ()=>{
-        const data = await ApiReq();
-        if(data){
-            console.log(data);
-            return data;
-        }
-    }
-    return getData();
-}
+
 export default ApiReq;
