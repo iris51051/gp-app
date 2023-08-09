@@ -39,21 +39,21 @@ const sideItems =[{
 {
   key: "4",
   icon: <UploadOutlined />,
-  value : "/temp/monitoring/alarm",
-  label: <Link to="/temp/monitoring/alarm">모니터링 알람</Link>,
+  value : "/temp/alarm",
+  label: '모니터링 알람',
   children: [
     {
       key: "4-1",
-      value : "/temp/monitoring/alarm-setting",
+      value : "/temp/alarm/setting",
       label: (
-        <Link to="/temp/monitoring/alarm-setting">알람 설정</Link>
+        <Link to="/temp/alarm/setting">알람 설정</Link>
         ),
       },
     {
       key: "4-2",
-      value : "/temp/monitoring/alarm-story",
+      value : "/temp/alarm/story",
       label: (
-        <Link to="/temp/monitoring/alarm-story">
+        <Link to="/temp/alarm/story">
           알람 실행 스토리
         </Link>
       ),
@@ -84,17 +84,21 @@ const Lnb = ({ collapsed ,onValueChange}) => {
   const [selectedSider, setSelectedSider] = useState(sideItems.filter((item)=>item.value === currentPath).map((item)=>item.key));
   const defaultData = [ { label: "전체광고주", value: 0 },...AdData.map((item) => ({ label: item.name, value: item.value }))]
   const [selectordata, setSelectordata] = useState(defaultData)
+  const [expandedKeys, setExpandedKeys] = useState([]);
+  const [menuCollapsed, setMenuCollapsed] = useState(true)
   // let selectordata;
- 
 
   useEffect(() => {
     setSelectedSider(sideItems.filter((item)=>item.value === currentPath).map((item)=>item.key))
     setCurrentPage((location.search).split('=')[1]);
+    const matchingKeys = findMatchingMenuItem(sideItems, currentPath);
     if(currentPath === '/'){
       setSelectordata(defaultData)
     }else{
       const newValue = defaultData.filter((item)=>item.value !== 0)
       setSelectordata(newValue)
+      setSelectedSider(matchingKeys);
+      setExpandedKeys((matchingKeys.slice(0, -1).toString()))
     }
   }, [location,currentPath])
 
@@ -152,6 +156,41 @@ const Lnb = ({ collapsed ,onValueChange}) => {
     );
   };
 
+
+
+  // Function to find the matching menu item and its parent keys
+  const findMatchingMenuItem = (items, path, parentKeys = []) => {
+    for (const item of items) {
+      if (item.value === path) {
+        return [...parentKeys, item.key];
+      } else if (item.children) {
+        const childResult = findMatchingMenuItem(item.children, path, [
+          ...parentKeys,
+          item.key,
+        ]);
+        if (childResult) {
+          return childResult;
+        }
+      }
+    }
+    return null;
+  };
+  const onOpenChange = (keys) => {
+    if (expandedKeys.length > 0) {
+      // If expandedKeys has values, update the state with new keys
+      setExpandedKeys(keys);
+    } else {
+      // If expandedKeys is empty, open/close submenus normally
+      const latestOpenKey = keys.find((key) => expandedKeys.indexOf(key) === -1);
+      if (sideItems.some((item) => item.key === latestOpenKey)) {
+        setExpandedKeys([latestOpenKey]);
+      } else {
+        setExpandedKeys([]);
+      }
+    }
+  };
+
+
   return (
 <>
     <Sider
@@ -178,9 +217,12 @@ const Lnb = ({ collapsed ,onValueChange}) => {
       <Menu
         theme="dark"
         mode="inline"
-        defaultSelectedKeys={selectedSider}
+        selectedKeys={selectedSider}
+        openKeys={expandedKeys}
+        defaultOpenKeys={expandedKeys.length > 0 ? expandedKeys : []}
+        onOpenChange={onOpenChange} // Pass the function here
         items={sideItems}
-        />
+      />
     </Sider>
         </>
   );
