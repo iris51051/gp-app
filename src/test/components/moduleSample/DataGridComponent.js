@@ -430,7 +430,7 @@ export const Type1 = () => {
     {
       title: "노출수",
       dataIndex: "exposeNum",
-      className: "column-width-fix",
+      className: "column-width-fix double-border-l",
       sorter: true,
     },
     {
@@ -678,6 +678,7 @@ export const Type1 = () => {
       </div>
       <Table
         id="table"
+        className="table3rd"
         pagination={tableParams.pagination}
         columns={columns}
         dataSource={data}

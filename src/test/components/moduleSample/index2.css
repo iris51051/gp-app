@@ -279,6 +279,9 @@
   text-align: right;
 }
 
+.table3rd .double-border-l {
+  border-left : double
+}
 /**
  ************************************* 공통 ****************************************
  *
