@@ -64,8 +64,8 @@ const App = () => {
                 <Route path="/" element={<Main selectedAd={selectedAd} colors={colors}/>}></Route>
                 <Route path="/temp/modules" element={<Modules colors={colors}/>}></Route>
                 <Route path="/temp/apitest" element={<Apitest/>}></Route>
-                <Route path="/temp/monitoring/alarm" element={<Working/>}></Route>
-                <Route path="/temp/monitoring/alarm-story"element={<Working/>}></Route>
+                <Route path="/temp/alarm/setting" element={<Working/>}></Route>
+                <Route path="/temp/alarm/story"element={<Working/>}></Route>
                 <Route path="/temp/report/Exam"element={<ReportExam colors={colors}/>}></Route>
                 <Route path="/temp/media/export"element={<Working/>}></Route>
                 <Route path="/temp/media/download"element={<Working/>}></Route>
