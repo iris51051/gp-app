@@ -9,7 +9,8 @@ import {
 
 const ScoreCardChart = ({colors,collapsed, datas}) => {
 
-
+    //M:매체데이터
+    //S: 비교 데이터
     //byData
     //총합
     //매체 데이터
@@ -371,7 +372,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       key: 16,
       title: renderTitle('총 주문수'),
       value: totalOdr,
-      unit: "원",
+      unit: "",
       percent: ((totalOdr-totalSOdr)/(totalSOdr)*100).toFixed(0),
       data: OdrArr,
     },
