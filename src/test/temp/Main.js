@@ -88,7 +88,7 @@ for (const data of adMediaData) {
       }
       fetchData();
       
-    }, [currentAd,currentPage])
+    }, [currentAd])
 
     
     const defaultFilterOptions = {
@@ -344,8 +344,10 @@ for (const data of adMediaData) {
           </div>
           <div className="FilterBox">
             <div style={{display:'flex', alignItems:'center'}}>
-            {Array.isArray(filterOptions.AdData) ?
-              <>
+            {currentAd >0 || !Array.isArray(filterOptions.AdData)?
+              ''
+                :
+                 <>
               <span style={{fontSize:"12px"}}>광고주 :&nbsp;</span>
               <div className="AdFilterTagsDiv">
                 {filterOptions.AdData.map((item) => (
@@ -353,9 +355,7 @@ for (const data of adMediaData) {
                 ))
                 }
               </div>
-              </>
-                :
-                ''}
+              </>}
               <span>매체 :&nbsp;</span>
               {handleRenderTag()}
             </div>
