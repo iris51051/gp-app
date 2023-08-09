@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { Layout, theme,Affix } from "antd";
+import { Layout} from "antd";
 
 import { useState } from "react";
 import Header from "./test/temp/Header";
