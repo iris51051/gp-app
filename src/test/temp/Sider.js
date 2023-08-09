@@ -75,6 +75,7 @@ const sideItems =[{
 ]
 
 
+
 const Lnb = ({ collapsed ,onValueChange}) => {
   const location = useLocation();
   
@@ -84,23 +85,20 @@ const Lnb = ({ collapsed ,onValueChange}) => {
   const [selectedSider, setSelectedSider] = useState(sideItems.filter((item)=>item.value === currentPath).map((item)=>item.key));
   const defaultData = [ { label: "전체광고주", value: 0 },...AdData.map((item) => ({ label: item.name, value: item.value }))]
   const [selectordata, setSelectordata] = useState(defaultData)
-  const [expandedKeys, setExpandedKeys] = useState([]);
-  const [menuCollapsed, setMenuCollapsed] = useState(true)
+  const [openKeys, setOpenKeys] = useState([]);
   // let selectordata;
+ 
 
   useEffect(() => {
     setSelectedSider(sideItems.filter((item)=>item.value === currentPath).map((item)=>item.key))
     setCurrentPage((location.search).split('=')[1]);
-    const matchingKeys = findMatchingMenuItem(sideItems, currentPath);
     if(currentPath === '/'){
       setSelectordata(defaultData)
     }else{
       const newValue = defaultData.filter((item)=>item.value !== 0)
       setSelectordata(newValue)
-      setSelectedSider(matchingKeys);
-      setExpandedKeys((matchingKeys.slice(0, -1).toString()))
     }
-  }, [location,currentPath])
+  }, [location])
 
   const Adselect = () => {
 
@@ -113,22 +111,25 @@ const Lnb = ({ collapsed ,onValueChange}) => {
           setSelectedAd(currentPage)
         }
         else{
-          setSelectedAd(0)
+          setSelectedAd(selectordata[0].value)
         }
       } else {
         if (currentPage >0 ) {
           setSelectedAd(currentPage);
         }else{
           setSelectedAd(selectordata[0].value);
-        }
+        }        
       }
+      console.log('UseEffectselectedAd',selectedAd)
     }, [location, currentPage, currentPath])
+
     const adSelect =(option)=>{
       setSelectedAd(option.value);
       onValueChange(option)
       handleToMove(option.value)
     }
 
+    console.log('MainselectedAd',selectedAd)
     const handleToMove = (clientSeq) => {
       navigate({
         pathname: currentPath,
@@ -144,7 +145,6 @@ const Lnb = ({ collapsed ,onValueChange}) => {
                 width: 200,
               }}
               options={selectordata}
-              placeholder="Search to Select"
               optionFilterProp="children"
               value={selectedAd}
               filterOption={(input, option) => (option?.label ?? '').includes(input)}
@@ -156,39 +156,40 @@ const Lnb = ({ collapsed ,onValueChange}) => {
     );
   };
 
-
-
-  // Function to find the matching menu item and its parent keys
-  const findMatchingMenuItem = (items, path, parentKeys = []) => {
-    for (const item of items) {
+  const findSelectedMenuItemAndParent = (menuItems, path) => {
+    for (const item of menuItems) {
       if (item.value === path) {
-        return [...parentKeys, item.key];
-      } else if (item.children) {
-        const childResult = findMatchingMenuItem(item.children, path, [
-          ...parentKeys,
-          item.key,
-        ]);
-        if (childResult) {
-          return childResult;
+        return { selected: item, parent: undefined };
+      }
+      if (item.children) {
+        for (const child of item.children) {
+          if (child.value === path) {
+            return { selected: child, parent: item };
+          }
         }
       }
     }
-    return null;
+    return { selected: undefined, parent: undefined };
   };
-  const onOpenChange = (keys) => {
-    if (expandedKeys.length > 0) {
-      // If expandedKeys has values, update the state with new keys
-      setExpandedKeys(keys);
-    } else {
-      // If expandedKeys is empty, open/close submenus normally
-      const latestOpenKey = keys.find((key) => expandedKeys.indexOf(key) === -1);
-      if (sideItems.some((item) => item.key === latestOpenKey)) {
-        setExpandedKeys([latestOpenKey]);
+
+  useEffect(() => {
+    const { selected, parent } = findSelectedMenuItemAndParent(sideItems, currentPath);
+    if (selected) {
+      setSelectedSider([selected.key]);
+      if (parent) {
+        if (!selected.children) {
+          setOpenKeys([parent.key]);
+        }
       } else {
-        setExpandedKeys([]);
+        setOpenKeys([]);
       }
+    } else {
+      setSelectedSider([]);
+      setOpenKeys([]);
     }
-  };
+  
+    // ... (rest of your useEffect logic)
+  }, [location]);
 
 
   return (
@@ -215,15 +216,14 @@ const Lnb = ({ collapsed ,onValueChange}) => {
       </div>
       <Divider style={{ borderColor: "#273240" }} />
       <Menu
-        theme="dark"
-        mode="inline"
-        selectedKeys={selectedSider}
-        openKeys={expandedKeys}
-        defaultOpenKeys={expandedKeys.length > 0 ? expandedKeys : []}
-        onOpenChange={onOpenChange} // Pass the function here
-        items={sideItems}
-      />
-    </Sider>
+          theme="dark"
+          mode="inline"
+          selectedKeys={selectedSider}
+          openKeys={openKeys}
+          onOpenChange={setOpenKeys}
+          items={sideItems}
+        />
+      </Sider>
         </>
   );
 };
