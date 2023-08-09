@@ -68,11 +68,7 @@ code {
 
   z-index: 3;
 }
-.rs-picker-menu.rs-picker-check-menu, .rs-picker-menu.rs-picker-select-menu {
-  position: fixed;
-  z-index: 3;
-  top: 125px !important;
-}
+
 /************************************Content*****/
 
 /* **********************************Main **********************************/

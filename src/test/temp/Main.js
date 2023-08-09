@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 import format from "date-fns/format";
 import { IoMdTimer } from "react-icons/io";
-import { useLocation} from "react-router-dom";
+import { Await, useLocation} from "react-router-dom";
 
 
 import Breadcrumb from "../components/Breadcrumd";
@@ -19,89 +19,101 @@ import AdSiteData from "../data/AdSiteData";
 import adMediaData from "../data/AdMediaData";
 import {ByDateData} from "../data/ByDateData";
 import {StatDateData} from "../data/StatDateData";
+import DataReq from "../../test/data/ApiReq"
 
 //날짜 기반 데  이터
 // const { StatDateData, VatStatDateData } = StatDateDatas(); //vat 미포함, vat 포함 기준 데이터
 // const { ByDateData, VatByDateData } = ByDateDatas();       //vat 미포함, vat 포함 비교 데이터
 
 //광고매체사 옵션
+const colors = [
+  "#4180ec",
+  "#4fd9bc",
+  "#494e5f",
+  "#30c7e9",
+  "#6269e9",
+  "#00aaaa",
+  "#42c360",
+  "#b5cf14",
+  "#eaab2f",
+  "#bababa",
+].slice(0, 10);
 const adProviders = [];
 for (const data of adMediaData) {
   // Check if the ad provider is not already present in the adProviders array
   const isAdProviderExist = adProviders.some(
     (provider) => provider.name === data.ad_provider
-  );
-
-  if (!isAdProviderExist) {
-    // If it's not present, add it to the adProviders array
-    adProviders.push({ name: data.ad_provider, value: data.ad_provider });
+    );
+    
+    if (!isAdProviderExist) {
+      // If it's not present, add it to the adProviders array
+      adProviders.push({ name: data.ad_provider, value: data.ad_provider });
+    }
   }
-}
+  
+  const { TabPane } = Tabs;
+  const { Text } = Typography;
+  
+  const Main = () => {
+    const [adFilter, setAdFilter] = useState([]);
+    const [siteFilter, setSiteFilter] = useState([]);
+    const [mdFilter, setMdFilter] = useState([]);
+    const [collapsed1, setCollapsed1] = useState(false);
+    const [collapsed2, setCollapsed2] = useState(false);
+    const [vatValue, setVatValue] = useState(true);
+    const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")}`,`${format(new Date(),"yyyy-MM-dd")}`])
+    const [BydateValue, setByDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
+    const [datas, setDatas] = useState([])
+    const [responseData, setResponseData] = useState([])
+    const location = useLocation();
+    const currentPage = location.pathname;
+    const currentAd = (location.search).split('=')[1]
 
-const { TabPane } = Tabs;
-const { Text } = Typography;
+    useEffect(() => {
+      const fetchData = async ()=>{
+        if(currentAd>0){
+          const data = await DataReq({currentAd});
+          if(data && data.length>0){
+            console.log('data',data)
+            setResponseData(data);
+            const adProviderList = [...new Set(data.map(item => item.ad_provider))];
+            const pfnoList = [...new Set(data.map(item => item.pfno))];
+            console.log('adProviderSet',adProviderList)
+            console.log('pfnoList',pfnoList)
+      
+          }else{
+            console.log('데이터가 없습니다')
+          }
+        }
+      }
+      fetchData();
+      
+    }, [currentAd,currentPage])
 
-const Main = () => {
-  const location = useLocation();
-  const currentAd = (location.search).split('=')[1]
-  
-  
-  console.log('currentAd',currentAd)
-  
-  const items = [
-    { title: "AIR(매체 통합 리포트)", href: "/" },
+    
+    const defaultFilterOptions = {
+      AdData: AdData,
+      AdSiteData: AdSiteData,
+      adMediaData: adMediaData,
+      vatValue: vatValue,
+      date : dateValue,
+      Datas : datas //[0]:선택기간 데이터 [1]:비교기간 데이터
+    };
+    useEffect(() => {
+      if(currentAd>0){
+        defaultFilterOptions.AdData = currentAd
+      }
+    }, [location,currentPage,currentAd])
+    
+
+    const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
+
+    console.log('currentAd',currentAd)
+    const items = [
+      { title: "AIR(매체 통합 리포트)", href: "/" },
     { title: "대시보드" },
   ];
-  
-  const [adFilter, setAdFilter] = useState([]);
-  const [siteFilter, setSiteFilter] = useState([]);
-  const [mdFilter, setMdFilter] = useState([]);
-  const [collapsed1, setCollapsed1] = useState(false);
-  const [collapsed2, setCollapsed2] = useState(false);
-  const [vatValue, setVatValue] = useState(true);
-  const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
-  const [BydateValue, setByDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
-  
-  const [VatByDateData, setVatByDateData] = useState([]);
-  const [VatStatDateData, setVatStatDateData]= useState([]);
-  const [datas, setDatas] = useState([])
-  const defaultFilterOptions = {
-    AdData: AdData,
-    AdSiteData: AdSiteData,
-    adMediaData: adMediaData,
-    vatValue: vatValue,
-    Datas : datas
-  };
-  const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
-  
-  useEffect(() => {
-   
-    const updatedData=StatDateData.map((item) => {
-      return {
-        ...item,
-        m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
-        rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
-        m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
-        m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
-        rvn_per_odr: (item.rvn_per_odr + item.rvn_per_odr * 0.1).toFixed(0),
-
-      };
-    });
-
-    const  updatedByData=ByDateData.map((item) => {
-      return {
-        ...item,
-        m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
-        rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
-        m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
-        m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
-        rvn_per_odr: (item.rvn_per_odr + item.rvn_per_odr * 0.1).toFixed(0),
-      };
-    });
-    setVatStatDateData([...updatedData])
-    setVatByDateData([...updatedByData])
-
-},[]);
+    
 
   const coll1Change = () => {
     setCollapsed1(!collapsed1);
@@ -112,23 +124,28 @@ const Main = () => {
 
   //모든 필터 선택된 상태로 초기 로딩.
  
- 
-  const updateFilter = () => {   
+  const updateFilter = useEffect(() => {
 
-    // Filter the AdData based on the selected adFilter names
+    if(currentAd >0){
+
+    }else{
+    // 선택된 내용으로 각 필터 리스트 수정
     const filteredAdData = AdData.filter((item) => adFilter.includes(item.name));
     const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
     const filteredadMediaData =adMediaData.filter((item)=> mdFilter.includes(item.ad_provider));
-    
-    // You can use the spread operator to update the filterOptions state
     setFilterOptions((prevOptions) => ({
       ...prevOptions,
       AdData: filteredAdData,
       AdSiteData:filteredAdSiteData,
       adMediaData:filteredadMediaData,
       Datas : datas,
+      vatValue: vatValue,
+      date : dateValue,
     })); 
-  };
+    }
+    // 선택된 필터 내용으로 수정
+   
+  },[adFilter,siteFilter,mdFilter,vatValue,dateValue])
 
 
 
@@ -234,7 +251,7 @@ const Main = () => {
       }else{
         setDatas([ByData,StatData]);
       }
-  }, [vatValue, VatStatDateData, VatByDateData]);
+  }, [vatValue]);
 
 
 
@@ -267,19 +284,7 @@ const Main = () => {
       </div>
     );
   }, [filterOptions.adMediaData]);
-
-  const colors = [
-    "#4180ec",
-    "#4fd9bc",
-    "#494e5f",
-    "#30c7e9",
-    "#6269e9",
-    "#00aaaa",
-    "#42c360",
-    "#b5cf14",
-    "#eaab2f",
-    "#bababa",
-  ].slice(0, 10);
+  console.log('responseData',responseData)
   return (
     <>
 
@@ -321,11 +326,9 @@ const Main = () => {
               </Text>
               {currentAd >0 ?
                 ''
-              :              <>
-              <Adfilter className="test" options={AdData} onValueChange={adChange} />
+              :<Adfilter className="test" options={AdData} onValueChange={adChange} />}
               <AdSitefilter options={AdSiteData} onValueChange={adsiteChange} />
               <Mdfilter options={adProviders} onValueChange={mdChange} />
-              </>}
               <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>
             </Space>
             <br/>
@@ -336,19 +339,23 @@ const Main = () => {
                   <FontAwesomeIcon icon={faCircleChevronRight} />
                 </Text>
                 <Calendar onValueChange={DateChange}/>
-                <Button className=""type="primary" onClick={updateFilter}>확인</Button>
               </Space>
             </div>
           </div>
-
           <div className="FilterBox">
             <div style={{display:'flex', alignItems:'center'}}>
+            {Array.isArray(filterOptions.AdData) ?
+              <>
               <span style={{fontSize:"12px"}}>광고주 :&nbsp;</span>
               <div className="AdFilterTagsDiv">
                 {filterOptions.AdData.map((item) => (
                   <Tag className="FilterTags" key={item.value}>{item.name}</Tag>
-                ))}
+                ))
+                }
               </div>
+              </>
+                :
+                ''}
               <span>매체 :&nbsp;</span>
               {handleRenderTag()}
             </div>
