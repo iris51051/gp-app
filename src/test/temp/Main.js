@@ -69,6 +69,28 @@ for (const data of adMediaData) {
     const currentPage = location.pathname;
     const currentAd = (location.search).split('=')[1]
 
+      //api요청
+    useEffect(() => {
+      const fetchData = async ()=>{
+        if(currentAd>0){
+          const data = await DataReq({currentAd});
+          if(data && data.length>0){
+            console.log('data',data)
+            setResponseData(data);
+            const adProviderList = [...new Set(data.map(item => item.ad_provider))];
+            const pfnoList = [...new Set(data.map(item => item.pfno))];
+            console.log('adProviderSet',adProviderList)
+            console.log('pfnoList',pfnoList)
+      
+          }else{
+            console.log('데이터가 없습니다')
+          }
+        }
+      }
+      fetchData();
+      
+    }, [currentAd])
+    
     useEffect(() => {
       const fetchData = async ()=>{
         if(currentAd>0){

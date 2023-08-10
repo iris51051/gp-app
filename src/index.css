@@ -1,16 +1,5 @@
 body {
   user-select: none;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
 }
 /************************ Header**********************************/
 .fixed-header {
@@ -36,8 +25,8 @@ code {
   float: left;
   border-right: 1px solid rgba(0, 0, 0, 0.08);
   align-self: center;
-
 }
+
 .light-logo {
   width: 33px;
   margin-left: 10px;
@@ -49,16 +38,63 @@ code {
 
 .top-right-part{
   margin-left: auto;
-  width: auto;
+  width: 300px;
+  display : flex;
+  justify-content: space-between;
+  height: 60px;
+  margin-right: 20px;
 }
 .top-right-part
-.ant-menu-light.ant-menu-horizontal >.ant-menu-item-selected::after,
-.ant-menu-light>.ant-menu.ant-menu-horizontal >.ant-menu-item-selected::after,
-.ant-menu-light.ant-menu-horizontal >.ant-menu-submenu-selected::after,
-.ant-menu-light>.ant-menu.ant-menu-horizontal >.ant-menu-submenu-selected::after{
+.ant-menu-light.ant-menu-horizontal .ant-menu-item-selected::after,
+.ant-menu-light.ant-menu.ant-menu-horizontal .ant-menu-item-selected::after,
+.ant-menu-light.ant-menu-horizontal .ant-menu-submenu-selected::after,
+.ant-menu-light.ant-menu.ant-menu-horizontal .ant-menu-submenu-selected::after{
   border-bottom-width: 0px;
   border-bottom-color: #1677ff;
  }
+
+ .custom-dropdown-menu{
+  position: fixed;
+  top: 20px;
+  /* Add more styles as needed */
+}
+
+.custom-dropdown-menu.mail{
+  max-width: 300px;
+}
+.custom-dropdown-menu .mail-desc{
+  font-size: 12px;
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+  overflow: hidden; /* Hide overflowed content */
+  text-overflow: ellipsis; /* Display ellipsis (...) when content is overflowed */
+  max-width: 250px;
+}
+.mailIcon{
+  min-width: 30px !important;
+}
+.custom-dropdown-menu .app-desc{
+  font-size: 12px;
+}
+.mailLink{
+  height: 85px;
+  width: 300px;
+}
+.menuRoundIcon{
+  border-radius:50%;
+}
+.custom-dropdown-menu .AppTitle{
+  font-size: 14px;
+  font-weight: bold;
+  /* font-weight: 700; */
+}
+.custom-dropdown-menu .user{
+  position: fixed;
+  top: 0px;
+}
+.userMenu{
+  cursor: 'pointer'
+}
+
 /*********************************** Sider *****************************************/
 
 .sider-selector {
@@ -262,51 +298,6 @@ code {
   border-radius: 12px !important;
 }
 
-/* 선택한 분석 대상
-.selected-analysis-targer {
-  font-weight: 600;
-  font-size: 18px !important;
-  line-height: 22px !important;
-  margin: 10px 0;
-  font-family: "Rubik", sans-serif;
-  color: black;
-}
-
-.selected-analysis-targer-div {
-  border: 1px solid rgba(0, 0, 0, 0.13);
-  border-left: 3px solid #ffdc29 !important;
-  padding: 10px 20px;
-  margin: 0 0 20px;
-  font-size: 17.5px;
-}
-
-.selected-analysis-targer-p {
-  line-height: 1.6;
-  margin: 0 0 10px;
-  font-weight: 600;
-  font-size: 10px !important;
-  color: black;
-}
-
-.selected-analysis-target-p .ant-tag{
-  font-size: 11px !important;
-  border-radius: 12px;
-}
-.selected-analysis-targer-p .ant-tag{
-  font-size: 11px !important;
-  border-radius: 12px;
-}
-
-.selected-analysis-targer-span {
-  background-color: rgb(122, 206, 76);
-  color: #fff;
-  border-radius: 60px !important;
-  padding: 4px 12px 3px;
-  font-weight: 600;
-  text-align: center;
-  font-size: 11px;
-} */
-
 /* 선택 광고주 input */
 .ant-dropdown-menu-title-content .Searcher {
   border: none;
@@ -334,9 +325,7 @@ code {
   padding: 8px !important;
   border-bottom: 1px solid #eee;
 }
-.FilterDrop .ant-dropdown{
-  z-index: 0;
-}
+
 .FilterDiv {
   border: 1px solid #eee;
   max-height: 300px !important;
@@ -373,7 +362,15 @@ code {
 .DrawerContent {
   background: #fff;
 }
-
+.menuTitleIcon{
+  display: flex;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-left: 8px;
+}
 /********************************************** Calendar*********************************************/
 /* 달력 스타일 */
 .rs-picker-daterange-header {
