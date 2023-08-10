@@ -120,7 +120,6 @@ const Lnb = ({ collapsed ,onValueChange}) => {
           setSelectedAd(selectordata[0].value);
         }        
       }
-      console.log('UseEffectselectedAd',selectedAd)
     }, [location, currentPage, currentPath])
 
     const adSelect =(option)=>{
@@ -129,7 +128,6 @@ const Lnb = ({ collapsed ,onValueChange}) => {
       handleToMove(option.value)
     }
 
-    console.log('MainselectedAd',selectedAd)
     const handleToMove = (clientSeq) => {
       navigate({
         pathname: currentPath,

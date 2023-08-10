@@ -9,7 +9,6 @@ const Apitest = () => {
     const getDataAndLog = async () => {
       const data = await fetchData();
       if (data && data.length >0) {
-       console.log(data[0]);
        setTestData(data[0]);
       }
     };

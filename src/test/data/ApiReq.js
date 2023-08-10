@@ -1,5 +1,5 @@
 // ApiReq.js
-
+import {useState} from 'react'
 import axios from 'axios';
 
 const ApiReq = async ({currentAd}) => {
@@ -148,4 +148,27 @@ const header = {
   }
 };
 
-export default ApiReq;
+export const DefaultData =async({currentAd})=>{
+    if(currentAd>0){
+      const data = await ApiReq({currentAd});
+      if(data && data.length>0){
+        return data;
+      }else{
+        console.log('데이터가 없습니다')
+        return null;
+      }
+    }
+}
+
+export const filteredData =async({filterOptions})=>{
+  console.log("filteredData",filterOptions)
+  // if(currentAd>0){
+  //   const data = await ApiReq({currentAd});
+  //   if(data && data.length>0){
+  //     return data;
+  //   }else{
+  //     console.log('데이터가 없습니다')
+  //     return null;
+  //   }
+  // }
+}

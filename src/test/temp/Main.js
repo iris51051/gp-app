@@ -19,7 +19,7 @@ import AdSiteData from "../data/AdSiteData";
 import adMediaData from "../data/AdMediaData";
 import {ByDateData} from "../data/ByDateData";
 import {StatDateData} from "../data/StatDateData";
-import DataReq from "../../test/data/ApiReq"
+import {DefaultData,filteredData} from "../../test/data/ApiReq"
 
 //날짜 기반 데  이터
 // const { StatDateData, VatStatDateData } = StatDateDatas(); //vat 미포함, vat 포함 기준 데이터
@@ -69,48 +69,9 @@ for (const data of adMediaData) {
     const currentPage = location.pathname;
     const currentAd = (location.search).split('=')[1]
 
-      //api요청
-    useEffect(() => {
-      const fetchData = async ()=>{
-        if(currentAd>0){
-          const data = await DataReq({currentAd});
-          if(data && data.length>0){
-            console.log('data',data)
-            setResponseData(data);
-            const adProviderList = [...new Set(data.map(item => item.ad_provider))];
-            const pfnoList = [...new Set(data.map(item => item.pfno))];
-            console.log('adProviderSet',adProviderList)
-            console.log('pfnoList',pfnoList)
-      
-          }else{
-            console.log('데이터가 없습니다')
-          }
-        }
-      }
-      fetchData();
-      
-    }, [currentAd])
     
-    useEffect(() => {
-      const fetchData = async ()=>{
-        if(currentAd>0){
-          const data = await DataReq({currentAd});
-          if(data && data.length>0){
-            console.log('data',data)
-            setResponseData(data);
-            const adProviderList = [...new Set(data.map(item => item.ad_provider))];
-            const pfnoList = [...new Set(data.map(item => item.pfno))];
-            console.log('adProviderSet',adProviderList)
-            console.log('pfnoList',pfnoList)
-      
-          }else{
-            console.log('데이터가 없습니다')
-          }
-        }
-      }
-      fetchData();
-      
-    }, [currentAd])
+
+
 
     
     const defaultFilterOptions = {
@@ -127,10 +88,23 @@ for (const data of adMediaData) {
       }
     }, [location,currentPage,currentAd])
     
-
+ 
     const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
 
-    console.log('currentAd',currentAd)
+  //api요청
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await DefaultData({ currentAd });
+
+      if (data) {
+        setResponseData(data);
+      }
+    };
+    fetchData();
+  }, [currentAd]);
+
+
+
     const items = [
       { title: "AIR(매체 통합 리포트)", href: "/" },
     { title: "대시보드" },
@@ -147,9 +121,17 @@ for (const data of adMediaData) {
   //모든 필터 선택된 상태로 초기 로딩.
  
   const updateFilter = useEffect(() => {
-
     if(currentAd >0){
-
+      const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
+      const filteredadMediaData =(adMediaData.filter((item)=>mdFilter.includes(item.ad_provider))).filter((item)=>item.client_seq===currentAd);
+      setFilterOptions((prevOptions) => ({
+        ...prevOptions,
+        AdSiteData:filteredAdSiteData,
+        adMediaData:filteredadMediaData,
+        Datas : datas,
+        vatValue: vatValue,
+        date : dateValue,
+      })); 
     }else{
     // 선택된 내용으로 각 필터 리스트 수정
     const filteredAdData = AdData.filter((item) => adFilter.includes(item.name));
@@ -165,10 +147,22 @@ for (const data of adMediaData) {
       date : dateValue,
     })); 
     }
-    // 선택된 필터 내용으로 수정
+
    
   },[adFilter,siteFilter,mdFilter,vatValue,dateValue])
 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await filteredData({ filterOptions });
+      // console.log("data",data)
+      if (data) {
+        setResponseData(data);
+      }
+    };
+    fetchData();
+  }, [filterOptions]);
+  console.log("filterOptions",filterOptions)
 
 
   const adChange = useCallback((value) => {
