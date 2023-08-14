@@ -139,7 +139,6 @@ body {
 }
 .FilterSelDiv{
   min-height: 50px;
-  border: 1px solid #e8ecee;
   padding-left:20px;
   padding-right: 20px;
   display:flex;
@@ -176,6 +175,7 @@ body {
   transition: height 0.2s ease;
   justify-content: center;
   align-items: center;
+  padding-left: 10px;
 }
 /****************************************************************************************************/
 
@@ -285,9 +285,7 @@ body {
 /**********************************************************************************************/
 /********************                      필터                             *******************/
 .FilterBox{
-  border:1px solid rgb(232, 236, 238);
   padding: 18px 25px;
-  
 }
 .AdFilterTagsDiv{
   max-width: 55%;

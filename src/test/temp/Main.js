@@ -479,7 +479,7 @@ for (const data of adMediaData) {
         </div>
           <div className="WhiteBox">
             <div className="PerformanceDiv">
-              <h6>성과 지표</h6>
+              <h6 style={{marginLeft:'-17px'}}>성과 지표</h6>
               <Button
               className="CustomButton"
                   type='text'
