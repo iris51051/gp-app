@@ -37,7 +37,6 @@ const App = () => {
     "#eaab2f",
     "#bababa",
   ].slice(0, 10);
-
   return (
     <BrowserRouter>
       <Layout >
@@ -69,7 +68,6 @@ const App = () => {
                 <Route path="/temp/report/Exam"element={<ReportExam colors={colors}/>}></Route>
                 <Route path="/temp/media/export"element={<Working/>}></Route>
                 <Route path="/temp/media/download"element={<Working/>}></Route>
-
               </Routes>
             </Content>
             <Bottom/>
