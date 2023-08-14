@@ -5,9 +5,14 @@ import { DownOutlined } from "@ant-design/icons";
 const CheckboxGroup = Checkbox.Group;
 
 const DropdownFilter = ({ name, options, onValueChange }) => {
-  const [selectedOptions, setSelectedOptions] = useState([...options.map(option => option.value),"selectAll"]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  
+  useEffect(() => {
+    setSelectedOptions([...options.map(option => option.value),"selectAll"])
+  }, [options])
+  
   useEffect(() => {
     onValueChange(selectedOptions);
   }, [selectedOptions, onValueChange]);
@@ -16,6 +21,7 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
 
   const setSelect = (event) => {
     clickSel = event.target.value;
+    console.log(event.target.value)
   };
 
   const handleCheckboxChange = (checkedValues) => {

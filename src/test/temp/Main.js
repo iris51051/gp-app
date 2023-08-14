@@ -16,14 +16,10 @@ import { Adfilter, Mdfilter, AdSitefilter } from "../components/filter.js";
 import ScoreCardChartComp from "../components/ScoreChartCard";
 import AdData from "../data/AdData";
 import AdSiteData from "../data/AdSiteData";
-import adMediaData from "../data/AdMediaData";
+// import adMediaData from "../data/AdMediaData";
 import {ByDateData} from "../data/ByDateData";
 import {StatDateData} from "../data/StatDateData";
 import {DefaultData,filteredData} from "../../test/data/ApiReq"
-
-//날짜 기반 데  이터
-// const { StatDateData, VatStatDateData } = StatDateDatas(); //vat 미포함, vat 포함 기준 데이터
-// const { ByDateData, VatByDateData } = ByDateDatas();       //vat 미포함, vat 포함 비교 데이터
 
 //광고매체사 옵션
 const colors = [
@@ -38,22 +34,11 @@ const colors = [
   "#eaab2f",
   "#bababa",
 ].slice(0, 10);
-const adProviders = [];
-for (const data of adMediaData) {
-  // Check if the ad provider is not already present in the adProviders array
-  const isAdProviderExist = adProviders.some(
-    (provider) => provider.name === data.ad_provider
-    );
-    
-    if (!isAdProviderExist) {
-      // If it's not present, add it to the adProviders array
-      adProviders.push({ name: data.ad_provider, value: data.ad_provider });
-    }
-  }
-  
+ 
   const { Text } = Typography;
   
   const Main = () => {
+
     const [adFilter, setAdFilter] = useState([]);
     const [siteFilter, setSiteFilter] = useState([]);
     const [mdFilter, setMdFilter] = useState([]);
@@ -66,37 +51,35 @@ for (const data of adMediaData) {
     const [responseData, setResponseData] = useState([])
     const location = useLocation();
     const currentPage = location.pathname;
-    const currentAd =(location.search).split('=')[1]
+    const currentAd =location.search?.split('=')[1]
+    const [AllAdData, setAllAdData] = useState()
+    // const adProviders = [];
+    const [adProviders, setAdProviders] = useState([])
+    useEffect(() => {
+        const fetchData = async ()=>{
+          const data = await DefaultData({currentAd});
+          if(data){
+            setAllAdData(data)
+            const ad_providerSet = new Set(data.map((item)=>item.ad_provider))
+            setAdProviders(Array.from(ad_providerSet, value => ({ name: value, value })))
+          }
+        }
+      if(currentAd>0){
+      fetchData();
+      }
+    }, [currentAd])
 
-    
-
-
-
-    
+      
     const defaultFilterOptions = {
       ...(currentAd>0 ?  {AdData: currentAd}:{AdData: AdData}),
       AdSiteData: AdSiteData,
-      adMediaData: adMediaData,
+      adMediaData: adProviders,
       vatValue: vatValue,
       date : dateValue,
       Datas : datas //[0]:선택기간 데이터 [1]:비교기간 데이터
     };
     
     const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
-
-  // //api요청
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const data = await DefaultData({ currentAd });
-
-  //     if (data) {
-  //       setResponseData(data);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [currentAd]);
-
-
 
     const items = [
       { title: "AIR(매체 통합 리포트)", href: "/" },
@@ -105,21 +88,18 @@ for (const data of adMediaData) {
     
 
   const coll1Change = () => {
-    console.log('#########################################')
     setCollapsed1(!collapsed1);
   };
   const coll2Change = () => {
-    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
     setCollapsed2(!collapsed2);
   };
 
   //모든 필터 선택된 상태로 초기 로딩.
  
-  const updateFilter = useEffect(() => {
-    console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+  const updateFilter = useCallback(() => {
     if(currentAd >0){
       const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
-      const filteredadMediaData =(adMediaData.filter((item)=>mdFilter.includes(item.ad_provider))).filter((item)=>item.client_seq===currentAd);
+      const filteredadMediaData =mdFilter;
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         AdSiteData:filteredAdSiteData,
@@ -132,7 +112,7 @@ for (const data of adMediaData) {
     // 선택된 내용으로 각 필터 리스트 수정
     const filteredAdData = AdData.filter((item) => adFilter.includes(item.name));
     const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
-    const filteredadMediaData =adMediaData.filter((item)=> mdFilter.includes(item.ad_provider));
+    const filteredadMediaData =adProviders.filter((item)=> mdFilter.includes(item.ad_provider));
     setFilterOptions((prevOptions) => ({
       ...prevOptions,
       AdData: filteredAdData,
@@ -143,10 +123,8 @@ for (const data of adMediaData) {
       date : dateValue,
     })); 
     }
-
-   
-  },[adFilter,siteFilter,mdFilter,vatValue,dateValue])
-
+  },[])
+  console.log('filterOptions',filterOptions)
   const fetchData = async () => {
     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
     const data = await filteredData({ filterOptions });
@@ -154,7 +132,6 @@ for (const data of adMediaData) {
       setResponseData(data);
     }
   };
-
   useEffect(() => {
     console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
     fetchData();
@@ -267,133 +244,28 @@ for (const data of adMediaData) {
     }
   }, [vatValue, dateValue]);
 
-
-
-
- {/* const DateChange = useCallback((value) => {
-
-    setDateValue(value);
-    //value의 0,1간의 날짜 차이
-    const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
-
-    // //비교군의 날짜 산정
-    //종료 일시
-    const StatEndDate = new Date(value[0]);
-    StatEndDate.setDate(StatEndDate.getDate() - 1);
-    //시작일시
-    const StatStartDate = new Date(StatEndDate);
-    StatStartDate.setDate(StatEndDate.getDate() - daysDifference);
-    setByDateValue([`${format(StatStartDate,"yyyy-MM-dd")}`,`${format(StatEndDate,"yyyy-MM-dd")}`]);
-      let ByData = [];
-      let StatData =[];
-   
-    for(const data of ByDateData){
-      const by_day = data.by_day;
-      if(by_day>=value[0] && by_day <=value[1]){
-          ByData.push(data);
-        }
-    }
-    if(new Date(value[1])!== new Date(value[0])){
-      if(new Date(value[1]).getDate() === new Date().getDate()
-        && new Date(value[1]).getMonth() ===new Date().getMonth()
-        && new Date(value[1]).getFullYear()=== new Date().getFullYear()){
-            const newValue ={
-            "by_day": value[1],
-            "m_rvn": 0,
-            "m_impr": 0,
-            "m_cost": 0,
-            "m_odr": 0,
-            "m_rgr": 0,
-            "land": 0,
-            "rvn": 0,
-            "m_cart": 0,
-            "odr": 0,
-            "rgr": 0,
-            "m_conv": 0,
-            "m_click": 0,
-            "m_cpc": 0,
-            "m_ctr": 0,
-            "m_crt": 0,
-            "m_roas": 0,
-            "rvn_per_odr": 0,
-            "rgr_per_m_click": 0,
-            "odr_per_m_cost": 0,
-            "roas": 0}
-            ByData.push(newValue);
-            
-          }
-      }
-
-    for(const data of StatDateData){
-      const stat_date = data.stat_date;
-      if(stat_date>=`${format(StatStartDate,"yyyy-MM-dd")}` && stat_date <=`${format(StatEndDate,"yyyy-MM-dd")}`){
-
-        StatData.push(data);
-      }
-    }
-      if(vatValue){
-        const updatedByData =ByData.map((item) => {
-          return {
-            ...item,
-            m_rvn: item.m_rvn + item.m_rvn * 0.1,
-            rvn: item.rvn + item.rvn * 0.1,
-            m_cost: item.m_cost + item.m_cost * 0.1,
-            m_cpc: item.m_cpc + item.m_cpc * 0.1,
-            rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
-          };
-        });
-        const updatedStatData = StatData.map((item) => {
-          return {
-            ...item,
-            m_rvn: item.m_rvn + item.m_rvn * 0.1,
-            rvn: item.rvn + item.rvn * 0.1,
-            m_cost: item.m_cost + item.m_cost * 0.1,
-            m_cpc: item.m_cpc + item.m_cpc * 0.1,
-            rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
-          };
-        });
-    
-        setDatas([updatedByData,updatedStatData]);
-      }else{
-        setDatas([ByData,StatData]);
-      }
-  }, [vatValue]); */}
-
-
-
   const handleSwitchToggle =(value)=>{
-    console.log('===================================================')
     setVatValue(value)
   }
 
-  // const filterDivStyle = {
-  //   border: "1px solid #e8ecee",
-  //   padding: collapsed1 ? "0px" : "25px",
-  //   height: collapsed1 ? "0px" : "132px",
-  //   overflow: "hidden",
-  //   transition: "height 0.5s ease, padding 0.5s ease"
-  // };
-  console.log('currentAd',currentAd)
 
-  const handleRenderTag = useCallback(() => {
-    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++')
-    console.log('filterOptions.adMediaData',filterOptions.adMediaData)
-    const providerArr = [];    return (
-      <div className="FilterTagsDiv">
-        {filterOptions.adMediaData.map((item) => {
-          if (!providerArr.includes(item.ad_provider)) {
-            providerArr.push(item.ad_provider);
-            return (
-              <Tag className="FilterTags" key={item.ad_provider}>
-                {item.ad_provider}
-              </Tag>
-            );
-          }
-          return null;
-        })}
-      </div>
-    );
+
+   const handleRenderTag = useCallback(() => {
+    if (filterOptions.adMediaData.length > 0) {
+      return (
+        <div className="FilterTagsDiv">
+          {filterOptions.adMediaData.map((item) => (
+            <Tag className="FilterTags" key={item}>
+              {item}
+            </Tag>
+          ))}
+        </div>
+      );
+    } else {
+      return null;
+    }
   }, [filterOptions.adMediaData]);
+
   return (
     <>
 
@@ -454,6 +326,7 @@ for (const data of adMediaData) {
                   <FontAwesomeIcon icon={faCircleChevronRight} />
                 </Text>
                 <Calendar onValueChange={setDateValue}/>
+                <Button className=""type="primary" onClick={updateFilter}>확인</Button>
               </Space>
             </div>
             </div>

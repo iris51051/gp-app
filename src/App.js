@@ -43,9 +43,7 @@ const App = () => {
       <Layout >
       <Header onValueChange={colChange} style={{paddingTop: '60px'}}/>
         <Layout>
-
         <Sider collapsed={collapse} onValueChange={selectAd}/>
-
           <Layout >
             <Content
               style={{

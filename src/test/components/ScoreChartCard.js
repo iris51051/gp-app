@@ -464,19 +464,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     }
     }
   }
-
-
-
-
-  // const ScoreCardSelectorStyle = {
-  //   display : collapsed ? "none" : "flex",
-  //   paddingLeft : collapsed ? "0px" : "20px",
-  //   paddingRight : collapsed ? "0px" : "20px",
-  //   alignItems: "center",
-  //   width : '100%',
-  //   transition: 'top 0.3s ease',
-  // };
-
+  
   const renderAreaLineChart =(item)=>{
     if(item.data.length >1){
       return <AreaLineChart datas={item.data}/>

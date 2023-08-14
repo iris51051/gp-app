@@ -4,6 +4,5 @@ export const AdData =[
     {value:"105580", name: '모바일미샤'},
     {value:"106658", name: '비즈스프링_대행사'},
     {value:"106659", name: 'A 비즈스프링'},
-
 ]
 export default AdData;

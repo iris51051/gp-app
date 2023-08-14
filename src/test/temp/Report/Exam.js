@@ -1,6 +1,7 @@
 import React,{useCallback, useState, useEffect} from 'react';
 import { Col, Tabs, Row,Space, Typography, Button,Switch,Divider,Select} from "antd";
 import format from "date-fns/format";
+import { useLocation} from "react-router-dom";
 //icon
 import { IoMdTimer } from "react-icons/io";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,6 +27,9 @@ const ExamReport =({colors})=>{
     const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
     const [vatValue, setVatValue] = useState(true);   //vat포함 여부
     const [datas, setDatas] = useState([])      //날자별 데이터
+    const location = useLocation();
+    const currentPage = location.pathname;
+    const currentAd =location.search?.split('=')[1]
     const [ChartOptions, setChartOptions] = useState([
       {
         key: 1,
@@ -473,8 +477,6 @@ const ExamReport =({colors})=>{
       const handleSwitchToggle =(value)=>{
         setVatValue(value)
       }
-
-
 
     return(
         <>
