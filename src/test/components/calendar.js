@@ -20,7 +20,19 @@ const Calendar = ({onValueChange}) => {
   };
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    updateValue(date);
   };
+
+  const updateValue = (date) => {
+    let returnData = [];
+    if (date[0] && date[1]) {
+      returnData = [format(date[0], "yyyy-MM-dd"), format(date[1], "yyyy-MM-dd")];
+    } else {
+      returnData = [format(new Date(), "yyyy-MM-dd"), format(new Date(), "yyyy-MM-dd")];
+    }
+    onValueChange(returnData);
+  };
+
   const renderValue = (value, formatStr) => {
     if (value[0] && value[1]) {
       setStartDate(value[0]);
@@ -34,12 +46,6 @@ const Calendar = ({onValueChange}) => {
     }
   }, [startDate, endDate]);
   const ranges = [
-    // {
-    //   label: "오늘",
-    //   value: [new Date(), new Date()],
-    //   placement: "left",
-    //   closeOverlay: false,
-    // },
     {
       label: "어제",
       value: [addDays(new Date(), -1), addDays(new Date(), -1)],
@@ -126,15 +132,6 @@ const Calendar = ({onValueChange}) => {
       setPickedRange([new Date(), new Date()]);
     }
   };
-  useEffect(() => {
-    let returnData =[];
-    if (selectedDate[0] && selectedDate[1]) {
-      returnData =[format(selectedDate[0], "yyyy-MM-dd"),format(selectedDate[1], "yyyy-MM-dd")]
-    }else{
-      returnData =[format(new Date(), "yyyy-MM-dd"),format(new Date(), "yyyy-MM-dd")]
-    }
-    onValueChange(returnData);
-  }, [selectedDate, onValueChange]);
 
   return (
     <CustomProvider locale={koKR}>
@@ -151,7 +148,7 @@ const Calendar = ({onValueChange}) => {
         editable={false}
         onClose={CloseCal}
         placement="auto"
-        disabledDate={disabledIncludeAfterToday}
+        shouldDisableDate={disabledIncludeAfterToday}
       />
     </CustomProvider>
   );
