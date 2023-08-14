@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Layout, Button, theme, Affix, Menu,Tag, Dropdown, Divider} from "antd";
+import { Layout, Button, theme, Space,Tag, Dropdown} from "antd";
 import Icon,{ MenuUnfoldOutlined, MenuFoldOutlined,BellFilled,AppstoreFilled,UserOutlined,CrownOutlined,PoweroffOutlined,} from "@ant-design/icons";
 import {MdOutlineApps} from 'react-icons/md'
 import { Link } from "react-router-dom";
@@ -21,21 +21,8 @@ const Gnb = ({ onValueChange }) => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  const lightTextRef = useRef(null);
-  const leftpartRef = useRef(null);
   const Name = '테스트'
-  useEffect(() => {
-      if (collapsed) {
-        lightTextRef.current.style.width = "0";
-        leftpartRef.current.style.width = "54";
-        leftpartRef.current.style.paddingRight= "0";
-      } else {
-        lightTextRef.current.style.width = "auto";
-        leftpartRef.current.style.width = "auto";
-        leftpartRef.current.style.paddingRight= "34px";
-      }
-  }, [collapsed]);
-
+  
   const mailItems=[
     {
       icon: 
@@ -178,15 +165,12 @@ const Gnb = ({ onValueChange }) => {
 
   const handleChange = () => {
     setCollapsed(!collapsed);
+    onValueChange((prevValue)=>!prevValue)
   };
-
-  useEffect(() => {
-    onValueChange(collapsed);
-  }, [collapsed, onValueChange]);
-
   const movePage =()=>{
     setMove(0)
   }
+
   return (
     <Layout>
         <Header
@@ -195,7 +179,15 @@ const Gnb = ({ onValueChange }) => {
             background: colorBgContainer,
           }}
         >
-          <div className="top-left-part" ref={leftpartRef}>
+          <Space className="top-left-part"
+              style={{
+              width: collapsed ? 60 : 240, // Adjust the width based on the collapsed state
+              float: 'left',
+              borderRight: '1px solid rgba(0, 0, 0, 0.08)',
+              alignSelf: 'center',
+              overflow: 'hidden', // Ensure content doesn't overflow when collapsed
+            }}
+           >
 
           <Link to={{ pathname: "/"}} className="Logo" onClick={movePage}>
             <div style={{height:'60px'}}>
@@ -208,11 +200,10 @@ const Gnb = ({ onValueChange }) => {
               src={process.env.PUBLIC_URL + "/admin-text-dark.png"}
               alt="home"
               className="light-text"
-              ref={lightTextRef}
               ></img>
               </div>
           </Link>
-          </div>
+          </Space>
 
           <Button
             type="text"
@@ -271,7 +262,7 @@ const Gnb = ({ onValueChange }) => {
           trigger={['click']}
           placement="bottomRight"
         >
-        <span style={{cursor: 'pointer'}}><img className="menuRoundIcon"src={user} width={30} alt="Air Icon" style={{paddingRight:5}}/>{Name}</span>
+        <span style={{cursor: 'pointer'}}><img className="menuRoundIcon"src={user} width={30} alt="Air Icon" style={{marginRight:10}}/>{Name}</span>
 
         </Dropdown>
         </div>
