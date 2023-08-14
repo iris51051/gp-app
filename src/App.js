@@ -25,6 +25,7 @@ const App = () => {
   const selectAd =(value)=>{
     setSelectedAd(value)
   }
+
   const colors = [
     "#4180ec",
     "#4fd9bc",

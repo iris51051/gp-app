@@ -162,7 +162,7 @@ export const DefaultData =async({currentAd})=>{
 }
 
 export const filteredData =async({filterOptions})=>{
-  console.log("filteredData",filterOptions)
+
   // if(currentAd>0){
   //   const data = await ApiReq({currentAd});
   //   if(data && data.length>0){

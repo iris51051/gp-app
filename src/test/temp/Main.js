@@ -66,7 +66,7 @@ for (const data of adMediaData) {
     const [responseData, setResponseData] = useState([])
     const location = useLocation();
     const currentPage = location.pathname;
-    const [currentAd, setCurrentAd] = useState()
+    const currentAd =(location.search).split('=')[1]
 
     
 
@@ -81,16 +81,7 @@ for (const data of adMediaData) {
       date : dateValue,
       Datas : datas //[0]:선택기간 데이터 [1]:비교기간 데이터
     };
-    const updateCurrentAd =()=>{
-      const newCurrentAd = (location.search).split('=')[1]
-      setCurrentAd(newCurrentAd)
-    }
-
-    useEffect(() => {
-      updateCurrentAd()
-    }, [location,currentPage,currentAd])
     
- 
     const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
 
   // //api요청
@@ -114,15 +105,18 @@ for (const data of adMediaData) {
     
 
   const coll1Change = () => {
+    console.log('#########################################')
     setCollapsed1(!collapsed1);
   };
   const coll2Change = () => {
+    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
     setCollapsed2(!collapsed2);
   };
 
   //모든 필터 선택된 상태로 초기 로딩.
  
   const updateFilter = useEffect(() => {
+    console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
     if(currentAd >0){
       const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
       const filteredadMediaData =(adMediaData.filter((item)=>mdFilter.includes(item.ad_provider))).filter((item)=>item.client_seq===currentAd);
@@ -154,6 +148,7 @@ for (const data of adMediaData) {
   },[adFilter,siteFilter,mdFilter,vatValue,dateValue])
 
   const fetchData = async () => {
+    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
     const data = await filteredData({ filterOptions });
     if (data) {
       setResponseData(data);
@@ -161,6 +156,7 @@ for (const data of adMediaData) {
   };
 
   useEffect(() => {
+    console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
     fetchData();
   }, [filterOptions]);
 
@@ -175,6 +171,7 @@ for (const data of adMediaData) {
     const MdfilteredValue = value.filter((option) => option !== "selectAll");
     setMdFilter(MdfilteredValue);
   }, []);
+
   const adsiteChange = useCallback((value) => {
     const AdSitefilteredValue = value.filter(
       (option) => option !== "selectAll"
@@ -365,18 +362,22 @@ for (const data of adMediaData) {
 
 
   const handleSwitchToggle =(value)=>{
+    console.log('===================================================')
     setVatValue(value)
   }
 
-  const filterDivStyle = {
-    border: "1px solid #e8ecee",
-    padding: collapsed1 ? "0px" : "25px",
-    height: collapsed1 ? "0px" : "132px",
-    overflow: "hidden",
-    transition: "height 0.5s ease, padding 0.5s ease"
-  };
+  // const filterDivStyle = {
+  //   border: "1px solid #e8ecee",
+  //   padding: collapsed1 ? "0px" : "25px",
+  //   height: collapsed1 ? "0px" : "132px",
+  //   overflow: "hidden",
+  //   transition: "height 0.5s ease, padding 0.5s ease"
+  // };
+  console.log('currentAd',currentAd)
 
   const handleRenderTag = useCallback(() => {
+    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    console.log('filterOptions.adMediaData',filterOptions.adMediaData)
     const providerArr = [];    return (
       <div className="FilterTagsDiv">
         {filterOptions.adMediaData.map((item) => {
@@ -413,7 +414,7 @@ for (const data of adMediaData) {
 
       </div>
       <div>
-        <div className="WhiteBox" style={{padding:"0px"}}>
+        <div className="WhiteBox" style={{padding:"0px", display: 'grid'}}>
           <div className="FilterSelDiv">
             <h6>필터 선택</h6>
             <Button
@@ -424,9 +425,16 @@ for (const data of adMediaData) {
                 onClick={coll1Change}
               />
           </div>
-          <div
-            className="FilterDiv"
-            style={filterDivStyle}>
+          <Space
+            className="FilterSelectorDiv"
+            style={{
+              height: collapsed1 ? 0 : 120, // Adjust the width based on the collapsed state
+              float: 'left',
+              alignSelf: 'center',
+              overflow: 'hidden'
+            }}
+            >
+            <div style={{padding:10}}>
             <Space size="large">
               <Text strong level={4}>
                 대상&nbsp;
@@ -439,8 +447,7 @@ for (const data of adMediaData) {
               <Mdfilter options={adProviders} onValueChange={mdChange} />
               <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>
             </Space>
-            <br/>
-            <div style={{paddingTop:"20px"}}>
+            <div style={{paddingTop:20}}>
               <Space size="large">
                 <Text strong level={4}>
                   기간&nbsp;
@@ -449,7 +456,8 @@ for (const data of adMediaData) {
                 <Calendar onValueChange={setDateValue}/>
               </Space>
             </div>
-          </div>
+            </div>
+          </Space>
           <div className="FilterBox">
             <div style={{display:'flex', alignItems:'center'}}>
             {currentAd >0 || !Array.isArray(filterOptions.AdData)?

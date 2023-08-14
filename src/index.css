@@ -166,6 +166,17 @@ body {
   justify-content: space-between;
   align-items: center;
 }
+.FilterSelectorDiv{
+  border: 1px solid #eee;
+  max-height: 300px !important;
+  width : 100%;
+  overflow: auto;
+  color: #263238;
+  display: inline-block;
+  transition: height 0.2s ease;
+  justify-content: center;
+  align-items: center;
+}
 /****************************************************************************************************/
 
 /*************                                MainTab1                              ***********/  
@@ -331,8 +342,8 @@ body {
   max-height: 300px !important;
   overflow: auto;
   color: #263238;
-
 }
+
 .Filterdisp {
   width: 210px;
   cursor: pointer;
@@ -514,7 +525,14 @@ body {
 .AreaChart{
   padding-top: 1px;
 }
-
+.ScoreCardSelector{
+  max-height: 300px !important;
+  width : 100%;
+  overflow: auto;
+  color: #263238;
+  display: inline-block;
+  transition: height 0.2s ease;
+}
 .ScoreCardSelectorTable{
   width: 100%;
   text-align: justify;

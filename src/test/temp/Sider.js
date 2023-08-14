@@ -89,6 +89,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
   // let selectordata;
  
 
+
   useEffect(() => {
     setSelectedSider(sideItems.filter((item)=>item.value === currentPath).map((item)=>item.key))
     setCurrentPage((location.search).split('=')[1]);
@@ -98,30 +99,30 @@ const Lnb = ({ collapsed ,onValueChange}) => {
       const newValue = defaultData.filter((item)=>item.value !== 0)
       setSelectordata(newValue)
     }
-  }, [location])
+  }, [location,currentPath])
 
+  useEffect(() => {
+
+    if (currentPath === "/") {
+      if(currentPage >0){
+        setSelectedAd(currentPage)
+      }
+      else{
+        setSelectedAd(selectordata[0].value)
+      }
+    } else {
+      if (currentPage >0 ) {
+        setSelectedAd(currentPage);
+      }else{
+        setSelectedAd(selectordata[0].value);
+      }
+    }
+  }, [selectordata])
   const Adselect = () => {
 
     // let selectordata;
     const navigate = useNavigate();
     
-    useEffect(() => {
-      if (currentPath === "/") {
-        if(currentPage >0){
-          setSelectedAd(currentPage)
-        }
-        else{
-          setSelectedAd(selectordata[0].value)
-        }
-      } else {
-        if (currentPage >0 ) {
-          setSelectedAd(currentPage);
-        }else{
-          setSelectedAd(selectordata[0].value);
-        }        
-      }
-    }, [location, currentPage, currentPath])
-
     const adSelect =(option)=>{
       setSelectedAd(option.value);
       onValueChange(option)
@@ -134,7 +135,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
         search: `?clientSeq=${clientSeq}`,
       });
     };
-    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+
     return (
       <>
             <Select
@@ -199,7 +200,6 @@ const Lnb = ({ collapsed ,onValueChange}) => {
 <>
     <Sider
       trigger={null}
-      collapsible
       collapsed={collapsed}
       style={{
         height: "100vh",

@@ -468,14 +468,14 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
 
 
 
-  const ScoreCardSelectorStyle = {
-    display : collapsed ? "none" : "flex",
-    paddingLeft : collapsed ? "0px" : "20px",
-    paddingRight : collapsed ? "0px" : "20px",
-    alignItems: "center",
-    width : '100%',
-    transition: 'top 0.3s ease',
-  };
+  // const ScoreCardSelectorStyle = {
+  //   display : collapsed ? "none" : "flex",
+  //   paddingLeft : collapsed ? "0px" : "20px",
+  //   paddingRight : collapsed ? "0px" : "20px",
+  //   alignItems: "center",
+  //   width : '100%',
+  //   transition: 'top 0.3s ease',
+  // };
 
   const renderAreaLineChart =(item)=>{
     if(item.data.length >1){
@@ -512,8 +512,14 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
 
   return (
     <>
-        <div className="ScoreCardSelector"
-          style={ScoreCardSelectorStyle}
+
+          <Space className="ScoreCardSelector"
+              style={{
+              height: collapsed ? 0 : 120, // Adjust the width based on the collapsed state
+              float: 'left',
+              alignSelf: 'center',
+              overflow: 'hidden'
+            }}
           >
           <div className="ScoreSelectorDiv" >
             <table className="ScoreCardSelectorTable" >
@@ -537,7 +543,8 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
               </tbody>
             </table>
           </div>
-        </div>
+          </Space>
+
     <div className="ScoreChartDiv">
       {score
         .filter((item) => chartCardList.includes(item.key))
