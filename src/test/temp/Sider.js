@@ -134,7 +134,7 @@ const Lnb = ({ collapsed ,onValueChange}) => {
         search: `?clientSeq=${clientSeq}`,
       });
     };
-
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     return (
       <>
             <Select

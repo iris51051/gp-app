@@ -517,6 +517,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
           >
           <div className="ScoreSelectorDiv" >
             <table className="ScoreCardSelectorTable" >
+            <tbody>
               <tr>
                 <th style={{width:'10%'}}>지표 항목 선택</th>
                 <td>
@@ -533,6 +534,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
                   ))}
                 </td>
               </tr>
+              </tbody>
             </table>
           </div>
         </div>

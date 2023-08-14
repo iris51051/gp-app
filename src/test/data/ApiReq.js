@@ -149,6 +149,7 @@ const header = {
 };
 
 export const DefaultData =async({currentAd})=>{
+  console.log("DEfalutData",currentAd)
     if(currentAd>0){
       const data = await ApiReq({currentAd});
       if(data && data.length>0){

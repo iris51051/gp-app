@@ -132,7 +132,7 @@ const modifiedOptions = options.map((option) => ({
 
   return (
     <Dropdown
-      overlay={menu}
+      menu={menu}
       open={dropdownVisible}
       onOpenChange={handleDropdownVisibleChange}
       trigger={["click"]}

@@ -369,7 +369,7 @@ export const ScoreCardChart = (colors) => {
             <Dropdown
               className="chartDropdown"
               open={dropdownVisible}
-              overlay={
+              menu={
                 <div className="DropDownLayer">
                   <div className="DropDownHeader">
                     <span className="DropdownHeaderText">표현 항목</span>
