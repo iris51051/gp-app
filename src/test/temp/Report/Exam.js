@@ -2,10 +2,12 @@ import React,{useCallback, useState, useEffect} from 'react';
 import { Col, Tabs, Row,Space, Typography, Button,Switch,Divider,Select} from "antd";
 import format from "date-fns/format";
 import { useLocation} from "react-router-dom";
+
 //icon
 import { IoMdTimer } from "react-icons/io";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
+
 //data
 import AdData from "../../data/AdData";
 import AdSiteData from "../../data/AdSiteData";
@@ -13,6 +15,7 @@ import adMediaData from "../../data/AdMediaData";
 import AbizStatData from '../../data/A_bizData/A_bizSatData';
 import A_bizDetail from '../../data/A_bizData/A_bizDetail';
 import {adProvider} from '../../data/A_bizData/Ad_Provider';
+
 //모듈
 import {Mdfilter, AdSitefilter,AdPlatform,AdCampaign,AdMaterial,AdDevice  } from "../../components/filter.js";
 import {Datashow} from "../../components/Datashow";
@@ -20,6 +23,7 @@ import Breadcrumb from "../../components/Breadcrumd";
 import Calendar from "../../components/calendar.js";
 import {MultiLinechart} from "../../components/MultiLinechart";
 import {PieChart} from "../../components/ChartComponent";
+import ReportTable from "../../components/ReportTable";
 
 
 const { Text } = Typography;
@@ -559,6 +563,9 @@ const ExamReport =({colors})=>{
                     </div>
                   </div>
                 </div>
+            </div>
+            <div>
+              <ReportTable/>
             </div>
         </>
     )

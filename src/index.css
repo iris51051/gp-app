@@ -144,6 +144,7 @@ body {
   display:flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 0.2px solid #eee;
 }
 .MainTab.ant-tabs-card.ant-tabs-top >.ant-tabs-nav{
   margin-bottom: 0px;
@@ -166,7 +167,6 @@ body {
   align-items: center;
 }
 .FilterSelectorDiv{
-  border: 1px solid #eee;
   max-height: 300px !important;
   width : 100%;
   overflow: auto;
@@ -286,6 +286,7 @@ body {
 /********************                      필터                             *******************/
 .FilterBox{
   padding: 18px 25px;
+  border-top: 0.2px solid #eee;
 }
 .AdFilterTagsDiv{
   max-width: 55%;
