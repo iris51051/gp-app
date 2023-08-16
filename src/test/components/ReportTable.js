@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { PlusCircleOutlined, MinusCircleOutlined,CaretUpOutlined,CaretDownOutlined } from '@ant-design/icons';
+import {
+PlusOutlined, 
+MinusOutlined,
+CaretUpOutlined,
+CaretDownOutlined,
+
+ } from '@ant-design/icons';
 
 
 export const ReportTable =()=> {
@@ -205,60 +211,86 @@ export const ReportTable =()=> {
     console.log(key);
     setSortConfig({ key, direction });
   };
-  
+  const dataRender =(value,index)=>{
+    if(index === 'm_ctr' ||  index==='m_roas'|| index==='m_crt'){
+        return (value).toFixed(2)+'%'
+    }else if(index ==='m_cost' || index === 'mrvn'){
+        return Intl.NumberFormat('ko-KR', {
+            style: 'currency',
+            currency: 'KRW',
+          })
+            .format(value)
+            .replace('₩', '₩\u00A0');
+    }else if(index === 'm_cpc'){
+        return Intl.NumberFormat('ko-KR', {
+            style: 'currency',
+            currency: 'KRW',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+            .format(value)
+            .replace('₩', '₩\u00A0');
+    }else if (typeof value === 'string') {
+        return value
+    }else{
+        return Intl.NumberFormat('ko-KR').format(value)
+    }
+
+  }
 
   return (
     <>
     <div>
         <p>조회된 항목 수: {clientData.map((item)=>item.key).length}</p>
     </div>
-      <table className="ProdTable" style={{ border: '1px solid black' }}>
+      <table className="ProdTable" style={{ border: '1px solid black',fontSize: '12px',  }}>
         <thead>
           <tr>
           {columns.map((item) => (
-  <th
-    style={{
-      fontSize: '12px', 
-      width: `${item.width}`, 
-      textAlign: 'center' ,
-      cursor: !['advertiser', 'adPlatform', 'adProduct'].includes(item.key) ? 'pointer' : 'default',
-    }}
-    key={item.key}
-    onClick={() => {
-      if (!['advertiser', 'adPlatform', 'adProduct'].includes(item.key)) {
-        requestSort(item.dataIndex);
-      }
-    }}
-  >
-    <span style={{ verticalAlign: 'middle' }}>{item.title}</span>
-    {['advertiser', 'adPlatform', 'adProduct'].includes(item.key) ? (
-      sortConfig.key === item.dataIndex && (
-        sortConfig.direction === 'asc' ? (
-          <CaretUpOutlined style={{ fontSize: '10px' }} />
-        ) : (
-          <CaretDownOutlined style={{ fontSize: '10px' }} />
-        )
-      )
-    ) : (
-      <div className="arrows-container">
-        {sortConfig.key === item.dataIndex && sortConfig.direction === 'asc' ? (
-          <CaretUpOutlined className='arrow-up' style={{ fontSize: '8px', marginBottom: '-2px', color:'blue'}} />
-        ) : (
-          <CaretUpOutlined className='arrow-up' style={{ fontSize: '8px', marginBottom: '-2px', opacity: 0.3 }} />
-        )}
-        {sortConfig.key === item.dataIndex && sortConfig.direction === 'desc' ? (
-          <CaretDownOutlined className='arrow-down' style={{ fontSize: '8px', color:'blue'}} />
-        ) : (
-          <CaretDownOutlined className='arrow-down' style={{ fontSize: '8px', opacity: 0.3 }} />
-        )}
-      </div>
-    )}
-  </th>
-))}
+            <th
+                style={{
+                width: `${item.width}`, 
+                textAlign: 'center' ,
+                padding: '10px 8px',
+                cursor: !['advertiser', 'adPlatform', 'adProduct'].includes(item.key) ? 'pointer' : 'default',
+                }}
+                key={item.key}
+                onClick={() => {
+                if (!['advertiser', 'adPlatform', 'adProduct'].includes(item.key)) {
+                    requestSort(item.dataIndex);
+                }
+                }}
+            >
+                <span style={{ verticalAlign: 'middle' }}>{item.title}</span>
+                {['advertiser', 'adPlatform', 'adProduct'].includes(item.key) ? (
+                sortConfig.key === item.dataIndex && (
+                    sortConfig.direction === 'asc' ? (
+                    <CaretUpOutlined style={{ fontSize: '10px' }} />
+                    ) : (
+                    <CaretDownOutlined style={{ fontSize: '10px' }} />
+                    )
+                )
+                ) : (
+                <div className="arrows-container">
+                    {sortConfig.key === item.dataIndex && sortConfig.direction === 'asc' ? (
+                    <CaretUpOutlined className='arrow-up' style={{ fontSize: '8px', marginBottom: '-2px', color:'blue'}} />
+                    ) : (
+                    <CaretUpOutlined className='arrow-up' style={{ fontSize: '8px', marginBottom: '-2px', opacity: 0.3 }} />
+                    )}
+                    {sortConfig.key === item.dataIndex && sortConfig.direction === 'desc' ? (
+                    <CaretDownOutlined className='arrow-down' style={{ fontSize: '8px', color:'blue'}} />
+                    ) : (
+                    <CaretDownOutlined className='arrow-down' style={{ fontSize: '8px', opacity: 0.3 }} />
+                    )}
+                </div>
+                )}
+            </th>
+            ))}
 
           </tr>
         </thead>
         <tbody>
+        {/* 광고 매체사 데이터 */}
           {sortedClientData.map((item) => (
             <React.Fragment key={item.key}>
               <tr>
@@ -272,24 +304,25 @@ export const ReportTable =()=> {
                   >
                     {column.dataIndex === 'adPlatform' ? (
                       !showingPlatform.includes(item.key) ? (
-                        <PlusCircleOutlined
+                        <PlusOutlined
                           onClick={() => showPlatform(item.key)}
                         />
                       ) : (
-                        <MinusCircleOutlined
+                        <MinusOutlined
                           onClick={() => showPlatform(item.key)}
                         />
                       )
                     ) : column.dataIndex === 'adProduct' ? (
                       ''
-                    ) : (
-                      item[column.dataIndex]
-                    )}
+                    ) : 
+                        (item[column.dataIndex] === 0 ? '-' : dataRender(item[column.dataIndex],column.dataIndex))
+                    }
                   </td>
                 ))}
               </tr>
+              {/* 광고 플랫폼 데이터 */}
               {showingPlatform.includes(item.key) && (
-                <tr>
+                <tr style={{backgroundColor:"#f7fafc"}}>
                   {columns.map((column) => (
                     <td
                       style={{
@@ -306,24 +339,25 @@ export const ReportTable =()=> {
                       ) : column.dataIndex === 'adProduct' ? (
                         <span>
                           {showingProduct.includes(item.key) ? (
-                            <MinusCircleOutlined
+                            <MinusOutlined
                               onClick={() => showProduct(item.key)}
                             />
                           ) : (
-                            <PlusCircleOutlined
+                            <PlusOutlined
                               onClick={() => showProduct(item.key)}
                             />
                           )}
                         </span>
                       ) : (
-                        item[column.dataIndex]
+                        item[column.dataIndex] === 0 ? '-' : dataRender(item[column.dataIndex],column.dataIndex)
                       )}
                     </td>
                   ))}
                 </tr>
               )}
+              {/* 광고상품 데이터 */}
               {showingProduct.includes(item.key) && (
-                <tr>
+                <tr style={{backgroundColor:'#f7f7f7'}}>
                   {columns.map((column) => (
                     <td
                       style={{
@@ -342,7 +376,7 @@ export const ReportTable =()=> {
                         ? ''
                         : column.dataIndex === 'adPlatform'
                         ? ''
-                        : item[column.dataIndex]}
+                        : item[column.dataIndex] === 0 ? '-' : item[column.dataIndex]}
                     </td>
                   ))}
                 </tr>
