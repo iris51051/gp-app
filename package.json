@@ -1,10 +1,6 @@
 {
   "name": "gp-app",
   "version": "0.1.0",
-  "options": {
-    "allowedHosts": ["localhost", ".localhost"],
-    "proxy": "http://223.130.136.182/:8080"
-  },
   "private": true,
   "dependencies": {
     "@fortawesome/free-regular-svg-icons": "^6.4.0",

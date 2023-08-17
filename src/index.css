@@ -289,8 +289,8 @@ body {
   border-top: 0.2px solid #eee;
 }
 .AdFilterTagsDiv{
-  max-width: 55%;
-  min-width: 55%;
+  max-width: 50%;
+  min-width: 50%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

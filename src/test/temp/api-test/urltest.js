@@ -3,10 +3,10 @@
 import axios from 'axios';
 
 const authData = async () => {
-
+//로그인 테스트api
   try {
     const response = await axios.post(
-        'http://223.130.136.182:8080/auth/signin',
+        'http://223.130.136.182/auth/signin',
         {
           username: 'blues',
           password: 'Tmakxm123$'
