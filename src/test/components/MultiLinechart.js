@@ -188,6 +188,7 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
   }
 
   const option = {
+    animationDuration: 100,
     tooltip: {
       trigger: "axis",
       formatter: function (params) {

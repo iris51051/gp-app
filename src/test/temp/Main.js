@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 import format from "date-fns/format";
 import { IoMdTimer } from "react-icons/io";
-import { Await, useLocation} from "react-router-dom";
+import { useLocation} from "react-router-dom";
 
 
 import Breadcrumb from "../components/Breadcrumd";
@@ -16,76 +16,93 @@ import { Adfilter, Mdfilter, AdSitefilter } from "../components/filter.js";
 import ScoreCardChartComp from "../components/ScoreChartCard";
 import AdData from "../data/AdData";
 import AdSiteData from "../data/AdSiteData";
-// import adMediaData from "../data/AdMediaData";
+import adMediaData from "../data/AdMediaData";
 import {ByDateData} from "../data/ByDateData";
 import {StatDateData} from "../data/StatDateData";
-import {DefaultData,filteredData} from "../../test/data/ApiReq"
+
+//날짜 기반 데  이터
+// const { StatDateData, VatStatDateData } = StatDateDatas(); //vat 미포함, vat 포함 기준 데이터
+// const { ByDateData, VatByDateData } = ByDateDatas();       //vat 미포함, vat 포함 비교 데이터
 
 //광고매체사 옵션
-const colors = [
-  "#4180ec",
-  "#4fd9bc",
-  "#494e5f",
-  "#30c7e9",
-  "#6269e9",
-  "#00aaaa",
-  "#42c360",
-  "#b5cf14",
-  "#eaab2f",
-  "#bababa",
-].slice(0, 10);
- 
-  const { Text } = Typography;
+const adProviders = [];
+for (const data of adMediaData) {
+  // Check if the ad provider is not already present in the adProviders array
+  const isAdProviderExist = adProviders.some(
+    (provider) => provider.name === data.ad_provider
+  );
+
+  if (!isAdProviderExist) {
+    // If it's not present, add it to the adProviders array
+    adProviders.push({ name: data.ad_provider, value: data.ad_provider });
+  }
+}
+
+const { TabPane } = Tabs;
+const { Text } = Typography;
+
+const Main = () => {
+  const location = useLocation();
+  const currentAd = (location.search).split('=')[1]
   
-  const Main = () => {
-
-    const [adFilter, setAdFilter] = useState([]);
-    const [siteFilter, setSiteFilter] = useState([]);
-    const [mdFilter, setMdFilter] = useState([]);
-    const [collapsed1, setCollapsed1] = useState(false);
-    const [collapsed2, setCollapsed2] = useState(false);
-    const [vatValue, setVatValue] = useState(true);
-    const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")}`,`${format(new Date(),"yyyy-MM-dd")}`])
-    const [BydateValue, setByDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
-    const [datas, setDatas] = useState([])
-    const [responseData, setResponseData] = useState([])
-    const location = useLocation();
-    const currentPage = location.pathname;
-    const currentAd =location.search?.split('=')[1]
-    const [AllAdData, setAllAdData] = useState()
-    // const adProviders = [];
-    const [adProviders, setAdProviders] = useState([])
-    useEffect(() => {
-        const fetchData = async ()=>{
-          const data = await DefaultData({currentAd});
-          if(data){
-            setAllAdData(data)
-            const ad_providerSet = new Set(data.map((item)=>item.ad_provider))
-            setAdProviders(Array.from(ad_providerSet, value => ({ name: value, value })))
-          }
-        }
-      if(currentAd>0){
-      fetchData();
-      }
-    }, [currentAd])
-
-      
-    const defaultFilterOptions = {
-      ...(currentAd>0 ?  {AdData: currentAd}:{AdData: AdData}),
-      AdSiteData: AdSiteData,
-      adMediaData: adProviders,
-      vatValue: vatValue,
-      date : dateValue,
-      Datas : datas //[0]:선택기간 데이터 [1]:비교기간 데이터
-    };
-    
-    const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
-
-    const items = [
-      { title: "AIR(매체 통합 리포트)", href: "/" },
+  
+  console.log('currentAd',currentAd)
+  
+  const items = [
+    { title: "AIR(매체 통합 리포트)", href: "/" },
     { title: "대시보드" },
   ];
-    
+  
+  const [adFilter, setAdFilter] = useState([]);
+  const [siteFilter, setSiteFilter] = useState([]);
+  const [mdFilter, setMdFilter] = useState([]);
+  const [collapsed1, setCollapsed1] = useState(false);
+  const [collapsed2, setCollapsed2] = useState(false);
+  const [vatValue, setVatValue] = useState(true);
+  const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")}`,`${format(new Date(),"yyyy-MM-dd")}`])
+  const [BydateValue, setByDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
+  
+  const [VatByDateData, setVatByDateData] = useState([]);
+  const [VatStatDateData, setVatStatDateData]= useState([]);
+  const [datas, setDatas] = useState([])
+  const defaultFilterOptions = {
+    AdData: AdData,
+    AdSiteData: AdSiteData,
+    adMediaData: adMediaData,
+    vatValue: vatValue,
+    Datas : datas
+  };
+  const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
+
+  
+  useEffect(() => {
+   
+    const updatedData=StatDateData.map((item) => {
+      return {
+        ...item,
+        m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
+        rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
+        m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
+        m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
+        rvn_per_odr: (item.rvn_per_odr + item.rvn_per_odr * 0.1).toFixed(0),
+
+      };
+    });
+
+    const  updatedByData=ByDateData.map((item) => {
+      return {
+        ...item,
+        m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
+        rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
+        m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
+        m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
+        rvn_per_odr: (item.rvn_per_odr + item.rvn_per_odr * 0.1).toFixed(0),
+      };
+    });
+    setVatStatDateData([...updatedData])
+    setVatByDateData([...updatedByData])
+
+},[]);
 
   const coll1Change = () => {
     setCollapsed1(!collapsed1);
@@ -96,46 +113,23 @@ const colors = [
 
   //모든 필터 선택된 상태로 초기 로딩.
  
-  const updateFilter = useCallback(() => {
-    if(currentAd >0){
-      const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
-      const filteredadMediaData =mdFilter;
-      setFilterOptions((prevOptions) => ({
-        ...prevOptions,
-        AdSiteData:filteredAdSiteData,
-        adMediaData:filteredadMediaData,
-        Datas : datas,
-        vatValue: vatValue,
-        date : dateValue,
-      })); 
-    }else{
-    // 선택된 내용으로 각 필터 리스트 수정
+ 
+  const updateFilter = () => {   
+
+    // Filter the AdData based on the selected adFilter names
     const filteredAdData = AdData.filter((item) => adFilter.includes(item.name));
     const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
-    const filteredadMediaData =adProviders.filter((item)=> mdFilter.includes(item.ad_provider));
+    const filteredadMediaData =adMediaData.filter((item)=> mdFilter.includes(item.ad_provider));
+    
+    // You can use the spread operator to update the filterOptions state
     setFilterOptions((prevOptions) => ({
       ...prevOptions,
       AdData: filteredAdData,
       AdSiteData:filteredAdSiteData,
       adMediaData:filteredadMediaData,
       Datas : datas,
-      vatValue: vatValue,
-      date : dateValue,
     })); 
-    }
-  },[])
-  console.log('filterOptions',filterOptions)
-  const fetchData = async () => {
-    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    const data = await filteredData({ filterOptions });
-    if (data) {
-      setResponseData(data);
-    }
   };
-  useEffect(() => {
-    console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-    fetchData();
-  }, [filterOptions]);
 
 
 
@@ -148,42 +142,41 @@ const colors = [
     const MdfilteredValue = value.filter((option) => option !== "selectAll");
     setMdFilter(MdfilteredValue);
   }, []);
-
   const adsiteChange = useCallback((value) => {
     const AdSitefilteredValue = value.filter(
       (option) => option !== "selectAll"
     );
       setSiteFilter(AdSitefilteredValue);
   }, []);
+  const DateChange = useCallback((value) => {
 
-  useEffect(() => {
-    const daysDifference = (new Date(dateValue[1]) - new Date(dateValue[0])) / (1000 * 3600 * 24);
+    setDateValue(value);
+    //value의 0,1간의 날짜 차이
+    const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
 
-    const StatEndDate = new Date(dateValue[0]);
+    // //비교군의 날짜 산정
+    //종료 일시
+    const StatEndDate = new Date(value[0]);
     StatEndDate.setDate(StatEndDate.getDate() - 1);
-
+    //시작일시
     const StatStartDate = new Date(StatEndDate);
     StatStartDate.setDate(StatEndDate.getDate() - daysDifference);
-    setByDateValue([`${format(StatStartDate, "yyyy-MM-dd")}`, `${format(StatEndDate, "yyyy-MM-dd")}`]);
-
-    let ByData = [];
-    let StatData = [];
-
-    for (const data of ByDateData) {
+    setByDateValue([`${format(StatStartDate,"yyyy-MM-dd")}`,`${format(StatEndDate,"yyyy-MM-dd")}`]);
+      let ByData = [];
+      let StatData =[];
+   
+    for(const data of ByDateData){
       const by_day = data.by_day;
-      if (by_day >= dateValue[0] && by_day <= dateValue[1]) {
-        ByData.push(data);
-      }
+      if(by_day>=value[0] && by_day <=value[1]){
+          ByData.push(data);
+        }
     }
-
-    if (new Date(dateValue[1]) !== new Date(dateValue[0])) {
-      if (
-        new Date(dateValue[1]).getDate() === new Date().getDate() &&
-        new Date(dateValue[1]).getMonth() === new Date().getMonth() &&
-        new Date(dateValue[1]).getFullYear() === new Date().getFullYear()
-      ) {
-        const newValue = {
-            "by_day": dateValue[1],
+    if(new Date(value[1])!== new Date(value[0])){
+      if(new Date(value[1]).getDate() === new Date().getDate()
+        && new Date(value[1]).getMonth() ===new Date().getMonth()
+        && new Date(value[1]).getFullYear()=== new Date().getFullYear()){
+            const newValue ={
+            "by_day": value[1],
             "m_rvn": 0,
             "m_impr": 0,
             "m_cost": 0,
@@ -204,73 +197,94 @@ const colors = [
             "rgr_per_m_click": 0,
             "odr_per_m_cost": 0,
             "roas": 0}
-          ByData.push(newValue);
-        };
+            ByData.push(newValue);
+            
+          }
       }
 
-    for (const data of StatDateData) {
+    for(const data of StatDateData){
       const stat_date = data.stat_date;
-      if (stat_date >= `${format(StatStartDate, "yyyy-MM-dd")}` && stat_date <= `${format(StatEndDate, "yyyy-MM-dd")}`) {
+      if(stat_date>=`${format(StatStartDate,"yyyy-MM-dd")}` && stat_date <=`${format(StatEndDate,"yyyy-MM-dd")}`){
+
         StatData.push(data);
       }
     }
-
-    if (vatValue) {
-      const updatedByData = ByData.map((item) => {
-        return {
-           ...item,
+      if(vatValue){
+        const updatedByData =ByData.map((item) => {
+          return {
+            ...item,
             m_rvn: item.m_rvn + item.m_rvn * 0.1,
             rvn: item.rvn + item.rvn * 0.1,
             m_cost: item.m_cost + item.m_cost * 0.1,
             m_cpc: item.m_cpc + item.m_cpc * 0.1,
             rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
-        };
-      });
+          };
+        });
+        const updatedStatData = StatData.map((item) => {
+          return {
+            ...item,
+            m_rvn: item.m_rvn + item.m_rvn * 0.1,
+            rvn: item.rvn + item.rvn * 0.1,
+            m_cost: item.m_cost + item.m_cost * 0.1,
+            m_cpc: item.m_cpc + item.m_cpc * 0.1,
+            rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
+          };
+        });
+    
+        setDatas([updatedByData,updatedStatData]);
+      }else{
+        setDatas([ByData,StatData]);
+      }
+  }, [vatValue, VatStatDateData, VatByDateData]);
 
-      const updatedStatData = StatData.map((item) => {
-        return {
-          ...item,
-          m_rvn: item.m_rvn + item.m_rvn * 0.1,
-          rvn: item.rvn + item.rvn * 0.1,
-          m_cost: item.m_cost + item.m_cost * 0.1,
-          m_cpc: item.m_cpc + item.m_cpc * 0.1,
-          rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
-        };
-      });
 
-      setDatas([updatedByData, updatedStatData]);
-    } else {
-      setDatas([ByData, StatData]);
-    }
-  }, [vatValue, dateValue]);
 
   const handleSwitchToggle =(value)=>{
     setVatValue(value)
   }
 
+  const filterDivStyle = {
+    border: "1px solid #e8ecee",
+    padding: collapsed1 ? "0px" : "25px",
+    height: collapsed1 ? "0px" : "132px",
+    overflow: "hidden",
+    transition: "height 0.5s ease, padding 0.5s ease"
+  };
 
-
-   const handleRenderTag = useCallback(() => {
-    if (filterOptions.adMediaData.length > 0) {
-      return (
-        <div className="FilterTagsDiv">
-          {filterOptions.adMediaData.map((item) => (
-            <Tag className="FilterTags" key={item}>
-              {item}
-            </Tag>
-          ))}
-        </div>
-      );
-    } else {
-      return null;
-    }
+  const handleRenderTag = useCallback(() => {
+    const providerArr = [];    return (
+      <div className="FilterTagsDiv">
+        {filterOptions.adMediaData.map((item) => {
+          if (!providerArr.includes(item.ad_provider)) {
+            providerArr.push(item.ad_provider);
+            return (
+              <Tag className="FilterTags" key={item.ad_provider}>
+                {item.ad_provider}
+              </Tag>
+            );
+          }
+          return null;
+        })}
+      </div>
+    );
   }, [filterOptions.adMediaData]);
+
+  const colors = [
+    "#4180ec",
+    "#4fd9bc",
+    "#494e5f",
+    "#30c7e9",
+    "#6269e9",
+    "#00aaaa",
+    "#42c360",
+    "#b5cf14",
+    "#eaab2f",
+    "#bababa",
+  ].slice(0, 10);
 
   return (
     <>
-
     <div className="MainContainer">
-
         <div className="TitleBox">
         <Row className="title-Row">
           <Col xs={24}>
@@ -325,7 +339,8 @@ const colors = [
                   기간&nbsp;
                   <FontAwesomeIcon icon={faCircleChevronRight} />
                 </Text>
-                <Calendar onValueChange={setDateValue}/>
+                {/* <Calendar onValueChange={setDateValue}/> */}
+                <Calendar onValueChange={DateChange}/>
                 <Button className=""type="primary" onClick={updateFilter}>확인</Button>
               </Space>
             </div>

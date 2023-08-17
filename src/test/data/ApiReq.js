@@ -63,7 +63,7 @@ const ApiReq = async ({currentAd}) => {
      //pfno 설정하지 않고 dimCd에 요청시 해당하는 광고주의 모든 pfno데이터 불러옴.
      // pfno: ['300021','23884'],
      //불러올 데이터 양.
-     size: 100000,
+     size: 100,
   }
   const body = JSON.stringify(
         filter

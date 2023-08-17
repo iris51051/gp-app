@@ -511,6 +511,7 @@ export const LineChart = ({ colors }) => {
   });
 
   const option = {
+    animationDuration: 1000,
     tooltip: {
       trigger: "item",
       textStyle: {

@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Checkbox, Dropdown, Input, Menu } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-
+import { Await, useLocation} from "react-router-dom";
 const CheckboxGroup = Checkbox.Group;
 
 const DropdownFilter = ({ name, options, onValueChange }) => {
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([...options.map(option => option.value),"selectAll"]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  
+  const location = useLocation();
+  const currentPage = location.pathname
+  const currentAd = location.search
+  //문제점!
   useEffect(() => {
     setSelectedOptions([...options.map(option => option.value),"selectAll"])
   }, [options])
@@ -21,7 +24,6 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
 
   const setSelect = (event) => {
     clickSel = event.target.value;
-    console.log(event.target.value)
   };
 
   const handleCheckboxChange = (checkedValues) => {
@@ -84,9 +86,7 @@ const modifiedOptions = options.map((option) => ({
   label: option.name,
   value: option.value,
 }));
-const CheckClick =(e)=>{
-  e.preventDefault()
-}
+
   const menu = (
     <div className="FilterDiv">
       <Menu >
@@ -101,12 +101,12 @@ const CheckClick =(e)=>{
         </Menu.Item>
         {!searchValue && (
           <Menu.Item key="selectAll">
-          {/* <Menu.Item key="selectAll" > */}
             <Checkbox
               style={{
                   display: "flex",
                   width : 'auto',
                }}
+              defaultChecked={true}
               checked={selectedOptions.length === options.length + 1}
               indeterminate={
                 selectedOptions.length > 0 &&
@@ -138,6 +138,10 @@ const CheckClick =(e)=>{
       </Menu>
     </div>
   );
+  if(name==="광고매체사"){
+    console.log("selectedOptions",selectedOptions)
+  }
+
 
   return (
     <Dropdown
@@ -182,10 +186,10 @@ export const Adfilter = (props) => <DropdownFilter name="광고주" {...props} /
 export const AdSitefilter = (props) => (
   <DropdownFilter  name="사이트" {...props} />
 );
-
 export const Mdfilter = (props) => (
-  <DropdownFilter name="광고매체사" {...props} />
+  <DropdownFilter  name="광고매체사" {...props} />
 );
+
 export const AdPlatform = (props) => (
   <DropdownFilter name="광고 플랫폼" {...props} />
 );

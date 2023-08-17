@@ -18,6 +18,7 @@ export const Datashow = ({onValueChange}) => {
   ]
   const [DataType, setDataType] =useState(options[0].value)
   const handleChange = (value)=>{
+    console.log('DataShow',value)
     setDataType(value);
   }
   useEffect(() => {
@@ -29,7 +30,7 @@ export const Datashow = ({onValueChange}) => {
       style={{ width: "210px" }}
       suffixIcon={<VscTriangleDown style={{ color: "black" }} />}
       size="small"
-      defaultValue={options[0].value}
+      defaultValue={options[1].value}
       onChange={handleChange}
       options={options}
     />
