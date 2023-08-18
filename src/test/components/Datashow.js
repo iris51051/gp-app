@@ -18,7 +18,6 @@ export const Datashow = ({onValueChange}) => {
   ]
   const [DataType, setDataType] =useState(options[0].value)
   const handleChange = (value)=>{
-    console.log('DataShow',value)
     setDataType(value);
   }
   useEffect(() => {

@@ -174,7 +174,6 @@ export const ReportTable =()=> {
     });
   };
   const showProduct = (key) => {
-    console.log(key);
     setShowingProduct((prevShowingProduct) => {
       if (!prevShowingProduct.includes(key)) {
         return [...prevShowingProduct, key];
@@ -208,7 +207,6 @@ export const ReportTable =()=> {
     if (sortConfig.key === key && sortConfig.direction === 'desc') {
       direction = 'asc';
     }
-    console.log(key);
     setSortConfig({ key, direction });
   };
   const dataRender =(value,index)=>{

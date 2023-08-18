@@ -24,29 +24,13 @@ import {StatDateData} from "../data/StatDateData";
 // const { StatDateData, VatStatDateData } = StatDateDatas(); //vat 미포함, vat 포함 기준 데이터
 // const { ByDateData, VatByDateData } = ByDateDatas();       //vat 미포함, vat 포함 비교 데이터
 
-//광고매체사 옵션
-const adProviders = [];
-for (const data of adMediaData) {
-  // Check if the ad provider is not already present in the adProviders array
-  const isAdProviderExist = adProviders.some(
-    (provider) => provider.name === data.ad_provider
-  );
-
-  if (!isAdProviderExist) {
-    // If it's not present, add it to the adProviders array
-    adProviders.push({ name: data.ad_provider, value: data.ad_provider });
-  }
-}
-
 const { TabPane } = Tabs;
 const { Text } = Typography;
 
 const Main = () => {
   const location = useLocation();
   const currentAd = (location.search).split('=')[1]
-  
-  
-  console.log('currentAd',currentAd)
+ 
   
   const items = [
     { title: "AIR(매체 통합 리포트)", href: "/" },
@@ -65,6 +49,20 @@ const Main = () => {
   const [VatByDateData, setVatByDateData] = useState([]);
   const [VatStatDateData, setVatStatDateData]= useState([]);
   const [datas, setDatas] = useState([])
+  //광고매체사 옵션
+const adProviders = [];
+
+for (const data of adMediaData) {
+  // Check if the ad provider is not already present in the adProviders array
+  const isAdProviderExist = adProviders.some(
+    (provider) => provider.name === data.ad_provider
+  );
+
+  if (!isAdProviderExist) {
+    // If it's not present, add it to the adProviders array
+    adProviders.push({ name: data.ad_provider, value: data.ad_provider });
+  }
+}
   const defaultFilterOptions = {
     AdData: AdData,
     AdSiteData: AdSiteData,
@@ -76,7 +74,6 @@ const Main = () => {
 
   
   useEffect(() => {
-   
     const updatedData=StatDateData.map((item) => {
       return {
         ...item,
@@ -115,7 +112,6 @@ const Main = () => {
  
  
   const updateFilter = () => {   
-
     // Filter the AdData based on the selected adFilter names
     const filteredAdData = AdData.filter((item) => adFilter.includes(item.name));
     const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
@@ -148,6 +144,10 @@ const Main = () => {
     );
       setSiteFilter(AdSitefilteredValue);
   }, []);
+
+  console.log('adFilter',adFilter)
+  console.log('mdFilter',mdFilter)
+  console.log('adSiteFilter',siteFilter)
   const DateChange = useCallback((value) => {
 
     setDateValue(value);
@@ -268,6 +268,8 @@ const Main = () => {
       </div>
     );
   }, [filterOptions.adMediaData]);
+
+  console.log(filterOptions)
 
   const colors = [
     "#4180ec",

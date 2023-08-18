@@ -12,13 +12,16 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
   const currentPage = location.pathname
   const currentAd = location.search
   //문제점!
-  useEffect(() => {
-    setSelectedOptions([...options.map(option => option.value),"selectAll"])
-  }, [options])
+  //api요청으로 데이터 넘어올 때 빈 option이 넘어와서 selectAll만 들어간 상태로 표시됨
+  //강제로 다시 데이터를 넣어두면 api 페이지는 정상 작동
+  //report페이지에서는 무한로딩 발생.
+  // useEffect(() => {
+  //   setSelectedOptions([...options.map(option => option.value),"selectAll"])
+  // }, [options])
   
   useEffect(() => {
     onValueChange(selectedOptions);
-  }, [selectedOptions, onValueChange]);
+  }, [selectedOptions]);
 
   let clickSel = "";
 
@@ -33,9 +36,6 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
     ) {
       setSelectedOptions([...checkedValues, "selectAll"]);
     } else if (filteredOptions.length === options.length) {
-      setSelectedOptions(
-        checkedValues.filter((value) => value !== "selectAll")
-      );
       setSelectedOptions(
         checkedValues.filter((value) => value !== "selectAll")
       );
@@ -54,6 +54,7 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
         }
       }
     }
+    // onValueChange(selectedOptions)
   };
 
   const handleSearchChange = (e) => {
@@ -75,6 +76,7 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
     } else {
       setSelectedOptions([...allOptionValues, "selectAll"]);
     }
+    // onValueChange(selectedOptions)
   };
 
   const filteredOptions = options.filter((option) =>
@@ -106,7 +108,7 @@ const modifiedOptions = options.map((option) => ({
                   display: "flex",
                   width : 'auto',
                }}
-              defaultChecked={true}
+
               checked={selectedOptions.length === options.length + 1}
               indeterminate={
                 selectedOptions.length > 0 &&
@@ -138,11 +140,6 @@ const modifiedOptions = options.map((option) => ({
       </Menu>
     </div>
   );
-  if(name==="광고매체사"){
-    console.log("selectedOptions",selectedOptions)
-  }
-
-
   return (
     <Dropdown
       overlay={menu}
