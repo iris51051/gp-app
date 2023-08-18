@@ -6,7 +6,7 @@ import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 import format from "date-fns/format";
 import { IoMdTimer } from "react-icons/io";
 import { useLocation} from "react-router-dom";
-
+import axios from 'axios';
 
 import Breadcrumb from "../components/Breadcrumd";
 import MainTab1 from "./main-tab/main-Tab1";
@@ -55,7 +55,7 @@ const Main = () => {
   const [AllAdData, setAllAdData] = useState()
   const [adProviders, setAdProviders] = useState([])
   const [loading, setLoading] = useState(false)
-  
+  const [fetchedData, setFetchedData] = useState(null)
 
   //광고매체사 옵션
 // const adProviders = [];
@@ -71,26 +71,51 @@ const Main = () => {
 //   }
 // }
 
-useEffect(() => {
-  const fetchData = async ()=>{
-    setLoading(true)
-    const data = await DefaultData({currentAd});
-    if(data){
-      setAllAdData(data)
-      const adproviderSet = new Set(data.map((item)=>item.ad_provider))
-      setAdProviders(Array.from(adproviderSet, value => ({ name: value, value:value })))
-    }
-    setLoading(false)
+const fetchData = async ()=>{
+  const body =JSON.stringify({
+    rptNo: '1000000',
+    lookupTp: 'agg',
+    dimCd: ["ad_provider"],
+    where: [
+      {
+        field: 'stat_date',
+        operation: 'between',
+        value: ['2023-01-10', '2023-07-31'],
+      },
+    ],
+    sort: [{ field: 'land', order: 'asc' }],
+    agencySeq: '1',
+    clientSeq: currentAd,
+    size: 100,
+  })
+  const header = {
+    headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
   }
-  if(currentAd==='0' || currentAd===undefined){
-    const providerSet =new Set(adMediaData.map((item)=>item.ad_provider))
-    setAdProviders(Array.from(providerSet,value =>({name:value,value:value})))
-  }else{
-    fetchData();
+  try{
+    const response = await axios.post(
+      'http://122.99.192.144:9080/report/data',
+      body,
+      header
+    );
+    return response.data.data
+  }catch(e){
+    console.error(e)
   }
-  console.log('AdProviders',adProviders)
-  }, [currentAd])
+}
 
+useEffect(() => {
+  const fetchDataAndSetState = async () => {
+    if (currentAd === '0' || currentAd === undefined) {
+      // ... (existing code)
+    } else {
+      const data = await fetchData();
+      setAdProviders(data); // Set the fetched data to the state
+    }
+  };
+
+  fetchDataAndSetState()
+  }, [currentAd])
+console.log('fetchedData',fetchedData)
   const defaultFilterOptions = {
     AdData: AdData,
     AdSiteData: AdSiteData,
@@ -349,6 +374,7 @@ useEffect(() => {
                         </Tag>
                   ))}
                 </div>
+              <div>{filterOptions.adMediaData.ad_provider}</div>
             </div>
           </div>
         </div>
