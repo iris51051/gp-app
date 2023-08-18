@@ -24,13 +24,29 @@ import {StatDateData} from "../data/StatDateData";
 // const { StatDateData, VatStatDateData } = StatDateDatas(); //vat 미포함, vat 포함 기준 데이터
 // const { ByDateData, VatByDateData } = ByDateDatas();       //vat 미포함, vat 포함 비교 데이터
 
-const { TabPane } = Tabs;
+//광고매체사 옵션
+const adProviders = [];
+for (const data of adMediaData) {
+  // Check if the ad provider is not already present in the adProviders array
+  const isAdProviderExist = adProviders.some(
+    (provider) => provider.name === data.ad_provider
+  );
+
+  if (!isAdProviderExist) {
+    // If it's not present, add it to the adProviders array
+    adProviders.push({ name: data.ad_provider, value: data.ad_provider });
+  }
+}
+
+
 const { Text } = Typography;
 
 const Main = () => {
   const location = useLocation();
   const currentAd = (location.search).split('=')[1]
- 
+  
+  
+  console.log('currentAd',currentAd)
   
   const items = [
     { title: "AIR(매체 통합 리포트)", href: "/" },
@@ -49,20 +65,6 @@ const Main = () => {
   const [VatByDateData, setVatByDateData] = useState([]);
   const [VatStatDateData, setVatStatDateData]= useState([]);
   const [datas, setDatas] = useState([])
-  //광고매체사 옵션
-const adProviders = [];
-
-for (const data of adMediaData) {
-  // Check if the ad provider is not already present in the adProviders array
-  const isAdProviderExist = adProviders.some(
-    (provider) => provider.name === data.ad_provider
-  );
-
-  if (!isAdProviderExist) {
-    // If it's not present, add it to the adProviders array
-    adProviders.push({ name: data.ad_provider, value: data.ad_provider });
-  }
-}
   const defaultFilterOptions = {
     AdData: AdData,
     AdSiteData: AdSiteData,
@@ -71,35 +73,6 @@ for (const data of adMediaData) {
     Datas : datas
   };
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
-
-  
-  useEffect(() => {
-    const updatedData=StatDateData.map((item) => {
-      return {
-        ...item,
-        m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
-        rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
-        m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
-        m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
-        rvn_per_odr: (item.rvn_per_odr + item.rvn_per_odr * 0.1).toFixed(0),
-
-      };
-    });
-
-    const  updatedByData=ByDateData.map((item) => {
-      return {
-        ...item,
-        m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
-        rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
-        m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
-        m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
-        rvn_per_odr: (item.rvn_per_odr + item.rvn_per_odr * 0.1).toFixed(0),
-      };
-    });
-    setVatStatDateData([...updatedData])
-    setVatByDateData([...updatedByData])
-
-},[]);
 
   const coll1Change = () => {
     setCollapsed1(!collapsed1);
@@ -110,8 +83,8 @@ for (const data of adMediaData) {
 
   //모든 필터 선택된 상태로 초기 로딩.
  
- 
   const updateFilter = () => {   
+
     // Filter the AdData based on the selected adFilter names
     const filteredAdData = AdData.filter((item) => adFilter.includes(item.name));
     const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
@@ -127,7 +100,8 @@ for (const data of adMediaData) {
     })); 
   };
 
-
+  console.log('datas',datas)
+  console.log('filterOptions.datas',filterOptions.Datas)
 
   const adChange = useCallback((value) => {
     const AdfilteredValue = AdData.filter((item) => value.includes(item.value)).map((item) => item.name);
@@ -145,10 +119,8 @@ for (const data of adMediaData) {
       setSiteFilter(AdSitefilteredValue);
   }, []);
 
-  console.log('adFilter',adFilter)
-  console.log('mdFilter',mdFilter)
-  console.log('adSiteFilter',siteFilter)
   const DateChange = useCallback((value) => {
+    console.log('변경!')
 
     setDateValue(value);
     //value의 0,1간의 날짜 차이
@@ -213,21 +185,23 @@ for (const data of adMediaData) {
         const updatedByData =ByData.map((item) => {
           return {
             ...item,
-            m_rvn: item.m_rvn + item.m_rvn * 0.1,
-            rvn: item.rvn + item.rvn * 0.1,
-            m_cost: item.m_cost + item.m_cost * 0.1,
-            m_cpc: item.m_cpc + item.m_cpc * 0.1,
-            rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
+            m_rvn: Math.round(item.m_rvn + item.m_rvn * 0.1),
+            rvn: Math.round(item.rvn + item.rvn * 0.1),
+            m_cost: Math.round(item.m_cost + item.m_cost * 0.1),
+            m_cpc: Math.round(item.m_cpc + item.m_cpc * 0.1),
+            rvn_per_odr: Math.round(item.rvn_per_odr + item.rvn_per_odr * 0.1),
           };
         });
         const updatedStatData = StatData.map((item) => {
+          console.log('dataType', typeof item.m_cpc)
+          
           return {
             ...item,
-            m_rvn: item.m_rvn + item.m_rvn * 0.1,
-            rvn: item.rvn + item.rvn * 0.1,
-            m_cost: item.m_cost + item.m_cost * 0.1,
-            m_cpc: item.m_cpc + item.m_cpc * 0.1,
-            rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
+            m_rvn: Math.round(item.m_rvn + item.m_rvn * 0.1),
+            rvn: Math.round(item.rvn + item.rvn * 0.1),
+            m_cost: Math.round(item.m_cost + item.m_cost * 0.1),
+            m_cpc: Math.round(item.m_cpc + item.m_cpc * 0.1),
+            rvn_per_odr: Math.round(item.rvn_per_odr + item.rvn_per_odr * 0.1),
           };
         });
     
@@ -235,21 +209,15 @@ for (const data of adMediaData) {
       }else{
         setDatas([ByData,StatData]);
       }
-  }, [vatValue, VatStatDateData, VatByDateData]);
+  }, [vatValue]);
 
 
 
-  const handleSwitchToggle =(value)=>{
-    setVatValue(value)
-  }
 
-  const filterDivStyle = {
-    border: "1px solid #e8ecee",
-    padding: collapsed1 ? "0px" : "25px",
-    height: collapsed1 ? "0px" : "132px",
-    overflow: "hidden",
-    transition: "height 0.5s ease, padding 0.5s ease"
+  const handleSwitchToggle = (value) => {
+    setVatValue(value);
   };
+
 
   const handleRenderTag = useCallback(() => {
     const providerArr = [];    return (
@@ -268,21 +236,6 @@ for (const data of adMediaData) {
       </div>
     );
   }, [filterOptions.adMediaData]);
-
-  console.log(filterOptions)
-
-  const colors = [
-    "#4180ec",
-    "#4fd9bc",
-    "#494e5f",
-    "#30c7e9",
-    "#6269e9",
-    "#00aaaa",
-    "#42c360",
-    "#b5cf14",
-    "#eaab2f",
-    "#bababa",
-  ].slice(0, 10);
 
   return (
     <>
@@ -316,7 +269,7 @@ for (const data of adMediaData) {
           <Space
             className="FilterSelectorDiv"
             style={{
-              height: collapsed1 ? 0 : 120, // Adjust the width based on the collapsed state
+              height: collapsed1 ? 0 : 120,
               float: 'left',
               alignSelf: 'center',
               overflow: 'hidden'
@@ -333,7 +286,12 @@ for (const data of adMediaData) {
               :<Adfilter className="test" options={AdData} onValueChange={adChange} />}
               <AdSitefilter options={AdSiteData} onValueChange={adsiteChange} />
               <Mdfilter options={adProviders} onValueChange={mdChange} />
-              <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>
+              <Switch
+        checkedChildren="VAT포함"
+        unCheckedChildren="VAT제외"
+        defaultChecked
+        onChange={handleSwitchToggle}
+      />
             </Space>
             <div style={{paddingTop:20}}>
               <Space size="large">
@@ -341,7 +299,7 @@ for (const data of adMediaData) {
                   기간&nbsp;
                   <FontAwesomeIcon icon={faCircleChevronRight} />
                 </Text>
-                {/* <Calendar onValueChange={setDateValue}/> */}
+
                 <Calendar onValueChange={DateChange}/>
                 <Button className=""type="primary" onClick={updateFilter}>확인</Button>
               </Space>

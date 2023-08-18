@@ -11,13 +11,10 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
   const location = useLocation();
   const currentPage = location.pathname
   const currentAd = location.search
-  //문제점!
-  //api요청으로 데이터 넘어올 때 빈 option이 넘어와서 selectAll만 들어간 상태로 표시됨
-  //강제로 다시 데이터를 넣어두면 api 페이지는 정상 작동
-  //report페이지에서는 무한로딩 발생.
-  // useEffect(() => {
-  //   setSelectedOptions([...options.map(option => option.value),"selectAll"])
-  // }, [options])
+
+//  useEffect(() => {
+//    setSelectedOptions([...options.map(option => option.value),"selectAll"])
+//    }, [options])
   
   useEffect(() => {
     onValueChange(selectedOptions);
