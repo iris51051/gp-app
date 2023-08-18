@@ -46,16 +46,10 @@ const App = () => {
         <Sider collapsed={collapse} onValueChange={selectAd}/>
           <Layout >
             <Content
+            className="Content"
               style={{
-                background: 'white',//content 배경 색
-                justifyContent: "space-between",
-                alignItems: "center",
-                position: "relative",
-                top : 61,
                 left: collapse ? 0 : 240,
                 width: collapse ? '100%' : '87.4%',
-                zIndex: 0,
-                transition: "left 0.2s ease-in-out"
               }}
             >
               <Routes>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Col, Tabs, Row,Space, Typography, Button,Switch,Tag,Radio} from "antd";
-import {PlusSquareOutlined,MinusSquareOutlined} from '@ant-design/icons'
+import { Col, Tabs, Row,Space, Typography, Button,Switch,Tag,Spin} from "antd";
+import {PlusSquareOutlined,MinusSquareOutlined,LoadingOutlined } from '@ant-design/icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 import format from "date-fns/format";
@@ -19,24 +19,16 @@ import AdSiteData from "../data/AdSiteData";
 import adMediaData from "../data/AdMediaData";
 import {ByDateData} from "../data/ByDateData";
 import {StatDateData} from "../data/StatDateData";
+import {DefaultData,filteredData} from "../../test/data/ApiReq"
 
-//날짜 기반 데  이터
-// const { StatDateData, VatStatDateData } = StatDateDatas(); //vat 미포함, vat 포함 기준 데이터
-// const { ByDateData, VatByDateData } = ByDateDatas();       //vat 미포함, vat 포함 비교 데이터
-
-//광고매체사 옵션
-const adProviders = [];
-for (const data of adMediaData) {
-  // Check if the ad provider is not already present in the adProviders array
-  const isAdProviderExist = adProviders.some(
-    (provider) => provider.name === data.ad_provider
-  );
-
-  if (!isAdProviderExist) {
-    // If it's not present, add it to the adProviders array
-    adProviders.push({ name: data.ad_provider, value: data.ad_provider });
-  }
-}
+const antIcon = (
+  <LoadingOutlined
+    style={{
+      fontSize: 24,
+    }}
+    spin
+  />
+);
 
 
 const { Text } = Typography;
@@ -44,9 +36,6 @@ const { Text } = Typography;
 const Main = () => {
   const location = useLocation();
   const currentAd = (location.search).split('=')[1]
-  
-  
-  console.log('currentAd',currentAd)
   
   const items = [
     { title: "AIR(매체 통합 리포트)", href: "/" },
@@ -61,17 +50,55 @@ const Main = () => {
   const [vatValue, setVatValue] = useState(true);
   const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")}`,`${format(new Date(),"yyyy-MM-dd")}`])
   const [BydateValue, setByDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
-  
-  const [VatByDateData, setVatByDateData] = useState([]);
-  const [VatStatDateData, setVatStatDateData]= useState([]);
+
   const [datas, setDatas] = useState([])
+  const [AllAdData, setAllAdData] = useState()
+  const [adProviders, setAdProviders] = useState([])
+  const [loading, setLoading] = useState(false)
+  
+
+  //광고매체사 옵션
+// const adProviders = [];
+// for (const data of adMediaData) {
+//   // Check if the ad provider is not already present in the adProviders array
+//   const isAdProviderExist = adProviders.some(
+//     (provider) => provider.name === data.ad_provider
+//   );
+
+//   if (!isAdProviderExist) {
+//     // If it's not present, add it to the adProviders array
+//     adProviders.push({ name: data.ad_provider, value: data.ad_provider });
+//   }
+// }
+
+useEffect(() => {
+  const fetchData = async ()=>{
+    setLoading(true)
+    const data = await DefaultData({currentAd});
+    if(data){
+      setAllAdData(data)
+      const adproviderSet = new Set(data.map((item)=>item.ad_provider))
+      setAdProviders(Array.from(adproviderSet, value => ({ name: value, value:value })))
+    }
+    setLoading(false)
+  }
+  if(currentAd==='0' || currentAd===undefined){
+    const providerSet =new Set(adMediaData.map((item)=>item.ad_provider))
+    setAdProviders(Array.from(providerSet,value =>({name:value,value:value})))
+  }else{
+    fetchData();
+  }
+  console.log('AdProviders',adProviders)
+  }, [currentAd])
+
   const defaultFilterOptions = {
     AdData: AdData,
     AdSiteData: AdSiteData,
-    adMediaData: adMediaData,
+    adMediaData: adProviders,
     vatValue: vatValue,
     Datas : datas
   };
+
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
 
   const coll1Change = () => {
@@ -100,8 +127,7 @@ const Main = () => {
     })); 
   };
 
-  console.log('datas',datas)
-  console.log('filterOptions.datas',filterOptions.Datas)
+
 
   const adChange = useCallback((value) => {
     const AdfilteredValue = AdData.filter((item) => value.includes(item.value)).map((item) => item.name);
@@ -120,7 +146,6 @@ const Main = () => {
   }, []);
 
   const DateChange = useCallback((value) => {
-    console.log('변경!')
 
     setDateValue(value);
     //value의 0,1간의 날짜 차이
@@ -192,9 +217,7 @@ const Main = () => {
             rvn_per_odr: Math.round(item.rvn_per_odr + item.rvn_per_odr * 0.1),
           };
         });
-        const updatedStatData = StatData.map((item) => {
-          console.log('dataType', typeof item.m_cpc)
-          
+        const updatedStatData = StatData.map((item) => {          
           return {
             ...item,
             m_rvn: Math.round(item.m_rvn + item.m_rvn * 0.1),
@@ -220,25 +243,24 @@ const Main = () => {
 
 
   const handleRenderTag = useCallback(() => {
-    const providerArr = [];    return (
+
+    return (
       <div className="FilterTagsDiv">
-        {filterOptions.adMediaData.map((item) => {
-          if (!providerArr.includes(item.ad_provider)) {
-            providerArr.push(item.ad_provider);
-            return (
-              <Tag className="FilterTags" key={item.ad_provider}>
-                {item.ad_provider}
+        {(filterOptions.adMediaData).length >0 ? filterOptions.adMediaData.map((item) => {
+              <Tag className="FilterTags" key={item.value}>
+                {item.name}
               </Tag>
-            );
+        }) : ""
           }
-          return null;
-        })}
       </div>
     );
   }, [filterOptions.adMediaData]);
 
+
   return (
     <>
+    {loading===true? <div style={{backgroundColor:"white", height:1000,top:70,diplay:'felx', justifyContent:'center',alignItems:'center'}}><Spin indicator={antIcon} /></div>:
+
     <div className="MainContainer">
         <div className="TitleBox">
         <Row className="title-Row">
@@ -252,7 +274,6 @@ const Main = () => {
             </div>
           </Col>
         </Row>
-
       </div>
       <div>
         <div className="WhiteBox" style={{padding:"0px", display: 'grid'}}>
@@ -287,11 +308,11 @@ const Main = () => {
               <AdSitefilter options={AdSiteData} onValueChange={adsiteChange} />
               <Mdfilter options={adProviders} onValueChange={mdChange} />
               <Switch
-        checkedChildren="VAT포함"
-        unCheckedChildren="VAT제외"
-        defaultChecked
-        onChange={handleSwitchToggle}
-      />
+                    checkedChildren="VAT포함"
+                    unCheckedChildren="VAT제외"
+                    defaultChecked
+                    onChange={handleSwitchToggle}
+                  />
             </Space>
             <div style={{paddingTop:20}}>
               <Space size="large">
@@ -321,11 +342,17 @@ const Main = () => {
               </div>
               </>}
               <span>매체 :&nbsp;</span>
-              {handleRenderTag()}
+                <div className="FilterTagsDiv">
+                  {filterOptions.adMediaData.map((item) => (
+                        <Tag className="FilterTags" key={item.value}>
+                          {item.name}
+                        </Tag>
+                  ))}
+                </div>
             </div>
           </div>
         </div>
-          <div className="WhiteBox">
+          <div className="WhiteBox" style={{padding:'10px 10px 0px 20px'}}>
             <div className="PerformanceDiv">
               <h6 style={{marginLeft:'-17px'}}>성과 지표</h6>
               <Button
@@ -372,6 +399,7 @@ const Main = () => {
           ></Tabs>
       </div>
     </div>
+  }
   </>
   );
 };

@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback,useMemo } from "react";
 import { Checkbox, Dropdown, Input, Menu } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Await, useLocation} from "react-router-dom";
 const CheckboxGroup = Checkbox.Group;
 
 const DropdownFilter = ({ name, options, onValueChange }) => {
+  const [Data,setData]=useState(options)
   const [selectedOptions, setSelectedOptions] = useState([...options.map(option => option.value),"selectAll"]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -15,6 +16,7 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
 //  useEffect(() => {
 //    setSelectedOptions([...options.map(option => option.value),"selectAll"])
 //    }, [options])
+
   
   useEffect(() => {
     onValueChange(selectedOptions);
