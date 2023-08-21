@@ -15,7 +15,7 @@ import Calendar from "../components/calendar.js";
 import { Adfilter, Mdfilter, AdSitefilter } from "../components/filter.js";
 import ScoreCardChartComp from "../components/ScoreChartCard";
 import AdData from "../data/AdData";
-import AdSiteData from "../data/AdSiteData";
+// import AdSiteData from "../data/AdSiteData";
 import adMediaData from "../data/AdMediaData";
 import {ByDateData} from "../data/ByDateData";
 import {StatDateData} from "../data/StatDateData";
@@ -56,6 +56,7 @@ const Main = () => {
   const [adProviders, setAdProviders] = useState([])
   const [loading, setLoading] = useState(false)
   const [fetchedData, setFetchedData] = useState(null)
+  const [adSiteData, setAdSiteData] = useState([]);
 
   //광고매체사 옵션
 // const adProviders = [];
@@ -75,18 +76,18 @@ const fetchData = async ()=>{
   const body =JSON.stringify({
     rptNo: '1000000',
     lookupTp: 'agg',
-    dimCd: ["ad_provider"],
+    dimCd: ["ad_provider",'pfno'],
     where: [
       {
         field: 'stat_date',
         operation: 'between',
-        value: ['2023-01-10', '2023-07-31'],
+        value: ['2023-01-10', '2023-07-11'],
       },
     ],
     sort: [{ field: 'land', order: 'asc' }],
     agencySeq: '1',
     clientSeq: currentAd,
-    size: 100,
+    size: 30,
   })
   const header = {
     headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
@@ -103,30 +104,52 @@ const fetchData = async ()=>{
   }
 }
 
-useMemo(() => {
+
+useEffect(() => {
   const fetchDataAndSetState = async () => {
     if (currentAd === '0' || currentAd === undefined) {
-      // ... (existing code)
+      //전체 광고주 일 때의 검색.
     } else {
       const data = await fetchData();
-      setAdProviders(data); // Set the fetched data to the state
+      const providers = new Set(data.map((item) => item.ad_provider));
+      const pfno = new Set(data.map((item) => item.pfno));
+      setAdProviders(Array.from(providers).map(provider => ({
+        name: provider,
+        value: provider
+      })));
+      setAdSiteData(Array.from(pfno).map(site => ({
+        name: site,
+        value: site
+      })));
     }
   };
 
-  fetchDataAndSetState()
-  }, [currentAd])
+  fetchDataAndSetState();
+}, [location]);
 
-console.log('fetchedData',fetchedData)
+
+
 
   const defaultFilterOptions = {
     AdData: AdData,
-    AdSiteData: AdSiteData,
-    adMediaData: adProviders,
+    AdSiteData: adSiteData,
+    AdProvider: adProviders,
     vatValue: vatValue,
     Datas : datas
   };
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
+  console.log('filterOptions',filterOptions)
+  useEffect(() => {
+    if (adProviders.length > 0 && adSiteData.length > 0) {
+      setFilterOptions((prevOptions) => ({
+        ...prevOptions,
+        AdSiteData: adSiteData,
+        AdProvider: adProviders,
+      }));
+    }
+  }, [adProviders, adSiteData]);
+  
 
   const coll1Change = () => {
     setCollapsed1(!collapsed1);
@@ -141,19 +164,21 @@ console.log('fetchedData',fetchedData)
 
     // Filter the AdData based on the selected adFilter names
     const filteredAdData = AdData.filter((item) => adFilter.includes(item.name));
-    const filteredAdSiteData = AdSiteData.filter((item) => siteFilter.includes(item.value));
-    const filteredadMediaData =adMediaData.filter((item)=> mdFilter.includes(item.ad_provider));
-    
+    const filteredAdSiteData = adSiteData.filter((item) => siteFilter.includes(item.value));
+    const filteredAdProvider = adProviders.filter((item)=> mdFilter.includes(item.value));
+
+    console.log('adProviders',adProviders)
+    console.log('filteredAdProvider',filteredAdProvider)
     // You can use the spread operator to update the filterOptions state
     setFilterOptions((prevOptions) => ({
       ...prevOptions,
       AdData: filteredAdData,
       AdSiteData:filteredAdSiteData,
-      adMediaData:filteredadMediaData,
+      AdProvider:filteredAdProvider,
       Datas : datas,
     })); 
   };
-
+  console.log('mdFilter!!!!!!!!!!!!!!!!!!!!!!!',mdFilter)
 
 
   const adChange = useCallback((value) => {
@@ -161,9 +186,9 @@ console.log('fetchedData',fetchedData)
       setAdFilter(AdfilteredValue);
   }, []);
 
-  const mdChange = useCallback((value) => {
-    const MdfilteredValue = value.filter((option) => option !== "selectAll");
-    setMdFilter(MdfilteredValue);
+  const adProviderChange = useCallback((value) => {
+    const filteredValue = value.filter((option) => option !== "selectAll");
+    setMdFilter(filteredValue);
   }, []);
   const adsiteChange = useCallback((value) => {
     const AdSitefilteredValue = value.filter(
@@ -269,21 +294,19 @@ console.log('fetchedData',fetchedData)
   };
 
 
-  const handleRenderTag = useCallback(() => {
-
+  const handleRenderTag = () => {
     return (
       <div className="FilterTagsDiv">
-        {(filterOptions.adMediaData).length >0 ? filterOptions.adMediaData.map((item) => {
-              <Tag className="FilterTags" key={item.value}>
-                {item.name}
-              </Tag>
-        }) : ""
-          }
+        {filterOptions.AdProvider.map((item) => (
+          <Tag className="FilterTags" key={item.value}>
+            {item.name}
+          </Tag>
+        ))}
       </div>
     );
-  }, [filterOptions.adMediaData]);
+  };
 
-  console.log(1)
+
   return (
     <>
     {loading===true? <div style={{backgroundColor:"white", height:1000,top:70,diplay:'felx', justifyContent:'center',alignItems:'center'}}><Spin indicator={antIcon} /></div>:
@@ -332,8 +355,8 @@ console.log('fetchedData',fetchedData)
               {currentAd >0 ?
                 ''
               :<Adfilter className="test" options={AdData} onValueChange={adChange} />}
-              <AdSitefilter options={AdSiteData} onValueChange={adsiteChange} />
-              <Mdfilter options={adProviders} onValueChange={mdChange} />
+              <AdSitefilter options={adSiteData} onValueChange={adsiteChange} />
+              <Mdfilter options={adProviders} onValueChange={adProviderChange} />
               <Switch
                     checkedChildren="VAT포함"
                     unCheckedChildren="VAT제외"
@@ -369,14 +392,7 @@ console.log('fetchedData',fetchedData)
               </div>
               </>}
               <span>매체 :&nbsp;</span>
-                <div className="FilterTagsDiv">
-                  {filterOptions.adMediaData.map((item) => (
-                        <Tag className="FilterTags" key={item.value}>
-                          {item.name}
-                        </Tag>
-                  ))}
-                </div>
-              <div>{filterOptions.adMediaData.ad_provider}</div>
+              {handleRenderTag()}
             </div>
           </div>
         </div>
