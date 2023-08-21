@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback,useMemo,useTransition  } from "react";
 import { Col, Tabs, Row,Space, Typography, Button,Switch,Tag,Spin} from "antd";
 import {PlusSquareOutlined,MinusSquareOutlined,LoadingOutlined } from '@ant-design/icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -41,7 +41,7 @@ const Main = () => {
     { title: "AIR(매체 통합 리포트)", href: "/" },
     { title: "대시보드" },
   ];
-  
+ const [isPending, startTransition] = useTransition();
   const [adFilter, setAdFilter] = useState([]);
   const [siteFilter, setSiteFilter] = useState([]);
   const [mdFilter, setMdFilter] = useState([]);
@@ -103,7 +103,7 @@ const fetchData = async ()=>{
   }
 }
 
-useEffect(() => {
+useMemo(() => {
   const fetchDataAndSetState = async () => {
     if (currentAd === '0' || currentAd === undefined) {
       // ... (existing code)
@@ -115,7 +115,9 @@ useEffect(() => {
 
   fetchDataAndSetState()
   }, [currentAd])
+
 console.log('fetchedData',fetchedData)
+
   const defaultFilterOptions = {
     AdData: AdData,
     AdSiteData: AdSiteData,
@@ -281,7 +283,7 @@ console.log('fetchedData',fetchedData)
     );
   }, [filterOptions.adMediaData]);
 
-
+  console.log(1)
   return (
     <>
     {loading===true? <div style={{backgroundColor:"white", height:1000,top:70,diplay:'felx', justifyContent:'center',alignItems:'center'}}><Spin indicator={antIcon} /></div>:
