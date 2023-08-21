@@ -19,6 +19,7 @@ const { Content } = Layout;
 const App = () => {
   const [collapse, setCollapse] = useState();
   const [selectedAd, setSelectedAd] = useState();
+  
   const colChange = (value) => {
     setCollapse(value);
   };

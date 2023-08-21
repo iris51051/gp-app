@@ -165,12 +165,12 @@ const Gnb = ({ onValueChange }) => {
 
   const handleChange = () => {
     setCollapsed(!collapsed);
-    onValueChange((prevValue)=>!prevValue)
+    onValueChange(!collapsed)
   };
+
   const movePage =()=>{
     setMove(0)
   }
-
   return (
     <Layout>
         <Header

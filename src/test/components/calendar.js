@@ -26,9 +26,10 @@ const Calendar = ({onValueChange}) => {
     if (value[0] && value[1]) {
       setStartDate(value[0]);
       setEndDate(value[1]);
-      return `${format(value[0], formatStr)} - ${format(value[1], formatStr)}`;
+      return `${format(value[0], formatStr)} ~ ${format(value[1], formatStr)}`;
     }
   };
+
   useEffect(() => {
     if (startDate && endDate) {
       setPickedRange([startDate, endDate]);
@@ -92,14 +93,15 @@ const Calendar = ({onValueChange}) => {
       closeOverlay: false,
     },
     {
-      label: `${format(PickedRange[0], "yyyy-MM-dd")} - ${format(
-        PickedRange[1],
+      label: `${format(startDate, "yyyy-MM-dd")} ~ ${format(
+        endDate,
         "yyyy-MM-dd"
       )}`,
+      className:'SelectDateRange',
       value: PickedRange,
-      readOnly: true,
+      disable:true,
+      onmouseenter:'none',
       closeOverlay: false,
-      justifyContent: "flex-end",
     },
   ];
 

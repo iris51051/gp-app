@@ -9,9 +9,9 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
   const [selectedOptions, setSelectedOptions] = useState([...options.map(option => option.value),"selectAll"]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const location = useLocation();
-  const currentPage = location.pathname
-  const currentAd = location.search
+  // const location = useLocation();
+  // const currentPage = location.pathname
+  // const currentAd = location.search
 
 //  useEffect(() => {
 //    setSelectedOptions([...options.map(option => option.value),"selectAll"])

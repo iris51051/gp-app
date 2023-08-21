@@ -170,7 +170,7 @@ body {
 }
 
 .PerformanceDiv{
-  padding : 20px;
+  padding : 20px 10px 20px 20px;
   display:flex;
   justify-content: space-between;
   align-items: center;
@@ -405,6 +405,9 @@ body {
 }
 .rs-picker-toolbar {
   justify-content: flex-end;
+}
+.rs-stack-item .SelectDateRange{
+  pointer-events: none;
 }
 /**
   ************************
