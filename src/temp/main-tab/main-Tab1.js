@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import AdResultTable from "../../components/AdResultTable";
-import MDResultTable from "../../components/MDResultTable.js";
-import MDTransBar from "../../components/MediaTransition/MDTransBar.js";
-import MDTransPie from "../../components/MediaTransition/MDTransPie.js";
-import DeviceTransPie from "../../components/MediaTransition/DeviceTransPie.js";
-import LineChart from "../../components/LineChart";
+import AdResultTable from "../../components/table/AdResultTable";
+import MDResultTable from "../../components/table/MDResultTable.js";
+import MDTransBar from "../../components/chart/MediaTransition/MDTransBar.js";
+import MDTransPie from "../../components/chart/MediaTransition/MDTransPie.js";
+import DeviceTransPie from "../../components/chart/MediaTransition/DeviceTransPie.js";
+import LineChart from "../../components/chart/LineChart";
 
 const MainTab1 = () => {
 

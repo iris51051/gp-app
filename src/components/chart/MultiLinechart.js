@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import ECharts from "echarts-for-react";
-import { EmptyLineChart } from "./EmptyChart";
+import { EmptyLineChart } from "./chart/EmptyChart";
 
 const BLchart = ({ colors, datas, SelectedChartOption,mdFilter,seriesNames }) => {
 

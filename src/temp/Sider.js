@@ -6,7 +6,7 @@ import {
 } from "@ant-design/icons";
 import { Link,useLocation, useNavigate   } from "react-router-dom";
 import { Layout, Menu, Divider,Select } from "antd";
-import AdData from "../data/AdData";
+import AdData from "../testData/AdData";
 import { useStateManager } from "react-select";
 
 

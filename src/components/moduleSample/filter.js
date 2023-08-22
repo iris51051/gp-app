@@ -1,16 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { Checkbox, Dropdown, Input, Menu,Affix } from "antd";
+import React, { useState, useEffect, useCallback,useMemo } from "react";
+import { Checkbox, Dropdown, Input, Menu } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-
+import { Await, useLocation} from "react-router-dom";
 const CheckboxGroup = Checkbox.Group;
 
 const DropdownFilter = ({ name, options, onValueChange }) => {
+
+
   const [selectedOptions, setSelectedOptions] = useState([...options.map(option => option.value),"selectAll"]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  // const location = useLocation();
+  // const currentPage = location.pathname
+  // const currentAd = location.search
+
   useEffect(() => {
     onValueChange(selectedOptions);
-  }, [selectedOptions, onValueChange]);
+  }, [selectedOptions]);
 
   let clickSel = "";
 
@@ -25,9 +31,6 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
     ) {
       setSelectedOptions([...checkedValues, "selectAll"]);
     } else if (filteredOptions.length === options.length) {
-      setSelectedOptions(
-        checkedValues.filter((value) => value !== "selectAll")
-      );
       setSelectedOptions(
         checkedValues.filter((value) => value !== "selectAll")
       );
@@ -46,6 +49,7 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
         }
       }
     }
+    // onValueChange(selectedOptions)
   };
 
   const handleSearchChange = (e) => {
@@ -67,6 +71,7 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
     } else {
       setSelectedOptions([...allOptionValues, "selectAll"]);
     }
+    // onValueChange(selectedOptions)
   };
 
   const filteredOptions = options.filter((option) =>
@@ -81,7 +86,7 @@ const modifiedOptions = options.map((option) => ({
 
   const menu = (
     <div className="FilterDiv">
-      <Menu>
+      <Menu >
         <Menu.Item key="search">
           <Input
             className="Searcher"
@@ -98,6 +103,7 @@ const modifiedOptions = options.map((option) => ({
                   display: "flex",
                   width : 'auto',
                }}
+
               checked={selectedOptions.length === options.length + 1}
               indeterminate={
                 selectedOptions.length > 0 &&
@@ -129,14 +135,12 @@ const modifiedOptions = options.map((option) => ({
       </Menu>
     </div>
   );
-
   return (
     <Dropdown
-      menu={menu}
+      overlay={menu}
       open={dropdownVisible}
       onOpenChange={handleDropdownVisibleChange}
       trigger={["click"]}
-      className="FilterDropdown"
     >
       <div
         style={{
@@ -155,7 +159,6 @@ const modifiedOptions = options.map((option) => ({
           }/${options.length})`}
           onClick={() => setDropdownVisible(!dropdownVisible)}
           readOnly
-
         />
         <DownOutlined
           style={{
@@ -170,12 +173,25 @@ const modifiedOptions = options.map((option) => ({
   );
 };
 
-export const Adfilter = (props) =>        <DropdownFilter name="광고주" {...props} />
+export const Adfilter = (props) => <DropdownFilter name="광고주" {...props} />;
 
 export const AdSitefilter = (props) => (
-  <DropdownFilter name="사이트" {...props} />
+  <DropdownFilter  name="사이트" {...props} />
+);
+export const Mdfilter = (props) => (
+  <DropdownFilter  name="광고매체사" {...props} />
 );
 
-export const Mdfilter = (props) => (
-  <DropdownFilter name="광고매체사" {...props} />
+export const AdPlatform = (props) => (
+  <DropdownFilter name="광고 플랫폼" {...props} />
 );
+export const AdCampaign = (props) => (
+  <DropdownFilter name="캠페인" {...props} />
+);
+export const AdMaterial = (props) => (
+  <DropdownFilter name="소재유형" {...props} />
+);
+export const AdDevice = (props) => (
+  <DropdownFilter name="디바이스" {...props} />
+);
+

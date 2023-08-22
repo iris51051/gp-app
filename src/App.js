@@ -4,15 +4,15 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout} from "antd";
 
 import { useState } from "react";
-import Header from "./test/temp/Header";
-import Sider from "./test/temp/Sider";
-import Bottom from "./test/temp/Bottom";
-import Modules from "./test/temp/modules";
-import Main from "./test/temp/Main";
-import Apitest from "./test/temp/api-test/Apitest";
-import Working from "./test/temp/workingonit";
+import Header from "./temp/Header";
+import Sider from "./temp/Sider";
+import Bottom from "./temp/Bottom";
+import Modules from "./temp/modules";
+import Main from "./temp/Main";
+import Apitest from "./temp/api-test/Apitest";
+import Working from "./temp/workingonit";
 import "./index.css";
-import ReportExam from './test/temp/Report/Exam';
+import ReportExam from './temp/Report/Exam';
 
 const { Content } = Layout;
 

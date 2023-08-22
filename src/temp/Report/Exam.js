@@ -9,21 +9,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 //data
-import AdData from "../../data/AdData";
-import AdSiteData from "../../data/AdSiteData";
-import adMediaData from "../../data/AdMediaData";
-import AbizStatData from '../../data/A_bizData/A_bizSatData';
-import A_bizDetail from '../../data/A_bizData/A_bizDetail';
-import {adProvider} from '../../data/A_bizData/Ad_Provider';
+import AdData from "../../testData/AdData";
+import AdSiteData from "../../testData/AdSiteData";
+import adMediaData from "../../testData/AdMediaData";
+import AbizStatData from '../../testData/A_bizData/A_bizSatData';
+import A_bizDetail from '../../testData/A_bizData/A_bizDetail';
+import {adProvider} from '../../testData/A_bizData/Ad_Provider';
 
 //모듈
-import {Mdfilter, AdSitefilter,AdPlatform,AdCampaign,AdMaterial,AdDevice  } from "../../components/filter.js";
-import {Datashow} from "../../components/Datashow";
+import {Mdfilter, AdSitefilter,AdPlatform,AdCampaign,AdMaterial,AdDevice  } from "../../components/filter/filter.js";
+import {Datashow} from "../../components/filter/Datashow";
 import Breadcrumb from "../../components/Breadcrumd";
 import Calendar from "../../components/calendar.js";
 import {MultiLinechart} from "../../components/MultiLinechart";
-import {PieChart} from "../../components/ChartComponent";
-import ReportTable from "../../components/ReportTable";
+import {PieChart} from "../../components/chart/ChartComponent";
+import ReportTable from "../../components/table/ReportTable";
 
 
 const { Text } = Typography;

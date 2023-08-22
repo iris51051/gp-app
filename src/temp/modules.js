@@ -12,17 +12,21 @@ import  {Calendar}  from "../components/moduleSample/calendar.js";
 import {Datashow} from "../components/moduleSample/Datashow";
 import {FilterTagAdder} from "../components/moduleSample/filterTagAdder";
 
-import AdData from "../data/AdData";
-import AdSiteData from "../data/AdSiteData";
-import adMediaData from "../data/AdMediaData";
+import AdData from "../testData/AdData";
+import AdSiteData from "../testData/AdSiteData";
+import adMediaData from "../testData/AdMediaData";
 
 const { Text } = Typography;
 const Modules = () => {
+  
   const [adFilter, setAdFilter] = useState([]);
   const [siteFilter, setSiteFilter] = useState([]);
   const [mdFilter, setMdFilter] = useState([]);
   const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
 
+
+  const ProviderSet = new Set(adMediaData.map((item)=>item.ad_provider))
+  const adProviders = Array.from(ProviderSet,(provider) => ({ name: provider, value: provider }));
   const colors = [
     "#4180ec",
     "#4fd9bc",
@@ -35,7 +39,8 @@ const Modules = () => {
     "#eaab2f",
     "#bababa",
   ]
-
+  console.log(AdData)
+  
 
   const adChange = useCallback((value) => {
     const AdfilteredValue = value.filter((item) => value.includes(item.value)).map((item) => item.name);
@@ -65,9 +70,8 @@ const Modules = () => {
           </Text>
           <Adfilter options={AdData} onValueChange={adChange} />
           <AdSitefilter options={AdSiteData} onValueChange={adsiteChange} />
-          <Mdfilter options={adMediaData} onValueChange={mdChange} />
+          <Mdfilter options={adProviders} onValueChange={mdChange} />
           <Datashow />
-          <Calendar/>
           <Text strong level={4}>
             기간 선택&nbsp;
             <FontAwesomeIcon icon={faCircleChevronRight} />

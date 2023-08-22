@@ -12,14 +12,14 @@ import Breadcrumb from "../components/Breadcrumd";
 import MainTab1 from "./main-tab/main-Tab1";
 import MainTab2 from "./main-tab/main-Tab2";
 import Calendar from "../components/calendar.js";
-import { Adfilter, Mdfilter, AdSitefilter } from "../components/filter.js";
-import ScoreCardChartComp from "../components/ScoreChartCard";
-import AdData from "../data/AdData";
-// import AdSiteData from "../data/AdSiteData";
-import adMediaData from "../data/AdMediaData";
-import {ByDateData} from "../data/ByDateData";
-import {StatDateData} from "../data/StatDateData";
-import {DefaultData,filteredData} from "../../test/data/ApiReq"
+import { Adfilter, Mdfilter, AdSitefilter } from "../components/filter/filter.js";
+import ScoreCardChartComp from "../components/moduleSample/ScoreChartCard";
+import AdData from "../testData/AdData";
+// import AdSiteData from "../testData/AdSiteData";
+import adMediaData from "../testData/AdMediaData";
+import {ByDateData} from "../testData/ByDateData";
+import {StatDateData} from "../testData/StatDateData";
+import {DefaultData,filteredData} from "../testData/ApiReq"
 
 const antIcon = (
   <LoadingOutlined
@@ -534,12 +534,12 @@ import MainTab2 from "./main-tab/main-Tab2";
 import Calendar from "../components/calendar.js";
 import { Adfilter, Mdfilter, AdSitefilter } from "../components/filter.js";
 import ScoreCardChartComp from "../components/ScoreChartCard";
-import AdData from "../data/AdData";
-// import AdSiteData from "../data/AdSiteData";
-import adMediaData from "../data/AdMediaData";
-import {ByDateData} from "../data/ByDateData";
-import {StatDateData} from "../data/StatDateData";
-import {DefaultData,filteredData} from "../../test/data/ApiReq"
+import AdData from "../testData/AdData";
+// import AdSiteData from "../testData/AdSiteData";
+import adMediaData from "../testData/AdMediaData";
+import {ByDateData} from "../testData/ByDateData";
+import {StatDateData} from "../testData/StatDateData";
+import {DefaultData,filteredData} from "../../testData/ApiReq"
 
 const antIcon = (
   <LoadingOutlined

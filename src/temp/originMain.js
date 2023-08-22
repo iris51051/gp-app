@@ -14,11 +14,11 @@ import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 import Calendar from "../components/calendar.js";
 import { Adfilter, Mdfilter, AdSitefilter } from "../components/filter.js";
 import ScoreCardChartComp from "../components/ScoreChartCard";
-import AdData from "../data/AdData";
-import AdSiteData from "../data/AdSiteData";
-import adMediaData from "../data/AdMediaData";
-import {ByDateData} from "../data/ByDateData";
-import {StatDateData} from "../data/StatDateData";
+import AdData from "../testData/AdData";
+import AdSiteData from "../testData/AdSiteData";
+import adMediaData from "../testData/AdMediaData";
+import {ByDateData} from "../testData/ByDateData";
+import {StatDateData} from "../testData/StatDateData";
 import format from "date-fns/format";
 
 //날짜 기반 데  이터
