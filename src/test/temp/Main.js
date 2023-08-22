@@ -59,18 +59,7 @@ const Main = () => {
   const [adSiteData, setAdSiteData] = useState([]);
 
   //광고매체사 옵션
-// const adProviders = [];
-// for (const data of adMediaData) {
-//   // Check if the ad provider is not already present in the adProviders array
-//   const isAdProviderExist = adProviders.some(
-//     (provider) => provider.name === data.ad_provider
-//   );
 
-//   if (!isAdProviderExist) {
-//     // If it's not present, add it to the adProviders array
-//     adProviders.push({ name: data.ad_provider, value: data.ad_provider });
-//   }
-// }
 
 const fetchData = async ()=>{
   const body =JSON.stringify({
@@ -103,10 +92,66 @@ const fetchData = async ()=>{
     console.error(e)
   }
 }
+const updateData = async ()=>{
+  const body =JSON.stringify({
+    rptNo: '1000000',
+    lookupTp: 'agg',
+    dimCd: ["ad_provider",'pfno'],
+    where: [
+      {
+        field: 'stat_date',
+        operation: 'between',
+        value: ['2023-01-10', '2023-07-11'],
+      },
+    ],
+    metCd: ["m_rvn",
+    "m_impr",
+    "m_cost",
+    "m_odr",
+    "m_rgr",
+    "land",
+    "rvn",
+    "m_cart",
+    "odr",
+    "rgr",
+    "m_conv",
+    "m_click",
+    "m_cpc",
+    "m_ctr",
+    "m_crt",
+    "m_roas",
+    "rvn_per_odr",
+    "rgr_per_m_click",
+    "odr_per_m_cost",
+    "roas"
+    ],
+    sort: [{ field: 'land', order: 'asc' }],
+    agencySeq: '1',
+    clientSeq: currentAd,
+    ad_Providers:filterOptions.AdProvider,
+    pfno:filterOptions.Pfno,
+    size: 30,
+  })
+  const header = {
+    headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
+  }
+  try{
+    const response = await axios.post(
+      'http://122.99.192.144:9080/report/data',
+      body,
+      header
+    );
+    return response.data.data
+  }catch(e){
+    console.error(e)
+  }
+}
 
 
 useEffect(() => {
-  const fetchDataAndSetState = async () => {
+  setLoading(true)
+  const getData= async () => {
+    
     if (currentAd === '0' || currentAd === undefined) {
       //전체 광고주 일 때의 검색.
     } else {
@@ -121,35 +166,37 @@ useEffect(() => {
         name: site,
         value: site
       })));
+      
     }
+    
+    setLoading(false)
   };
-
-  fetchDataAndSetState();
+  getData();
 }, [location]);
+
 
 
 
 
   const defaultFilterOptions = {
     AdData: AdData,
-    AdSiteData: adSiteData,
+    Pfno: adSiteData,
     AdProvider: adProviders,
     vatValue: vatValue,
-    Datas : datas
+
   };
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
-  console.log('filterOptions',filterOptions)
   useEffect(() => {
     if (adProviders.length > 0 && adSiteData.length > 0) {
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
-        AdSiteData: adSiteData,
+        Pfno: adSiteData,
         AdProvider: adProviders,
       }));
     }
   }, [adProviders, adSiteData]);
-  
+
 
   const coll1Change = () => {
     setCollapsed1(!collapsed1);
@@ -161,24 +208,32 @@ useEffect(() => {
   //모든 필터 선택된 상태로 초기 로딩.
  
   const updateFilter = () => {   
-
+    if(currentAd === '0' || currentAd ===undefined){
     // Filter the AdData based on the selected adFilter names
     const filteredAdData = AdData.filter((item) => adFilter.includes(item.name));
     const filteredAdSiteData = adSiteData.filter((item) => siteFilter.includes(item.value));
     const filteredAdProvider = adProviders.filter((item)=> mdFilter.includes(item.value));
-
-    console.log('adProviders',adProviders)
-    console.log('filteredAdProvider',filteredAdProvider)
-    // You can use the spread operator to update the filterOptions state
     setFilterOptions((prevOptions) => ({
       ...prevOptions,
       AdData: filteredAdData,
-      AdSiteData:filteredAdSiteData,
+      Pfno:filteredAdSiteData,
       AdProvider:filteredAdProvider,
-      Datas : datas,
-    })); 
+
+    }));
+  }else{
+    const filteredAdSiteData = adSiteData.filter((item) => siteFilter.includes(item.value));
+    const filteredAdProvider = adProviders.filter((item)=> mdFilter.includes(item.value));
+    setFilterOptions((prevOptions) => ({
+      ...prevOptions,
+      AdData: currentAd,
+      Pfno:filteredAdSiteData,
+      AdProvider:filteredAdProvider,
+
+    }));
+  }
+    updateData();
   };
-  console.log('mdFilter!!!!!!!!!!!!!!!!!!!!!!!',mdFilter)
+
 
 
   const adChange = useCallback((value) => {
@@ -309,7 +364,11 @@ useEffect(() => {
 
   return (
     <>
-    {loading===true? <div style={{backgroundColor:"white", height:1000,top:70,diplay:'felx', justifyContent:'center',alignItems:'center'}}><Spin indicator={antIcon} /></div>:
+    {loading===true?
+     <div
+     style={{backgroundColor:"white",height: "80vh",display:'flex', justifyContent:'center',alignItems:'center'}}>
+     <Spin indicator={antIcon} />
+     </div>:
 
     <div className="MainContainer">
         <div className="TitleBox">
