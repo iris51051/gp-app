@@ -21,7 +21,7 @@ import {Mdfilter, AdSitefilter,AdPlatform,AdCampaign,AdMaterial,AdDevice  } from
 import {Datashow} from "../../components/filter/Datashow";
 import Breadcrumb from "../../components/Breadcrumd";
 import Calendar from "../../components/calendar.js";
-import {MultiLinechart} from "../../components/MultiLinechart";
+import {MultiLinechart} from "../../components/chart/MultiLinechart";
 import {PieChart} from "../../components/chart/ChartComponent";
 import ReportTable from "../../components/table/ReportTable";
 
