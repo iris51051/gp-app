@@ -89,12 +89,11 @@ const Lnb = ({ collapsed ,onValueChange}) => {
   const [openKeys, setOpenKeys] = useState([]);
 
   
-  console.log('111')
+
   useMemo(() => {
     if(currentPath === '/'){
       setSelectordata(defaultData)
     }else{
-      console.log('currentpath!==='/'')
       const newValue = defaultData.filter((item)=>item.value !== 0)
       setSelectordata(newValue)
     }

@@ -7,15 +7,15 @@ import authData from './urltest'; // Replace with the correct path to DataFetchC
 const Apitest = () => {
   const [testData, setTestData] = useState(null)
   const [testToken, setTestToken] = useState(null)
-  // useEffect(() => {
-  //   const getDataAndLog = async () => {
-  //     const data = await fetchData();
-  //     if (data && data.length >0) {
-  //      setTestData(data[0]);
-  //     }
-  //   };
-  //   getDataAndLog();
-  // }, []);
+  useEffect(() => {
+    const getDataAndLog = async () => {
+      const data = await fetchData();
+      if (data && data.length >0) {
+       setTestData(data[0]);
+      }
+    };
+    getDataAndLog();
+  }, []);
   useEffect(() => {
     const getAythToken = async () => {
       const data = await authData();

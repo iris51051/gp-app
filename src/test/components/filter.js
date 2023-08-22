@@ -12,7 +12,7 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
   // const location = useLocation();
   // const currentPage = location.pathname
   // const currentAd = location.search
-  console.log('options',options)
+
  useEffect(() => {
    setSelectedOptions([...options.map(option => option.value),"selectAll"])
    }, [options])
@@ -20,7 +20,6 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
   
   useEffect(() => {
     onValueChange(selectedOptions);
-    console.log('selectedOptions',selectedOptions)
   }, [selectedOptions]);
 
   let clickSel = "";

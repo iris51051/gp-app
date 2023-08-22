@@ -1,6 +1,9 @@
 body {
   user-select: none;
 }
+.ant-layout{
+  background-color: white;
+}
 /************************ Header**********************************/
 .fixed-header {
   position: fixed;
