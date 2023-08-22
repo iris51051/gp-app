@@ -41,7 +41,7 @@ const Main = () => {
     { title: "AIR(매체 통합 리포트)", href: "/" },
     { title: "대시보드" },
   ];
- const [isPending, startTransition] = useTransition();
+
   const [adFilter, setAdFilter] = useState([]);
   const [siteFilter, setSiteFilter] = useState([]);
   const [mdFilter, setMdFilter] = useState([]);
@@ -70,7 +70,7 @@ const fetchData = async ()=>{
       {
         field: 'stat_date',
         operation: 'between',
-        value: ['2023-01-10', '2023-07-11'],
+        value: ['2023-01-10', dateValue[1]],
       },
     ],
     sort: [{ field: 'land', order: 'asc' }],
@@ -92,70 +92,13 @@ const fetchData = async ()=>{
     console.error(e)
   }
 }
-const getData= async () => {
-    
 
-  }
-const updateData = async ()=>{
-  const body =JSON.stringify({
-    rptNo: '1000000',
-    lookupTp: 'agg',
-    dimCd: ["ad_provider",'pfno'],
-    where: [
-      {
-        field: 'stat_date',
-        operation: 'between',
-        value: ['2023-01-10', '2023-07-11'],
-      },
-    ],
-    metCd: ["m_rvn",
-    "m_impr",
-    "m_cost",
-    "m_odr",
-    "m_rgr",
-    "land",
-    "rvn",
-    "m_cart",
-    "odr",
-    "rgr",
-    "m_conv",
-    "m_click",
-    "m_cpc",
-    "m_ctr",
-    "m_crt",
-    "m_roas",
-    "rvn_per_odr",
-    "rgr_per_m_click",
-    "odr_per_m_cost",
-    "roas"
-    ],
-    sort: [{ field: 'land', order: 'asc' }],
-    agencySeq: '1',
-    clientSeq: currentAd,
-    ad_Providers:filterOptions.AdProvider,
-    pfno:filterOptions.Pfno,
-    size: 30,
-  })
-  const header = {
-    headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
-  }
-  try{
-    const response = await axios.post(
-      'http://122.99.192.144:9080/report/data',
-      body,
-      header
-    );
-    return response.data.data
-  }catch(e){
-    console.error(e)
-  }
-}
+
 
 
 useEffect(() => {
   setLoading(true)
   const getData= async () => {
-    
     if (currentAd === '0' || currentAd === undefined) {
       //전체 광고주 일 때의 검색.
     } else {
@@ -170,13 +113,11 @@ useEffect(() => {
         name: site,
         value: site
       })));
-      
     }
-    
     setLoading(false)
   };
   getData();
-}, [location]);
+}, [currentAd]);
 
 
 
@@ -187,7 +128,7 @@ useEffect(() => {
     Pfno: adSiteData,
     AdProvider: adProviders,
     vatValue: vatValue,
-
+    date : dateValue,
   };
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
@@ -212,37 +153,94 @@ useEffect(() => {
 
   //모든 필터 선택된 상태로 초기 로딩.
  
-  const updateFilter = () => {   
+  const updateFilter = () => {
     if(currentAd === '0' || currentAd ===undefined){
-    // Filter the AdData based on the selected adFilter names
-    const filteredAdData = AdData.filter((item) => adFilter.includes(item.name));
-    const filteredAdSiteData = adSiteData.filter((item) => siteFilter.includes(item.value));
-    const filteredAdProvider = adProviders.filter((item)=> mdFilter.includes(item.value));
-    setFilterOptions((prevOptions) => ({
-      ...prevOptions,
-      AdData: filteredAdData,
-      Pfno:filteredAdSiteData,
-      AdProvider:filteredAdProvider,
-
-    }));
-  }else{
-    const filteredAdSiteData = adSiteData.filter((item) => siteFilter.includes(item.value));
-    const filteredAdProvider = adProviders.filter((item)=> mdFilter.includes(item.value));
-    setFilterOptions((prevOptions) => ({
-      ...prevOptions,
-      AdData: currentAd,
-      Pfno:filteredAdSiteData,
-      AdProvider:filteredAdProvider,
-
-    }));
-  }
-    updateData();
+      // Filter the AdData based on the selected adFilter names
+      const filteredAdData = AdData.filter((item) => adFilter.includes(item.name));
+      const filteredAdSiteData = adSiteData.filter((item) => siteFilter.includes(item.value));
+      const filteredAdProvider = adProviders.filter((item)=> mdFilter.includes(item.value));
+        setFilterOptions((prevOptions) => ({
+          ...prevOptions,
+          AdData: filteredAdData,
+          Pfno:filteredAdSiteData,
+          AdProvider:filteredAdProvider,
+          date:dateValue,
+        }));
+    }else{
+      const filteredAdSiteData = adSiteData.filter((item) => siteFilter.includes(item.value));
+      const filteredAdProvider = adProviders.filter((item)=> mdFilter.includes(item.value));
+      setFilterOptions((prevOptions) => ({
+        ...prevOptions,
+        AdData: currentAd,
+        Pfno:filteredAdSiteData,
+        AdProvider:filteredAdProvider,
+        date:dateValue,
+      }));
+    }
   };
 
+  useEffect(() => {
+    updateData();
+  }, [filterOptions]);
 
+  const updateData = async ()=>{
+    const body =JSON.stringify({
+      rptNo: '1000000',
+      lookupTp: 'agg',
+      dimCd: ["by_day","ad_provider",'pfno'],
+      where: [
+        {
+          field: 'stat_date',
+          operation: 'between',
+          value: [dateValue[0], dateValue[1]],
+          ad_provider:filterOptions.AdProvider.map((item)=>item.value),
+        },
+      ],
+      metCd: ["m_rvn",
+      "m_impr",
+      "m_cost",
+      "m_odr",
+      "m_rgr",
+      "land",
+      "rvn",
+      "m_cart",
+      "odr",
+      "rgr",
+      "m_conv",
+      "m_click",
+      "m_cpc",
+      "m_ctr",
+      "m_crt",
+      "m_roas",
+      "rvn_per_odr",
+      "rgr_per_m_click",
+      "odr_per_m_cost",
+      "roas"
+      ],
+      sort: [{ field: 'land', order: 'asc' }],
+      agencySeq: '1',
+      clientSeq: currentAd,
+      // ad_providers:filterOptions.AdProvider.map((item)=>item.value),
+      pfno:filterOptions.Pfno.map(item=>item.value),
+      size: 30,
+    })
+    const header = {
+      headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
+    }
+    try{
+      const response = await axios.post(
+        'http://122.99.192.144:9080/report/data',
+        body,
+        header
+      );
+      return response.data.data
+    }catch(e){
+      console.error(e)
+    }
+  }
 
   const adChange = useCallback((value) => {
-    const AdfilteredValue = AdData.filter((item) => value.includes(item.value)).map((item) => item.name);
+    const AdfilteredValue = AdData.filter((item) => value.includes(item.value));
       setAdFilter(AdfilteredValue);
   }, []);
 
@@ -365,7 +363,7 @@ useEffect(() => {
       </div>
     );
   };
-
+  console.log(filterOptions)
 
   return (
     <>

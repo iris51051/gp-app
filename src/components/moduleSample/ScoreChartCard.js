@@ -418,7 +418,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     },
     {
       key: 22,
-      title: renderTitle('총 회원가입률?'),
+      title: renderTitle('총 회원가입률'),
       value: (totalRgr/totalMClick).toFixed(0),
       unit: "%",
       percent: (((totalRgr/totalMClick)-(totalSRgr/totalSMClick))/(totalSRgr/totalSMClick*100)).toFixed(0),

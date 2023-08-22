@@ -16,7 +16,7 @@ export const Datashow = ({onValueChange}) => {
       label: "매체 전환 데이터 ",
     },
   ]
-  const [DataType, setDataType] =useState(options[0].value)
+  const [DataType, setDataType] =useState()
   const handleChange = (value)=>{
     setDataType(value);
   }
@@ -29,7 +29,7 @@ export const Datashow = ({onValueChange}) => {
       style={{ width: "210px" }}
       suffixIcon={<VscTriangleDown style={{ color: "black" }} />}
       size="small"
-      defaultValue={options[1].value}
+      defaultValue={'media'}
       onChange={handleChange}
       options={options}
     />
