@@ -5,7 +5,8 @@ import { Await, useLocation} from "react-router-dom";
 const CheckboxGroup = Checkbox.Group;
 
 const DropdownFilter = ({ name, options, onValueChange }) => {
-  const [Data,setData]=useState(options)
+
+
   const [selectedOptions, setSelectedOptions] = useState([...options.map(option => option.value),"selectAll"]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -17,7 +18,6 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
    setSelectedOptions([...options.map(option => option.value),"selectAll"])
    }, [options])
 
-  
   useEffect(() => {
     onValueChange(selectedOptions);
   }, [selectedOptions]);

@@ -157,10 +157,9 @@ const MainTab1 = () => {
   return (
     <>
 
-      <div className="LineChartDiv">
+ 
       <h4>기간별 광고 비용 추세</h4>
       <LineChart colors={colors} defaultData={defaultData}/>
-      </div>
       <br/>
       <div>
       <AdResultTable/>

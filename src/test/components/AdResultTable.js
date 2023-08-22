@@ -33,29 +33,6 @@ const defalutdata = [
   },
   {
     key: 2,
-    id: '102',
-    statistics: 'Behavioral',
-    totad: 1548642,
-    pretotad: 1048642,
-    totsale: 45684321,
-    pretotsale: 55684321,
-    get roas() {
-      if (this.totad > 0 && this.totsale > 0) {
-        return ((this.totad / this.totsale) * 100).toFixed(0);
-      } else {
-        return 0;
-      }
-    },
-    get preroas() {
-      if (this.pretotad > 0 && this.pretotsale > 0) {
-        return ((this.pretotad / this.pretotsale) * 100).toFixed(0);
-      } else {
-        return 0;
-      }
-    },
-  },
-  {
-    key: 3,
     id: '103',
     statistics: 'Behavioral',
     totad: 1548642,
@@ -77,6 +54,30 @@ const defalutdata = [
       }
     },
   },
+  {
+    key: 3,
+    id: '102',
+    statistics: 'Behavioral',
+    totad: 1548642,
+    pretotad: 1048642,
+    totsale: 45684321,
+    pretotsale: 55684321,
+    get roas() {
+      if (this.totad > 0 && this.totsale > 0) {
+        return ((this.totad / this.totsale) * 100).toFixed(0);
+      } else {
+        return 0;
+      }
+    },
+    get preroas() {
+      if (this.pretotad > 0 && this.pretotsale > 0) {
+        return ((this.pretotad / this.pretotsale) * 100).toFixed(0);
+      } else {
+        return 0;
+      }
+    },
+  },
+
   {
     key: 4,
     id: '104',
@@ -211,14 +212,15 @@ const App = () => {
       sorter: (a, b) => a.id - b.id,
       sortOrder: sortedInfo.columnKey === 'id' ? sortedInfo.order : null,
       ellipsis: true,
-      width : 140,
+      width : '10%',
     },
     {
       title: '통계',
       align: 'center',
       dataIndex: 'statistics',
       key: 'statistics',
-      width : 120,
+      width : '10%',
+      ellipsis: true,
       render: (text, record) => {
       return (
         <>
@@ -239,10 +241,10 @@ const App = () => {
       key: 'totad',
       align: 'end',
       ellipsis: true,
-      width : 227,
+      width : '15%',
       sorter: (a, b) => a.totad - b.totad,
       sortOrder: sortedInfo.columnKey === 'totad' ? sortedInfo.order : null,
-      ellipsis: true,
+
       render: (text, record) => {
         const mode = ['totad', 'pretotad'];
         return tablerender(record, mode);
@@ -258,10 +260,10 @@ const App = () => {
       align: 'end',
       key: 'pretotad',
       ellipsis: true,
-      width : 227,
+      width : '15%',
       sorter: (a, b) => a.pretotad - b.pretotad,
       sortOrder: sortedInfo.columnKey === 'pretotad' ? sortedInfo.order : null,
-      ellipsis: true,
+
       render: (text) => {
         if (text) {
           return Intl.NumberFormat('ko-KR', {
@@ -283,7 +285,7 @@ const App = () => {
       ellipsis: true,
       align: 'end',
       key: 'totsale',
-      width : 227,
+      width : '15%',
       sorter: (a, b) => a.totsale - b.totsale,
       sortOrder: sortedInfo.columnKey === 'totsale' ? sortedInfo.order : null,
       render: (text, record) => {
@@ -299,7 +301,7 @@ const App = () => {
       ),
       dataIndex: 'pretotsale',
       key: 'pretotsale',
-      width : 227,
+      width : '15%',
       sorter: (a, b) => a.pretotsale - b.pretotsale,
       sortOrder:
         sortedInfo.columnKey === 'pretotsale' ? sortedInfo.order : null,
@@ -324,7 +326,7 @@ const App = () => {
       ),
       dataIndex: 'roas',
       key: 'roas',
-      width : 200,
+      width : '10%',
       sorter: (a, b) => a.roas - b.roas,
       sortOrder: sortedInfo.columnKey === 'roas' ? sortedInfo.order : null,
       ellipsis: true,
@@ -342,7 +344,7 @@ const App = () => {
       ),
       dataIndex: 'preroas',
       key: 'preroas',
-      width : 200,
+      width : '10%',
       sorter: (a, b) => a.preroas - b.preroas,
       sortOrder: sortedInfo.columnKey === 'preroas' ? sortedInfo.order : null,
       align: 'end',
@@ -389,40 +391,42 @@ const App = () => {
   };
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginBottom: 16,
-        }}
-      >
-        <div style={{ marginRight: 'auto' }}>
-          <Button onClick={clearAll}>
-            <ReloadOutlined />
-          </Button>
-        </div>
+      <div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginBottom: 16,
+          }}
+        >
+          <div style={{ marginRight: 'auto' }}>
+            <Button onClick={clearAll}>
+              <ReloadOutlined />
+            </Button>
+          </div>
 
-        <div style={{ display: 'flex' }}>
-          <Search
-            placeholder="검색"
-            onSearch={onSearch}
-            className="searchBtn"
-          />
-          <Button className="btn excelBtn" onClick={handleDownload}>
-            Excel
-          </Button>
+          <div style={{ display: 'flex' }}>
+            <Search
+              placeholder="검색"
+              onSearch={onSearch}
+              className="searchBtn"
+            />
+            <Button className="btn excelBtn" onClick={handleDownload}>
+              Excel
+            </Button>
+          </div>
         </div>
+        <Table
+          className='ADResultTable'
+          id="table"
+          columns={columns}
+          dataSource={data}
+          onChange={handleChange}
+          rowClassName={rowClassName}
+          showSorterTooltip={false}
+          size='small'
+        />
       </div>
-      <Table
-        className='ADResultTable'
-        id="table"
-        columns={columns}
-        dataSource={data}
-        onChange={handleChange}
-        rowClassName={rowClassName}
-        showSorterTooltip={false}
-        size='small'
-      />
     </>
   );
 };

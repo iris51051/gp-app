@@ -26,6 +26,7 @@ const MdResult = () => {
       dataIndex: 'adMedia',
       align: 'start',
       key: 'adMedia',
+      ellipsis: true,
       width: '15%',
       sorter: (a, b) => {
         const aMedia = a.adMedia.replace(/^[^A-Za-z0-9ㄱ-ㅎ가-힣]+/, '');
@@ -42,11 +43,9 @@ const MdResult = () => {
 
     Table.EXPAND_COLUMN,
     {
-      title:  
-      <div className="adPro"> 
-      광고상품
-    </div>,
+      title: '광고상품',
       dataIndex: 'adPro',
+      ellipsis: true,
       align : 'start',
       key: 'adPro',
       width: '10%',
@@ -59,6 +58,7 @@ const MdResult = () => {
       title: titleRender('노출수'),
       dataIndex: 'expoCount',
       align : 'end',
+      ellipsis: true,
       key : 'expoCount',
       sorter: (a, b) => a.expoCount - b.expoCount,
       sortOrder: sortedInfo.columnKey === 'expoCount' ? sortedInfo.order : null,
@@ -75,6 +75,7 @@ const MdResult = () => {
       title: titleRender('클릭수'),
       dataIndex: 'clckCount',
       key:'clckCount',
+      ellipsis: true,
       align : 'end',
       sorter: (a, b) => parseInt(a.clckCount) - parseInt(b.clckCount),
       sortOrder: sortedInfo.columnKey === 'clckCount' ? sortedInfo.order : null,
@@ -90,6 +91,7 @@ const MdResult = () => {
       title: titleRender('CTR'),
       dataIndex: 'CTR',
       align: 'end',
+      ellipsis: true,
       key:'CTR',
       sorter: (a, b) => a.CTR - b.CTR,
       sortOrder: sortedInfo.columnKey === 'CTR' ? sortedInfo.order : null,
@@ -107,6 +109,7 @@ const MdResult = () => {
       title: titleRender('CPC'),
       dataIndex: 'CPC',
       align : 'end',
+      ellipsis: true,
       key:'CPC',
       sorter: (a, b) => parseFloat(a.CPC) - parseFloat(b.CPC),
       sortOrder: sortedInfo.columnKey === 'CPC' ? sortedInfo.order : null,
@@ -123,6 +126,7 @@ const MdResult = () => {
       title: titleRender('총광고비'),
       dataIndex: 'totAd',
       align : 'end',
+      ellipsis: true,
       key: 'totAd',
       sorter: (a, b) => a.totAd - b.totAd,
       sortOrder: sortedInfo.columnKey === 'totAd' ? sortedInfo.order : null,
