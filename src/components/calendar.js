@@ -10,7 +10,7 @@ import addMonths from "date-fns/addMonths";
 import koKR from "rsuite/locales/ko_KR";
 
 const Calendar = ({onValueChange}) => {
-  const [selectedDate, setSelectedDate] = useState([addDays(new Date(), -1), addDays(new Date(), -1)]);
+  const [selectedDate, setSelectedDate] = useState([addDays(new Date(), -6), new Date()]);
   const [PickedRange, setPickedRange] = useState([new Date(), new Date()]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());

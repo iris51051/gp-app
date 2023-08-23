@@ -11,7 +11,7 @@ import koKR from "rsuite/locales/ko_KR";
 
 export const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState([]);
-  const [PickedRange, setPickedRange] = useState([new Date(), new Date()]);
+  const [PickedRange, setPickedRange] = useState([addDays(new Date(),-6), new Date()]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
