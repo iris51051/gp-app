@@ -76,7 +76,7 @@ const fetchData = async ()=>{
     sort: [{ field: 'land', order: 'asc' }],
     agencySeq: '1',
     clientSeq: currentAd,
-    size: 30,
+    size: 10000,
   })
   const header = {
     headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
@@ -221,7 +221,7 @@ useEffect(() => {
         clientSeq: currentAd,
         // ad_providers:filterOptions.AdProvider.map((item)=>item.value),
         pfno:filterOptions.Pfno.map(item=>item.value),
-        size: 30,
+        size: 10000,
       })
       const header = {
         headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
@@ -335,7 +335,7 @@ useEffect(() => {
         clientSeq: currentAd,
         // ad_providers:filterOptions.AdProvider.map((item)=>item.value),
         pfno:filterOptions.Pfno.map(item=>item.value),
-        size: 30,
+        size: 10000,
       })
       const header = {
         headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
