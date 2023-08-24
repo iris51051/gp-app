@@ -240,9 +240,8 @@ useEffect(() => {
         const filteredData = generateData.filter((item) => {
           return filterOptions.AdProvider.some((provider) => provider.value === item.ad_provider);
         });
-        
+
         if(filteredData.length===0){
-          console.log('들어왔어요!!!!!!!!!!!!!!')
           const dummyData = [{
             "m_rvn": 0,
             "m_impr": 0,
@@ -299,9 +298,9 @@ useEffect(() => {
       setFetchedData(dummyData)
     }
   }
-  console.log()
 
-  console.log('fetchedData',fetchedData)
+
+
   const getCompareData = async ()=>{
     if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
       const body =JSON.stringify({
@@ -365,34 +364,59 @@ useEffect(() => {
     }
   }
   useEffect(() => {
-    console.log('fetchedCompareData',fetchedCompareData)
+
     if(fetchedData.length>0){
       if (fetchedData && fetchedCompareData) {
         if(vatValue){
           const updatedData =fetchedData?.map((item) => {
             return {
               ...item,
-              m_rvn: Math.round(item.m_rvn + item.m_rvn * 0.1),
-              rvn: Math.round(item.rvn + item.rvn * 0.1),
-              m_cost: Math.round(item.m_cost + item.m_cost * 0.1),
-              m_cpc: Math.round(item.m_cpc + item.m_cpc * 0.1),
-              rvn_per_odr: Math.round(item.rvn_per_odr + item.rvn_per_odr * 0.1),
+              m_rvn: item.m_rvn + item.m_rvn * 0.1,
+              rvn: item.rvn + item.rvn * 0.1,
+              m_cost: item.m_cost + item.m_cost * 0.1,
+              m_cpc: item.m_cpc + item.m_cpc * 0.1,
+              rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
             };
           });
           const updatedCompareData = fetchedCompareData?.map((item) => {
             return {
               ...item,
-              m_rvn: Math.round(item.m_rvn + item.m_rvn * 0.1),
-              rvn: Math.round(item.rvn + item.rvn * 0.1),
-              m_cost: Math.round(item.m_cost + item.m_cost * 0.1),
-              m_cpc: Math.round(item.m_cpc + item.m_cpc * 0.1),
-              rvn_per_odr: Math.round(item.rvn_per_odr + item.rvn_per_odr * 0.1),
+              m_rvn: item.m_rvn + item.m_rvn * 0.1,
+              rvn: item.rvn + item.rvn * 0.1,
+              m_cost: item.m_cost + item.m_cost * 0.1,
+              m_cpc: item.m_cpc + item.m_cpc * 0.1,
+              rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
             };
           });
           setDatas([updatedData,updatedCompareData]);
         }else{
         setDatas([fetchedData, fetchedCompareData]);
         }
+        // if(vatValue){
+        //   const updatedData =fetchedData?.map((item) => {
+        //     return {
+        //       ...item,
+        //       m_rvn: Math.round(item.m_rvn + item.m_rvn * 0.1),
+        //       rvn: Math.round(item.rvn + item.rvn * 0.1),
+        //       m_cost: Math.round(item.m_cost + item.m_cost * 0.1),
+        //       m_cpc: Math.round(item.m_cpc + item.m_cpc * 0.1),
+        //       rvn_per_odr: Math.round(item.rvn_per_odr + item.rvn_per_odr * 0.1),
+        //     };
+        //   });
+        //   const updatedCompareData = fetchedCompareData?.map((item) => {
+        //     return {
+        //       ...item,
+        //       m_rvn: Math.round(item.m_rvn + item.m_rvn * 0.1),
+        //       rvn: Math.round(item.rvn + item.rvn * 0.1),
+        //       m_cost: Math.round(item.m_cost + item.m_cost * 0.1),
+        //       m_cpc: Math.round(item.m_cpc + item.m_cpc * 0.1),
+        //       rvn_per_odr: Math.round(item.rvn_per_odr + item.rvn_per_odr * 0.1),
+        //     };
+        //   });
+        //   setDatas([updatedData,updatedCompareData]);
+        // }else{
+        // setDatas([fetchedData, fetchedCompareData]);
+        // }
       }
     }
     // else{
@@ -430,7 +454,6 @@ useEffect(() => {
 
   
 
-console.log('datas',datas)
   const adChange = useCallback((value) => {
     const AdfilteredValue = AdData.filter((item) => value.includes(item.value));
       setAdFilter(AdfilteredValue);
@@ -465,7 +488,6 @@ console.log('datas',datas)
   }, []);
 
 
-  console.log('mdFilter',mdFilter)
 
   const handleSwitchToggle = (value) => {
     setVatValue(value);
@@ -483,9 +505,7 @@ console.log('datas',datas)
       </div>
     );
   };
-  console.log(filterOptions)
 
-  console.log('dateGap',dateGap)
   return (
     <>
     {loading===true?

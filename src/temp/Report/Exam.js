@@ -173,7 +173,6 @@ const [adPlatform, setAdPlatform] = useState([])
     }, [currentAd]);
 
   const DataTypeChange = useCallback((value)=>{
-    console.log(1)
     setDataType(value);
     setSelectedChartOption(ChartOptions[0])
     ChartFilter(ChartOptions[0].value)
@@ -666,7 +665,6 @@ const ExamReport =({colors})=>{
     const [SelectedChartOption, setSelectedChartOption] = useState([ChartOptions[0]]);
 
   const DataTypeChange = useCallback((value)=>{
-    console.log(1)
     setDataType(value);
     setSelectedChartOption(ChartOptions[0])
     ChartFilter(ChartOptions[0].value)

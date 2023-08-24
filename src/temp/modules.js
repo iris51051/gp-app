@@ -39,7 +39,6 @@ const Modules = () => {
     "#eaab2f",
     "#bababa",
   ]
-  console.log(AdData)
   
 
   const adChange = useCallback((value) => {

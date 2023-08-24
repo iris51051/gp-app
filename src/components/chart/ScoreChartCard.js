@@ -8,6 +8,8 @@ import {
 } from "@ant-design/icons";
 
 const ScoreCardChart = ({collapsed, datas,date}) => {
+    console.log('datas',datas)
+    const dateGap = new Set(datas[0]?.map((item)=>item.stat_date)).size
 
     //M:매체데이터
     //S: 비교 데이터
@@ -23,6 +25,7 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
     const [totalOdr, setTotalOdr] = useState(0); //총 주문수
     const [totalRvn, setTotalRvn] = useState(0); //총 주문금액
     const [totalRgr, setTotalRgr] = useState(0); //총 회원가입수
+
 
     
     //평균
@@ -174,6 +177,7 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
             m_impr: 0, // 초기값 설정
             m_click: 0, // 초기값 설정
             m_conv: 0, // 초기값 설정
+            m_cpc:0,
             odr: 0, // 초기값 설정
             rvn: 0, // 초기값 설정
             rgr: 0, // 초기값 설정
@@ -184,6 +188,7 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
         groupedData[statDate].m_impr += item.m_impr;
         groupedData[statDate].m_click += item.m_click;
         groupedData[statDate].m_conv += item.m_conv;
+        groupedData[statDate].m_cpc += item.m_cpc;
         groupedData[statDate].odr += item.odr;
         groupedData[statDate].rvn += item.rvn;
         groupedData[statDate].rgr += item.rgr;
@@ -193,38 +198,38 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       //byData
       //매체 데이터
       //배열
-      setMrvnArr(combinedData.map(item => item.m_rvn));
-      setMCostArr(combinedData.map(item => item.m_cost));
+      setMrvnArr(combinedData.map(item => Math.round(item.m_rvn)));
+      setMCostArr(combinedData.map(item => Math.round(item.m_cost)));
       setMImprArr(combinedData.map(item => item.m_impr));
       setMClickArr(combinedData.map(item => item.m_click));
       setMCTRArr(combinedData.map(item => item.m_impr === 0 ? 0 : parseFloat(((item.m_click/item.m_impr)* 100).toFixed(2))));
-      setMCPCArr(combinedData.map(item => item.m_click === 0 ? 0 : parseFloat((item.m_cost/item.m_click).toFixed(0))));
-      setMROASArr(combinedData.map(item => item.m_cost === 0 ? 0 : parseFloat(((item.m_rvn/item.m_cost)*100).toFixed(0))));
+      setMCPCArr(combinedData.map(item => item.m_click === 0 ? 0 :  Math.round((item.m_cost/item.m_click))));
+      setMROASArr(combinedData.map(item => item.m_cost === 0 ? 0 :  Math.round(((item.m_rvn/item.m_cost)*100))));
       setMConvArr(combinedData.map(item => item.m_conv));
       setAVGMconvArr(combinedData.map(item => item.m_click === 0 ? 0 : parseFloat((item.m_conv/item.m_click).toFixed(2))));
       //합계
       setTotalMRvn(MRvnsum);
-      settotalMCost(parseInt((MCostsum).toFixed(0)))
+      settotalMCost(Math.round((MCostsum)))
       setTotalMImpr(MImprsum)
       setTotalMClick(MClicksum)
       setTotalMConv((MConvsum))
-      //평균
-      setAVGCPC(parseInt((MCPCsum/new Set(datas[0].map((item) => item.stat_date)).size).toFixed(0)))
-      console.log('date',new Set(datas[0].map((item)=>item.stat_date)).size)
-      console.log('m_cpc',datas[0].map((item)=>item.m_cpc))
-
- 
+      
+      MCPCsum = combinedData.map(item => item.m_click === 0 ? 0 :  Math.round((item.m_cost/item.m_click))).reduce((sum,item)=>sum+item,0)
       console.log('MCPCsum',MCPCsum)
+      console.log('combinedData',combinedData)
+      console.log('dateGap',dateGap)
+      //평균
+      setAVGCPC(parseInt(Math.round(MCPCsum/new Set(datas[0].map((item) => item.stat_date)).size)))
       //스크립트 데이터
       //배열
       setOdrArr(combinedData.map(item => item.odr));
       setRgrArr(combinedData.map(item => item.rgr));
-      setRpoArr(combinedData.map(item => item.odr === 0 ? 0 : parseFloat((item.rvn/item.odr).toFixed(0))));
-      setRoasArr(combinedData.map(item =>item.m_cost === 0 ? 0 :  parseFloat(((item.rvn/item.m_cost)*100).toFixed(0))));
-      setRgrpmcArr(combinedData.map(item => item.m_click === 0 || item.rgr===0? 0 : parseFloat(((item.rgr/item.m_click)*100).toFixed(0))));
+      setRpoArr(combinedData.map(item => item.odr === 0 ? 0 :Math.round((item.rvn/item.odr))));
+      setRoasArr(combinedData.map(item =>item.m_cost === 0 ? 0 : Math.round(((item.rvn/item.m_cost)*100))));
+      setRgrpmcArr(combinedData.map(item => item.m_click === 0 || item.rgr===0? 0 : Math.round(((item.rgr/item.m_click)*100))));
       setOpmcArr(combinedData.map(item => item.m_click === 0 ? 0 : parseFloat((item.odr/item.m_click).toFixed(2))));
-      setRvnArr(combinedData.map(item => parseFloat((item.rvn).toFixed(0))));
-      
+      setRvnArr(combinedData.map(item =>Math.round((item.rvn))));
+
       //합계
       setTotalOdr(Odrsum);
       setTotalRvn(Rvnsum);
@@ -233,25 +238,23 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       //statData
       //매체 data
       //합계
-      setTotalSMRvn(parseInt((SMRvnsum).toFixed(0)));
-      settotalSMCost(parseInt((SMCostsum).toFixed(0)))
-      setTotalSMImpr(parseInt((SMImprsum).toFixed(0)))
-      setTotalSMClick(parseInt((SMClicksum).toFixed(0)))
+      setTotalSMRvn(Math.round(SMRvnsum));
+      settotalSMCost(Math.round((SMCostsum)))
+      setTotalSMImpr(Math.round((SMImprsum)))
+      setTotalSMClick(Math.round((SMClicksum)))
       setTotalSMConv((SMConvsum))
       //평균
-      setSAVGCPC(parseInt((SMCPCsum/(new Set(datas[1].map((item) => item.stat_date)).size)).toFixed(0))) 
+      setSAVGCPC(parseInt((SMCPCsum/Math.round(new Set(datas[0].map((item) => item.stat_date)).size)))) 
       //스크립트 data
       //합계
       setTotalSOdr(SOdrsum);
       setTotalSRvn(SRvnsum);
       setTotalSRgr(SRgrsum);
-      console.log('SMCPCsum',SMCPCsum)
-      console.log('date',new Set(datas[1].map((item)=>item.stat_date)).size)
-
-
     }
   },[datas])
-
+  
+  console.log('테스트!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',(datas[0].map((item)=>item.m_cpc)))
+  console.log('테스트!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',(datas[0].map((item)=>item.m_cpc)).reduce((sum,item)=>sum+item,0))
   const renderTitle=(title)=>{
     return( 
        <div>
@@ -266,7 +269,7 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       title: "CTR",
       value: (totalMClick / totalMImpr * 100).toFixed(2),
       unit: "%",
-      percent: ((((totalMClick/totalMImpr)-((totalSMClick / totalSMImpr)))/(totalSMClick / totalSMImpr))*100).toFixed(0),
+      percent: Math.round((((totalMClick/totalMImpr)-((totalSMClick / totalSMImpr)))/(totalSMClick / totalSMImpr))*100),
       data: MCTRArr,
     },
     {
@@ -274,7 +277,7 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       title: "총 광고비",
       value: totalMCost,
       unit: "원",
-      percent: (((totalMCost-totalSMCost)/totalSMCost)*100).toFixed(0),
+      percent: Math.round(((totalMCost-totalSMCost)/totalSMCost)*100),
       data: MCostArr,
     },
     {
@@ -282,7 +285,7 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       title: "총 매출액",
       value : totalMRvn,
       unit: "원",
-      percent: (((totalMRvn-totalSMRvn)/totalSMRvn)*100).toFixed(0),
+      percent: Math.round(((totalMRvn-totalSMRvn)/totalSMRvn)*100),
       data: MrvnArr,
     },
     {
@@ -290,7 +293,7 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       title: "ROAS",
       value: (totalMRvn/totalMCost*100).toFixed(2),
       unit: "%",
-      percent: (((totalMRvn/totalMCost)-(totalSMRvn/totalSMCost))/(totalSMRvn/totalSMCost)*100).toFixed(0),
+      percent: Math.round(((totalMRvn/totalMCost)-(totalSMRvn/totalSMCost))/(totalSMRvn/totalSMCost)*100),
       data: MROASArr,
     },
     {
@@ -298,7 +301,7 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       title: "총 노출수",
       value: totalMImpr,
       unit: "",
-      percent: (((totalMImpr-totalSMImpr)/totalSMImpr)*100).toFixed(0),
+      percent: Math.round(((totalMImpr-totalSMImpr)/totalSMImpr)*100),
       data: MImprArr,
     },
     {
@@ -306,16 +309,16 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       title: "총 클릭수",
       value: totalMClick,
       unit: "",
-      percent: ((totalMClick-totalSMClick)/(totalSMClick)*100).toFixed(0),
+      percent: Math.round((totalMClick-totalSMClick)/(totalSMClick)*100),
       data: MClickArr,
     },
     
     {
       key: 7,
       title: "CPC",
-      value: (totalMCost/totalMClick).toFixed(0),
+      value: Math.round(totalMCost/totalMClick),
       unit: "원",
-      percent: (((totalMCost/totalMClick)-(totalSMCost/totalSMClick))/(totalSMCost/totalSMClick)*100).toFixed(0),
+      percent: Math.round(((totalMCost/totalMClick)-(totalSMCost/totalSMClick))/(totalSMCost/totalSMClick)*100),
       data: MCPCArr,
     },
     {
@@ -323,7 +326,7 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       title: "총 전환수",
       value: totalMConv,
       unit: "",
-      percent: ((totalMConv-totalSMConv)/(totalSMConv)*100).toFixed(0),
+      percent: Math.round((totalMConv-totalSMConv)/(totalSMConv)*100),
       data: MConvArr,
     },
     {
@@ -331,23 +334,23 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       title: "전환율",
       value: (totalMConv/totalMClick*100).toFixed(2),
       unit: "%",
-      percent: (((totalMConv/totalMClick)-(totalSMConv/totalSMClick))/(totalSMConv/totalSMClick)*100).toFixed(0),
+      percent: Math.round(((totalMConv/totalMClick)-(totalSMConv/totalSMClick))/(totalSMConv/totalSMClick)*100),
       data: AVGMconvArr,
     },
     {
       key: 10,
       title: "평균 노출수",
-      value: (totalMImpr/MImprArr.length).toFixed(0),
+      value: Math.round(totalMImpr/MImprArr.length),
       unit: "",
-      percent: (((totalMImpr/MImprArr.length)-(totalSMImpr/MImprArr.length))/(totalSMImpr/MImprArr.length)*100).toFixed(0),
+      percent: Math.round(((totalMImpr/MImprArr.length)-(totalSMImpr/MImprArr.length))/(totalSMImpr/MImprArr.length)*100),
       data : "",
     },
     {
       key: 11,
       title: "평균 클릭 수",
-      value: (totalMClick/MClickArr.length).toFixed(0),
+      value: Math.round(totalMClick/MClickArr.length),
       unit: "",
-      percent: (((totalMClick/MClickArr.length)-(totalSMClick/MClickArr.length))/(totalSMClick/MClickArr.length)*100).toFixed(0),
+      percent: Math.round(((totalMClick/MClickArr.length)-(totalSMClick/MClickArr.length))/(totalSMClick/MClickArr.length)*100),
       data: "",
     },
 
@@ -356,31 +359,31 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       title: "평균 CPC",
       value: AVGCPC,
       unit: "원",
-      percent: (((AVGCPC-SAVGCPC)/SAVGCPC)*100).toFixed(0),
+      percent: Math.round(((AVGCPC-SAVGCPC)/SAVGCPC)*100),
       data: "",
     },
     {
       key: 13,
       title: "평균 광고비",
-      value: (totalMCost/MCostArr.length).toFixed(0),
+      value: Math.round(totalMCost/MCostArr.length),
       unit: "원",
-      percent: (((totalMCost/MCostArr.length)-(totalSMCost/MCostArr.length))/(totalSMCost/MCostArr.length)*100).toFixed(0),
+      percent: Math.round(((totalMCost/MCostArr.length)-(totalSMCost/MCostArr.length))/(totalSMCost/MCostArr.length)*100),
       data: "",
     },
     {
       key: 14,
       title: "평균 전환수",
-      value: (totalMConv/MConvArr.length).toFixed(0),
+      value: Math.round(totalMConv/MConvArr.length),
       unit: "",
-      percent: (((totalMConv/MConvArr.length)-(totalSMConv/MConvArr.length))/(totalSMConv/MConvArr.length)*100).toFixed(0),
+      percent: Math.round(((totalMConv/MConvArr.length)-(totalSMConv/MConvArr.length))/(totalSMConv/MConvArr.length)*100),
       data: '',
     },
     {
       key: 15,
       title: "평균 매출액",
-      value: (totalMRvn/MrvnArr.length).toFixed(0),
+      value: Math.round(totalMRvn/MrvnArr.length),
       unit: "원",
-      percent: (((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100).toFixed(0),
+      percent: Math.round(((totalMRvn/MrvnArr.length)-(totalSMRvn/MrvnArr.length))/(totalSMRvn/MrvnArr.length)*100),
       data: '',
     },
     //스크립트
@@ -389,23 +392,23 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       title: renderTitle('총 주문수'),
       value: totalOdr,
       unit: "",
-      percent: ((totalOdr-totalSOdr)/(totalSOdr)*100).toFixed(0),
+      percent: Math.round((totalOdr-totalSOdr)/(totalSOdr)*100),
       data: OdrArr,
     },
     {
       key: 17,
       title: renderTitle('총 주문율'),
-      value: ((totalOdr/totalMClick)*100).toFixed(0),
+      value: Math.round((totalOdr/totalMClick)*100),
       unit: "%",
-      percent: (((totalOdr/totalMClick)-(totalSOdr/totalSMClick))/(totalSOdr/totalSMClick)*100).toFixed(0),
+      percent: Math.round(((totalOdr/totalMClick)-(totalSOdr/totalSMClick))/(totalSOdr/totalSMClick)*100),
       data: OpmcArr,
     },
     {
       key: 18,
       title: renderTitle('총 주문금액'),
-      value: (totalRvn).toFixed(0),
+      value: Math.round(totalRvn),
       unit: "원",
-      percent: ((totalRvn-totalSRvn)/(totalSRvn)*100).toFixed(0),
+      percent: Math.round((totalRvn-totalSRvn)/(totalSRvn)*100),
       data: RvnArr,
     },
     {
@@ -413,15 +416,15 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       title: renderTitle('ROAS(%)'),
       value: ((totalRvn/totalMCost)*100).toFixed(2),
       unit: "%",
-      percent: (((totalRvn/totalMCost)-(totalSRvn/totalSMCost))/(totalSRvn/totalSMCost)*100).toFixed(0),
+      percent: Math.round(((totalRvn/totalMCost)-(totalSRvn/totalSMCost))/(totalSRvn/totalSMCost)*100),
       data: RoasArr,
     },
     {
       key: 20,
       title: renderTitle('총 구매단가'),
-      value: (totalRvn/totalOdr).toFixed(0),
+      value: Math.round(totalRvn/totalOdr),
       unit: "원",
-      percent: (((totalRvn/totalOdr)-(totalSRvn/totalSOdr))/(totalSRvn/totalSOdr)*100).toFixed(0),
+      percent: Math.round(((totalRvn/totalOdr)-(totalSRvn/totalSOdr))/(totalSRvn/totalSOdr)*100),
       data: RpoArr,
     },
     {
@@ -429,15 +432,15 @@ const ScoreCardChart = ({collapsed, datas,date}) => {
       title: renderTitle('총 회원가입수'),
       value: totalRgr,
       unit: "",
-      percent: ((totalRgr-totalSRgr)/(totalSRgr)*100).toFixed(0),
+      percent: Math.round((totalRgr-totalSRgr)/(totalSRgr)*100),
       data: RgrArr,
     },
     {
       key: 22,
       title: renderTitle('총 회원가입률'),
-      value: (totalRgr/totalMClick).toFixed(0),
+      value: Math.round(totalRgr/totalMClick),
       unit: "%",
-      percent: (((totalRgr/totalMClick)-(totalSRgr/totalSMClick))/(totalSRgr/totalSMClick*100)).toFixed(0),
+      percent: Math.round(((totalRgr/totalMClick)-(totalSRgr/totalSMClick))/(totalSRgr/totalSMClick*100)),
       data: RgrpmcArr,
     },
   ];
@@ -694,7 +697,6 @@ const AreaLineChart = ({ datas }) => {
   );
 };
 const ScoreCardChartComp = ({collapsed, datas, date}) => {
-  console.log('스코어카드 데이터요!!!!!!!!!!!!!!!!!!!!',datas)
   return (
     <>
       <div style={{ padding: 5, height: "auto" }}>
