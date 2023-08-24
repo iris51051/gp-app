@@ -8,6 +8,10 @@ import { IoMdTimer } from "react-icons/io";
 import { useLocation} from "react-router-dom";
 import axios from 'axios';
 
+
+//
+import {generateDummyData} from '../function/CreateDummy'
+
 import Breadcrumb from "../components/Breadcrumd";
 import MainTab1 from "./main-tab/main-Tab1";
 import MainTab2 from "./main-tab/main-Tab2";
@@ -57,7 +61,7 @@ const Main = () => {
   const [fetchedData, setFetchedData] = useState([]) //조회 데이터
   const [fetchedCompareData, setFetchedCompareData] = useState([])  //비교 데이터
   const [adSiteData, setAdSiteData] = useState([]);
-
+  const [dateGap, setDateGap] = useState();
   //광고매체사 옵션
 
 
@@ -219,7 +223,6 @@ useEffect(() => {
         sort: [{ field: 'land', order: 'asc' }],
         agencySeq: '1',
         clientSeq: currentAd,
-        // ad_providers:filterOptions.AdProvider.map((item)=>item.value),
         pfno:filterOptions.Pfno.map(item=>item.value),
         size: 10000,
       })
@@ -233,9 +236,11 @@ useEffect(() => {
           header
         );
         const responseData = response.data.data;
-        const filteredData = responseData.filter((item) => {
+        const generateData = generateDummyData(responseData, dateValue, filterOptions.AdProvider);
+        const filteredData = generateData.filter((item) => {
           return filterOptions.AdProvider.some((provider) => provider.value === item.ad_provider);
         });
+        
         if(filteredData.length===0){
           console.log('들어왔어요!!!!!!!!!!!!!!')
           const dummyData = [{
@@ -264,7 +269,6 @@ useEffect(() => {
         }else{
           return setFetchedData(filteredData);
         }
-        console.log('Fetch 마지막 줄 filteredData확인',filteredData)
       }catch(e){
         console.error(e)
       }
@@ -295,6 +299,8 @@ useEffect(() => {
       setFetchedData(dummyData)
     }
   }
+  console.log()
+
   console.log('fetchedData',fetchedData)
   const getCompareData = async ()=>{
     if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
@@ -359,7 +365,8 @@ useEffect(() => {
     }
   }
   useEffect(() => {
-    if(fetchedData.length>0 && fetchedCompareData.length>0){
+    console.log('fetchedCompareData',fetchedCompareData)
+    if(fetchedData.length>0){
       if (fetchedData && fetchedCompareData) {
         if(vatValue){
           const updatedData =fetchedData?.map((item) => {
@@ -372,7 +379,7 @@ useEffect(() => {
               rvn_per_odr: Math.round(item.rvn_per_odr + item.rvn_per_odr * 0.1),
             };
           });
-          const updatedCompareData = fetchedCompareData?.map((item) => {          
+          const updatedCompareData = fetchedCompareData?.map((item) => {
             return {
               ...item,
               m_rvn: Math.round(item.m_rvn + item.m_rvn * 0.1),
@@ -382,13 +389,41 @@ useEffect(() => {
               rvn_per_odr: Math.round(item.rvn_per_odr + item.rvn_per_odr * 0.1),
             };
           });
-      
           setDatas([updatedData,updatedCompareData]);
         }else{
         setDatas([fetchedData, fetchedCompareData]);
         }
       }
     }
+    // else{
+    //   if(fetchedCompareData.length===0){
+    //     const dummyData = [{
+    //       "by_day": format(new Date(),'yyyy-MM-dd'),
+    //       "m_rvn": 0,
+    //       "m_impr": 0,
+    //       "m_cost": 0,
+    //       "m_odr": 0,
+    //       "m_rgr": 0,
+    //       "land": 0,
+    //       "rvn": 0,
+    //       "m_cart": 0,
+    //       "odr": 0,
+    //       "rgr": 0,
+    //       "m_conv": 0,
+    //       "m_click": 0,
+    //       "m_cpc": 0,
+    //       "m_ctr": 0,
+    //       "m_crt": 0,
+    //       "m_roas": 0,
+    //       "rvn_per_odr": 0,
+    //       "rgr_per_m_click": 0,
+    //       "odr_per_m_cost": 0,
+    //       "roas": 0
+    //     }]
+    //     setFetchedData(dummyData)
+    //     }
+    //   }
+
     // console.log('fetchedData',fetchedData)  
     // console.log('fetchedCompareData',fetchedCompareData)  
   }, [fetchedData, fetchedCompareData,vatValue]);
@@ -417,7 +452,7 @@ console.log('datas',datas)
     setDateValue(value);
     //value의 0,1간의 날짜 차이
     const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
-
+    setDateGap(daysDifference);
     // //비교군의 날짜 산정
     //종료 일시
     const StatEndDate = new Date(value[0]);
@@ -430,7 +465,7 @@ console.log('datas',datas)
   }, []);
 
 
-
+  console.log('mdFilter',mdFilter)
 
   const handleSwitchToggle = (value) => {
     setVatValue(value);
@@ -450,6 +485,7 @@ console.log('datas',datas)
   };
   console.log(filterOptions)
 
+  console.log('dateGap',dateGap)
   return (
     <>
     {loading===true?
@@ -554,7 +590,7 @@ console.log('datas',datas)
                   onClick={coll2Change}
                 />
             </div>
-              <ScoreCardChartComp collapsed={collapsed2} datas={datas}/>
+              <ScoreCardChartComp collapsed={collapsed2} datas={datas} date={dateValue}/>
           </div>
           <Tabs 
             className="MainTab"
