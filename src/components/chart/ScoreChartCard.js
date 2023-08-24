@@ -7,11 +7,11 @@ import {
   LineOutlined
 } from "@ant-design/icons";
 
-const ScoreCardChart = ({colors,collapsed, datas}) => {
+const ScoreCardChart = ({collapsed, datas,date}) => {
 
     //M:매체데이터
     //S: 비교 데이터
-    //byData
+    //선택 데이터
     //총합
     //매체 데이터
     const [totalMCost, settotalMCost] =useState(0); //총광고비
@@ -23,7 +23,6 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     const [totalOdr, setTotalOdr] = useState(0); //총 주문수
     const [totalRvn, setTotalRvn] = useState(0); //총 주문금액
     const [totalRgr, setTotalRgr] = useState(0); //총 회원가입수
-    const [totalRpo, setTotalRpo] = useState(0); //총 구매단가
 
     
     //평균
@@ -51,7 +50,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     const [OpmcArr, setOpmcArr ]=useState([]);//총 주문율
 
 
-    //statData
+    //비교데이터
     //매체 data
     //총합
     const [totalSMCost, settotalSMCost] =useState(0); //총광고비
@@ -66,7 +65,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     const [totalSOdr, setTotalSOdr] = useState(0); //총 주문수
     const [totalSRvn, setTotalSRvn] = useState(0); //총 주문금액
     const [totalSRgr, setTotalSRgr] = useState(0); //총 회원가입수
-    const [totalSRpo, setTotalSRpo] = useState(0); //총 구매단가
+
 
     
   useEffect(()=>{
@@ -83,7 +82,7 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     let Odrsum =0;  //총 주문수
     let Rvnsum =0;  //총 주문금액
     let Rgrsum =0;  //총 회원가입수
-    let Rposum =0;  //총 구매단가
+
 
     //statdata
     //매체
@@ -97,10 +96,9 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
     let SOdrsum =0;  //총 주문수
     let SRvnsum =0;  //총 주문금액
     let SRgrsum =0;  //총 회원가입수
-    let SRposum =0;  //총 구매단가
+
 
     if(datas.length>0){
-
       //bydata
       for(const item of datas[0] ){
         //매체
@@ -133,9 +131,6 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
         if('rgr' in item){
           Rgrsum +=item.rgr;
         }
-        if('rvn_per_odr' in item){
-          Rposum +=item.rvn_per_odr;
-        }
 
       }
       //statData
@@ -148,14 +143,11 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
         if('m_cost' in item){
           SMCostsum+=item.m_cost;
         }
-        if('m_impr' in item){        
+        if('m_impr' in item){
           SMImprsum+=item.m_impr;
         }
-        if('m_click' in item){        
+        if('m_click' in item){
           SMClicksum+=item.m_click;
-        }
-        if('m_cpc' in item){
-          SMCPCsum+=item.m_cpc;
         }
         if('m_conv' in item){
           SMConvsum +=item.m_conv;
@@ -170,24 +162,46 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
         if('rgr' in item){
           SRgrsum +=item.rgr;
         }
-        if('rvn_per_odr' in item){
-          SRposum +=item.rvn_per_odr;
-        }
       }
-
-
+      const groupedData = {};
+      datas[0].forEach(item => {
+        const statDate = item.stat_date;
+        
+        if (!groupedData[statDate]) {
+          groupedData[statDate] = {
+            m_rvn: 0,  // 초기값 설정
+            m_cost: 0, // 초기값 설정
+            m_impr: 0, // 초기값 설정
+            m_click: 0, // 초기값 설정
+            m_conv: 0, // 초기값 설정
+            odr: 0, // 초기값 설정
+            rvn: 0, // 초기값 설정
+            rgr: 0, // 초기값 설정
+          };
+        }
+        groupedData[statDate].m_rvn += item.m_rvn;
+        groupedData[statDate].m_cost += item.m_cost;
+        groupedData[statDate].m_impr += item.m_impr;
+        groupedData[statDate].m_click += item.m_click;
+        groupedData[statDate].m_conv += item.m_conv;
+        groupedData[statDate].odr += item.odr;
+        groupedData[statDate].rvn += item.rvn;
+        groupedData[statDate].rgr += item.rgr;
+      });
+      const combinedData = Object.values(groupedData);
+      console.log('combinedData.rgr$$$$$$$$$$$$$$$$$$$$',combinedData)
       //byData
       //매체 데이터
       //배열
-      setMrvnArr(datas[0].map(item => item.m_rvn));
-      setMCostArr(datas[0].map(item => item.m_cost));
-      setMImprArr(datas[0].map(item => item.m_impr));
-      setMClickArr(datas[0].map(item => item.m_click));
-      setMCTRArr(datas[0].map(item => parseFloat((item.m_ctr * 100).toFixed(2))));
-      setMCPCArr(datas[0].map(item => parseFloat((item.m_cpc).toFixed(0))));
-      setMROASArr(datas[0].map(item => parseFloat((item.m_roas*100).toFixed(0))));
-      setMConvArr(datas[0].map(item => item.m_conv));
-      setAVGMconvArr(datas[0].map(item => parseFloat((item.m_crt).toFixed(2))));
+      setMrvnArr(combinedData.map(item => item.m_rvn));
+      setMCostArr(combinedData.map(item => item.m_cost));
+      setMImprArr(combinedData.map(item => item.m_impr));
+      setMClickArr(combinedData.map(item => item.m_click));
+      setMCTRArr(combinedData.map(item => item.m_impr === 0 ? 0 : parseFloat(((item.m_click/item.m_impr)* 100).toFixed(2))));
+      setMCPCArr(combinedData.map(item => item.m_click === 0 ? 0 : parseFloat((item.m_cost/item.m_click).toFixed(0))));
+      setMROASArr(combinedData.map(item => item.m_cost === 0 ? 0 : parseFloat(((item.m_rvn/item.m_cost)*100).toFixed(0))));
+      setMConvArr(combinedData.map(item => item.m_conv));
+      setAVGMconvArr(combinedData.map(item => item.m_click === 0 ? 0 : parseFloat((item.m_conv/item.m_click).toFixed(2))));
       //합계
       setTotalMRvn(MRvnsum);
       settotalMCost(parseInt((MCostsum).toFixed(0)))
@@ -195,25 +209,26 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       setTotalMClick(MClicksum)
       setTotalMConv((MConvsum))
       //평균
-      setAVGCPC(parseInt((MCPCsum/datas[0].map(item => item.m_cpc).length).toFixed(0))) 
-      
+      setAVGCPC(parseInt((MCPCsum/new Set(datas[0].map((item) => item.stat_date)).size).toFixed(0)))
+      console.log('date',new Set(datas[0].map((item)=>item.stat_date)).size)
+      console.log('m_cpc',datas[0].map((item)=>item.m_cpc))
+
+ 
+      console.log('MCPCsum',MCPCsum)
       //스크립트 데이터
       //배열
-      setRoasArr(datas[0].map(item => parseFloat(((item.roas)*100).toFixed(0))));
-      setRpoArr(datas[0].map(item => parseFloat((item.rvn_per_odr).toFixed(0))));
-      setRgrArr(datas[0].map(item => parseFloat((item.rgr).toFixed(0))));
-      setRgrpmcArr(datas[0].map(item => parseFloat((item.rgr_per_m_click).toFixed(0))));
-      setOpmcArr(datas[0].map(item => parseFloat((item.odr_per_m_cost).toFixed(2))));
-      setRvnArr(datas[0].map(item => parseFloat((item.rvn).toFixed(0))));
-      setOdrArr(datas[0].map(item => item.odr));
+      setOdrArr(combinedData.map(item => item.odr));
+      setRgrArr(combinedData.map(item => item.rgr));
+      setRpoArr(combinedData.map(item => item.odr === 0 ? 0 : parseFloat((item.rvn/item.odr).toFixed(0))));
+      setRoasArr(combinedData.map(item =>item.m_cost === 0 ? 0 :  parseFloat(((item.rvn/item.m_cost)*100).toFixed(0))));
+      setRgrpmcArr(combinedData.map(item => item.m_click === 0 || item.rgr===0? 0 : parseFloat(((item.rgr/item.m_click)*100).toFixed(0))));
+      setOpmcArr(combinedData.map(item => item.m_click === 0 ? 0 : parseFloat((item.odr/item.m_click).toFixed(2))));
+      setRvnArr(combinedData.map(item => parseFloat((item.rvn).toFixed(0))));
       
       //합계
       setTotalOdr(Odrsum);
       setTotalRvn(Rvnsum);
       setTotalRgr(Rgrsum);
-      setTotalRpo(Rposum);
-
-
 
       //statData
       //매체 data
@@ -224,13 +239,14 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
       setTotalSMClick(parseInt((SMClicksum).toFixed(0)))
       setTotalSMConv((SMConvsum))
       //평균
-      setSAVGCPC(parseInt((SMCPCsum/datas[1].map(item => item.m_cpc).length).toFixed(0))) 
+      setSAVGCPC(parseInt((SMCPCsum/(new Set(datas[1].map((item) => item.stat_date)).size)).toFixed(0))) 
       //스크립트 data
       //합계
       setTotalSOdr(SOdrsum);
       setTotalSRvn(SRvnsum);
       setTotalSRgr(SRgrsum);
-      setTotalSRpo(SRposum);
+      console.log('SMCPCsum',SMCPCsum)
+      console.log('date',new Set(datas[1].map((item)=>item.stat_date)).size)
 
 
     }
@@ -500,7 +516,6 @@ const ScoreCardChart = ({colors,collapsed, datas}) => {
 
   return (
     <>
-
           <Space className="ScoreCardSelector"
               style={{
               height: collapsed ? 0 : 120, // Adjust the width based on the collapsed state
@@ -678,26 +693,13 @@ const AreaLineChart = ({ datas }) => {
     </div>
   );
 };
-const ScoreCardChartComp = ({collapsed, datas}) => {
-
-  const color = [
-    "#c23531",
-    "#2f4554",
-    "#61a0a8",
-    "#d48265",
-    "#91c7ae",
-    "#749f83",
-    "#ca8622",
-    "#bda29a",
-    "#6e7074",
-    "#546570",
-    "#c4ccd3",
-  ];
+const ScoreCardChartComp = ({collapsed, datas, date}) => {
+  console.log('스코어카드 데이터요!!!!!!!!!!!!!!!!!!!!',datas)
   return (
     <>
       <div style={{ padding: 5, height: "auto" }}>
         <div>
-          <ScoreCardChart colors={color} collapsed={collapsed} datas={datas}/>
+          <ScoreCardChart collapsed={collapsed} datas={datas} date={date}/>
         </div>
       </div>
     </>
