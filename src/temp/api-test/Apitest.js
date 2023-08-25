@@ -32,7 +32,7 @@ const Apitest = () => {
       const data = await cpcdata();
       if (data && data.length >0) {
         console.log('data',data)
-        setGetCpcDAta(data[0]);
+        // setGetCpcDAta(data[0]);
       }
     };
     getCpcDAta();
@@ -44,7 +44,7 @@ const Apitest = () => {
       <h1>api 테스트 페이지</h1>
       {testData && <p>테스트 데이터 : {testData.ad_program}</p>}
       {testToken && <p>테스트 토큰 : {testToken}</p>}
-      {getCpcDAta && <p>cpc데이터 조회 : {getCpcDAta}</p>}
+      {/* {getCpcDAta && <p>cpc데이터 조회 : {getCpcDAta}</p>} */}
       <br/>
       <br/>
       <br/>

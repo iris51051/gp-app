@@ -36,7 +36,7 @@ const generateDummyDataTable = (stat_date, ad_provider) => ({
   };
   
   
-  export const generateDummyData = (data, date, provider) => {
+  export const generateDummyDataByProvider = (data, date, provider) => {
     const newData = [...data];
     const selectedDateRange = generateDateRange(date[0], date[1]);
     const existingCombinations = new Set(

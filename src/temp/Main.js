@@ -4,13 +4,15 @@ import {PlusSquareOutlined,MinusSquareOutlined,LoadingOutlined } from '@ant-desi
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 import format from "date-fns/format";
+import addDays from "date-fns/addDays";
 import { IoMdTimer } from "react-icons/io";
 import { useLocation} from "react-router-dom";
 import axios from 'axios';
 
 
 //
-import {generateDummyData} from '../function/CreateDummy'
+import {generateDummyDataByProvider} from '../function/CreateDummy'
+import {generateDummyDataByDay} from '../function/CreateDummyByDay'
 
 import Breadcrumb from "../components/Breadcrumd";
 import MainTab1 from "./main-tab/main-Tab1";
@@ -33,7 +35,28 @@ const antIcon = (
     spin
   />
 );
-
+const dummyData = [{
+  "m_rvn": 0,
+  "m_impr": 0,
+  "m_cost": 0,
+  "m_odr": 0,
+  "m_rgr": 0,
+  "land": 0,
+  "rvn": 0,
+  "m_cart": 0,
+  "odr": 0,
+  "rgr": 0,
+  "m_conv": 0,
+  "m_click": 0,
+  "m_cpc": 0,
+  "m_ctr": 0,
+  "m_crt": 0,
+  "m_roas": 0,
+  "rvn_per_odr": 0,
+  "rgr_per_m_click": 0,
+  "odr_per_m_cost": 0,
+  "roas": 0
+}]
 
 const { Text } = Typography;
 
@@ -52,7 +75,7 @@ const Main = () => {
   const [collapsed1, setCollapsed1] = useState(false);
   const [collapsed2, setCollapsed2] = useState(false);
   const [vatValue, setVatValue] = useState(true);
-  const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")}`,`${format(new Date(),"yyyy-MM-dd")}`])
+  const [dateValue, setDateValue] = useState([`${format(addDays(new Date(), -6),"yyyy-MM-dd")}`,`${format(new Date(),"yyyy-MM-dd")}`])
   const [CompareDateValue, setCompareDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")}`,`${format(new Date(),"yyyy-MM-dd")}`])
   const [datas, setDatas] = useState([])
   const [AllAdData, setAllAdData] = useState()
@@ -62,9 +85,15 @@ const Main = () => {
   const [fetchedCompareData, setFetchedCompareData] = useState([])  //비교 데이터
   const [adSiteData, setAdSiteData] = useState([]);
   const [dateGap, setDateGap] = useState();
+  const [ScoreStandardData, setScoreStandardData] = useState([])
+  const [ScoreCompareData, setScoreCompareData] = useState([])
+  const [ScoreData, setScoreData] = useState([])
   //광고매체사 옵션
 
 
+  //초기 랜더링시 pfno(사이트),ad_provider(광고매체) 조회용 axios
+  //ad_Provider,pfno에 대한 조회 범위가 너무 광범위해서 비효율적
+  //조회 관련 api나올시 교체.
 const fetchData = async ()=>{
   const body =JSON.stringify({
     rptNo: '1000000',
@@ -98,13 +127,12 @@ const fetchData = async ()=>{
 }
 
 
-
-
 useEffect(() => {
   setLoading(true)
   const getFilterData= async () => {
     if (currentAd === '0' || currentAd === undefined) {
       //전체 광고주 일 때의 검색.
+      //전체 광고주에 대한 api 미구현
     } else {
       const data = await fetchData();
       const providers = new Set(data.map((item) => item.ad_provider));
@@ -118,7 +146,6 @@ useEffect(() => {
         value: site
       })));
     }
-    setLoading(false)
   };
   getFilterData();
 }, [currentAd]);
@@ -181,25 +208,106 @@ useEffect(() => {
     }
   };
 
+
   useEffect(() => {
-    getData();
-    getCompareData();
+    // getData();
+    // getCompareData();
+    getScoreCardData();
+    getScoreCardCompareData();
   }, [filterOptions]);
 
-  const getData = async ()=>{
-    if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
+  // const getData = async ()=>{
+  //   if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
+  //     const body =JSON.stringify({
+  //       rptNo: '1000000',
+  //       lookupTp: 'agg',
+  //       dimCd: ["by_day","ad_provider",'pfno'],
+  //       where: [
+  //         {
+  //           field: 'stat_date',
+  //           operation: 'between',
+  //           value: [dateValue[0], dateValue[1]],
+  //         },
+  //       ],
+  //       metCd: ["m_rvn",
+  //       "m_impr",
+  //       "m_cost",
+  //       "m_odr",
+  //       "m_rgr",
+  //       "land",
+  //       "rvn",
+  //       "m_cart",
+  //       "odr",
+  //       "rgr",
+  //       "m_conv",
+  //       "m_click",
+  //       "m_cpc",
+  //       "m_ctr",
+  //       "m_crt",
+  //       "m_roas",
+  //       "rvn_per_odr",
+  //       "rgr_per_m_click",
+  //       "odr_per_m_cost",
+  //       "roas"
+  //       ],
+  //       sort: [{ field: 'land', order: 'asc' }],
+  //       agencySeq: '1',
+  //       clientSeq: currentAd,
+  //       pfno:filterOptions.Pfno.map(item=>item.value),
+  //       size: 10000,
+  //     })
+  //     const header = {
+  //       headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
+  //     }
+  //     try{
+  //       const response = await axios.post(
+  //         'http://122.99.192.144:9080/report/data',
+  //         body,
+  //         header
+  //       );
+  //       const responseData = response.data.data;
+  //       const generateData = generateDummyDataByProvider(responseData, dateValue, filterOptions.AdProvider);
+  //       const filteredData = generateData.filter((item) => {
+  //         return filterOptions.AdProvider.some((provider) => provider.value === item.ad_provider);
+  //       });
+
+  //       if(filteredData.length===0){
+  //         setFetchedData(dummyData)
+  //       }else{
+  //         return setFetchedData(filteredData);
+  //       }
+  //     }catch(e){
+  //       console.error(e)
+  //     }
+  //   }else{
+  //     const newDummyData = dummyData.map((data) => ({
+  //       ...data,
+  //       "by_day": format(new Date(),'yyyy-MM-dd'),
+  //     }));
+  //     setFetchedData(newDummyData)
+  //   }
+  // }
+  //선택 데이터
+  const getScoreCardData = async ()=>{
+    if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`&& filterOptions.AdProvider.length>0){
       const body =JSON.stringify({
         rptNo: '1000000',
         lookupTp: 'agg',
-        dimCd: ["by_day","ad_provider",'pfno'],
+        dimCd: ["by_day"],
         where: [
           {
             field: 'stat_date',
             operation: 'between',
             value: [dateValue[0], dateValue[1]],
           },
+          {
+            field: 'ad_provider',
+            operation: 'in',
+            value: filterOptions.AdProvider.map((item)=>item.value),
+          },
         ],
-        metCd: ["m_rvn",
+        metCd: [
+        "m_rvn",
         "m_impr",
         "m_cost",
         "m_odr",
@@ -236,82 +344,105 @@ useEffect(() => {
           header
         );
         const responseData = response.data.data;
-        const generateData = generateDummyData(responseData, dateValue, filterOptions.AdProvider);
-        const filteredData = generateData.filter((item) => {
-          return filterOptions.AdProvider.some((provider) => provider.value === item.ad_provider);
-        });
-
+        const generateData = generateDummyDataByDay(responseData, dateValue);
         if(filteredData.length===0){
-          const dummyData = [{
-            "m_rvn": 0,
-            "m_impr": 0,
-            "m_cost": 0,
-            "m_odr": 0,
-            "m_rgr": 0,
-            "land": 0,
-            "rvn": 0,
-            "m_cart": 0,
-            "odr": 0,
-            "rgr": 0,
-            "m_conv": 0,
-            "m_click": 0,
-            "m_cpc": 0,
-            "m_ctr": 0,
-            "m_crt": 0,
-            "m_roas": 0,
-            "rvn_per_odr": 0,
-            "rgr_per_m_click": 0,
-            "odr_per_m_cost": 0,
-            "roas": 0
-          }]
           setFetchedData(dummyData)
         }else{
-          return setFetchedData(filteredData);
+          return setFetchedData(generateData);
         }
       }catch(e){
         console.error(e)
       }
     }else{
-      const dummyData = [{
+      const newDummyData = dummyData.map((data) => ({
+        ...data,
         "by_day": format(new Date(),'yyyy-MM-dd'),
-        "m_rvn": 0,
-        "m_impr": 0,
-        "m_cost": 0,
-        "m_odr": 0,
-        "m_rgr": 0,
-        "land": 0,
-        "rvn": 0,
-        "m_cart": 0,
-        "odr": 0,
-        "rgr": 0,
-        "m_conv": 0,
-        "m_click": 0,
-        "m_cpc": 0,
-        "m_ctr": 0,
-        "m_crt": 0,
-        "m_roas": 0,
-        "rvn_per_odr": 0,
-        "rgr_per_m_click": 0,
-        "odr_per_m_cost": 0,
-        "roas": 0
-      }]
-      setFetchedData(dummyData)
+      }));
+      setFetchedData(newDummyData)
     }
+
   }
 
 
-
-  const getCompareData = async ()=>{
-    if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
+  // const getCompareData = async ()=>{
+  //   if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
+  //     const body =JSON.stringify({
+  //       rptNo: '1000000',
+  //       lookupTp: 'agg',
+  //       dimCd: ["by_day","ad_provider",'pfno'],
+  //       where: [
+  //         {
+  //           field: 'stat_date',
+  //           operation: 'between',
+  //           value: [CompareDateValue[0], CompareDateValue[1]],
+  //         },
+  //       ],
+  //       metCd: ["m_rvn",
+  //       "m_impr",
+  //       "m_cost",
+  //       "m_odr",
+  //       "m_rgr",
+  //       "land",
+  //       "rvn",
+  //       "m_cart",
+  //       "odr",
+  //       "rgr",
+  //       "m_conv",
+  //       "m_click",
+  //       "m_cpc",
+  //       "m_ctr",
+  //       "m_crt",
+  //       "m_roas",
+  //       "rvn_per_odr",
+  //       "rgr_per_m_click",
+  //       "odr_per_m_cost",
+  //       "roas"
+  //       ],
+  //       sort: [{ field: 'land', order: 'asc' }],
+  //       agencySeq: '1',
+  //       clientSeq: currentAd,
+  //       // ad_providers:filterOptions.AdProvider.map((item)=>item.value),
+  //       pfno:filterOptions.Pfno.map(item=>item.value),
+  //       size: 10000,
+  //     })
+  //     const header = {
+  //       headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
+  //     }
+  //     try{
+  //       const response = await axios.post(
+  //         'http://122.99.192.144:9080/report/data',
+  //         body,
+  //         header
+  //       );
+  //       const responseData = response.data.data;
+  //       const filteredData = responseData.filter((item) => {
+  //         return filterOptions.AdProvider.some((provider) => provider.value === item.ad_provider);
+  //       });
+  //       return setFetchedCompareData(filteredData);
+  //     }catch(e){
+  //       console.error(e)
+  //     }
+  //   }else{
+  //     return null;
+  //   }
+  // }
+  //비교 데이터
+  const getScoreCardCompareData = async ()=>{
+    if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}` && filterOptions.AdProvider.length>0){
       const body =JSON.stringify({
         rptNo: '1000000',
         lookupTp: 'agg',
-        dimCd: ["by_day","ad_provider",'pfno'],
+        dimCd: ["by_day"],
         where: [
           {
             field: 'stat_date',
             operation: 'between',
             value: [CompareDateValue[0], CompareDateValue[1]],
+          },
+          {
+            field: 'ad_provider',
+            operation: 'in',
+            value: filterOptions.AdProvider.map((item)=>item.value),
           },
         ],
         metCd: ["m_rvn",
@@ -338,7 +469,6 @@ useEffect(() => {
         sort: [{ field: 'land', order: 'asc' }],
         agencySeq: '1',
         clientSeq: currentAd,
-        // ad_providers:filterOptions.AdProvider.map((item)=>item.value),
         pfno:filterOptions.Pfno.map(item=>item.value),
         size: 10000,
       })
@@ -352,16 +482,14 @@ useEffect(() => {
           header
         );
         const responseData = response.data.data;
-        const filteredData = responseData.filter((item) => {
-          return filterOptions.AdProvider.some((provider) => provider.value === item.ad_provider);
-        });
-        return setFetchedCompareData(filteredData);
+        return setFetchedCompareData(responseData);
       }catch(e){
         console.error(e)
       }
     }else{
       return null;
     }
+
   }
   useEffect(() => {
 
@@ -392,64 +520,9 @@ useEffect(() => {
         }else{
         setDatas([fetchedData, fetchedCompareData]);
         }
-        // if(vatValue){
-        //   const updatedData =fetchedData?.map((item) => {
-        //     return {
-        //       ...item,
-        //       m_rvn: Math.round(item.m_rvn + item.m_rvn * 0.1),
-        //       rvn: Math.round(item.rvn + item.rvn * 0.1),
-        //       m_cost: Math.round(item.m_cost + item.m_cost * 0.1),
-        //       m_cpc: Math.round(item.m_cpc + item.m_cpc * 0.1),
-        //       rvn_per_odr: Math.round(item.rvn_per_odr + item.rvn_per_odr * 0.1),
-        //     };
-        //   });
-        //   const updatedCompareData = fetchedCompareData?.map((item) => {
-        //     return {
-        //       ...item,
-        //       m_rvn: Math.round(item.m_rvn + item.m_rvn * 0.1),
-        //       rvn: Math.round(item.rvn + item.rvn * 0.1),
-        //       m_cost: Math.round(item.m_cost + item.m_cost * 0.1),
-        //       m_cpc: Math.round(item.m_cpc + item.m_cpc * 0.1),
-        //       rvn_per_odr: Math.round(item.rvn_per_odr + item.rvn_per_odr * 0.1),
-        //     };
-        //   });
-        //   setDatas([updatedData,updatedCompareData]);
-        // }else{
-        // setDatas([fetchedData, fetchedCompareData]);
-        // }
       }
     }
-    // else{
-    //   if(fetchedCompareData.length===0){
-    //     const dummyData = [{
-    //       "by_day": format(new Date(),'yyyy-MM-dd'),
-    //       "m_rvn": 0,
-    //       "m_impr": 0,
-    //       "m_cost": 0,
-    //       "m_odr": 0,
-    //       "m_rgr": 0,
-    //       "land": 0,
-    //       "rvn": 0,
-    //       "m_cart": 0,
-    //       "odr": 0,
-    //       "rgr": 0,
-    //       "m_conv": 0,
-    //       "m_click": 0,
-    //       "m_cpc": 0,
-    //       "m_ctr": 0,
-    //       "m_crt": 0,
-    //       "m_roas": 0,
-    //       "rvn_per_odr": 0,
-    //       "rgr_per_m_click": 0,
-    //       "odr_per_m_cost": 0,
-    //       "roas": 0
-    //     }]
-    //     setFetchedData(dummyData)
-    //     }
-    //   }
-
-    // console.log('fetchedData',fetchedData)  
-    // console.log('fetchedCompareData',fetchedCompareData)  
+    setLoading(false)
   }, [fetchedData, fetchedCompareData,vatValue]);
 
   
