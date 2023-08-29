@@ -1,12 +1,13 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useMemo } from "react";
 import ECharts from "echarts-for-react";
 import { EmptyLineChart } from "./EmptyChart";
 
-const BLchart = ({ colors, datas, SelectedChartOption,mdFilter,seriesNames }) => {
+const BLchart = ({ colors, datas, SelectedChartOption,seriesNames }) => {
 
 const selectedOption = SelectedChartOption[0].value
 const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
+
 
 
     for (const newData of datas) {
@@ -169,8 +170,8 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
   if(selectedOption === 'm_conv/click'){
     return getData.map((item) => {
       const m_conv = item.m_conv || 0; // Handle cases where m_conv is missing or null
-      const m_click = item.m_click || 1; // To prevent division by zero
-      const ratio = m_conv / m_click;
+      const m_click = item.m_click || 0; // To prevent division by zero
+      const ratio = m_click===0 ? 0 : m_conv / m_click;
       return (ratio * 100).toFixed(2);
     });
   }else if(selectedOption === 'm_roas'){
@@ -188,7 +189,7 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
   }
 
   const option = {
-    animationDuration: 100,
+    animationDuration: 0,
     tooltip: {
       trigger: "axis",
       formatter: function (params) {
@@ -240,7 +241,7 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
     grid: {
       top: 10,
       left: 50,
-      right: 20,
+      right: 37,
       bottom: 40,
       show: true,
       containLabel: false,
@@ -263,12 +264,13 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
       type: "value",
       gap : '10',
     },
-    series: seriesNames.map((name,index) => ({
-      color: colors[index],
-      name, 
-      type: "line",
-      data: DataRender(name),
-    })),
+    series:
+      seriesNames.map((name,index) => ({
+        color: colors[index],
+        name, 
+        type: "line",
+        data: DataRender(name),
+      }))
   };
 
   return (
@@ -279,18 +281,19 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
   );
 };
 
-export const MultiLinechart = ({ datas, colors, SelectedChartOption, mdFilter }) => {
+export const MultiLinechart = ({ datas, colors, SelectedChartOption, ProviderFilter }) => {
   // Filter the data based on mdFilter
-  const [seriesNames, setSeriesNames] = useState([]);
 
+  const [seriesNames, setSeriesNames] = useState([]);
   useEffect(() => {
-    const newSeriesNames = mdFilter.filter((provider) =>
+    const newSeriesNames = ProviderFilter.filter((provider) =>
       datas.some((item) => item.ad_provider === provider)
     );
 
     setSeriesNames(newSeriesNames); // Update the series names with the new values
-  }, [datas, SelectedChartOption, mdFilter]);
+  }, [datas, SelectedChartOption, ProviderFilter]);
 
+  const chartKey = seriesNames.join(','); //ProviderFilter 변경시 BlChart강제 재랜더링을 위한 코드.
   return (
     <>
       {datas.length > 0 ? (
@@ -298,9 +301,9 @@ export const MultiLinechart = ({ datas, colors, SelectedChartOption, mdFilter })
           datas={datas}
           SelectedChartOption={SelectedChartOption}
           colors={colors}
-          mdFilter={mdFilter}
-          notMerge={true}
           seriesNames={seriesNames}
+          notMerge={true}
+          key={chartKey}
         />
       ) : (
         <EmptyLineChart />

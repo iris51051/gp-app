@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const fetchData = async () => {
+const fetchData = async (tokenType, token) => {
 
   //body 예시
   /*
@@ -122,7 +122,7 @@ const fetchData = async () => {
       //clientSeq: '106659',
 
     //단일 데이터에 대해서만 조회 가능.
-      clientSeq: '105580',
+    clientSeq: ['106659'],
     // clientSeq: ['106659','105580'],
     //해당 광고주의 사이트
     //pfno 설정하지 않고 dimCd에 요청시 해당하는 광고주의 모든 pfno데이터 불러옴.
@@ -135,12 +135,15 @@ const fetchData = async () => {
 const header = {
   headers: {
      'Content-Type': 'application/json',
-      'X-Authorization-User': 'blues'
+      // 'X-Authorization-User': 'blues'
+      "Authorization": `${tokenType} ${token}`,
     }
 }
   try {
     const response = await axios.post(
-      'http://122.99.192.144:9080/report/data',
+      // 로그인필요
+      'http://223.130.136.182:9080/report/data',
+      // 'http://122.99.192.144:9080/report/data',
       body,
       header
     );

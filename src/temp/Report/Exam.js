@@ -1,6 +1,7 @@
 import React,{useCallback, useState, useEffect} from 'react';
 import { Col, Tabs, Row,Space, Typography, Button,Switch,Divider,Select,Spin} from "antd";
 import format from "date-fns/format";
+import addDays from "date-fns/addDays";
 import { useLocation} from "react-router-dom";
 import axios from 'axios';
 
@@ -19,13 +20,15 @@ import A_bizDetail from '../../testData/A_bizData/A_bizDetail';
 import {adProvider} from '../../testData/A_bizData/Ad_Provider';
 
 //모듈
-import {Mdfilter, AdSitefilter,AdPlatform,AdCampaign,AdMaterial,AdDevice  } from "../../components/filter/filter.js";
+import {Providerfilter, AdSitefilter,AdPlatform,AdCampaign,AdType,AdDevice  } from "../../components/filter/filter.js";
 import {Datashow} from "../../components/filter/Datashow";
 import Breadcrumb from "../../components/Breadcrumd";
 import Calendar from "../../components/calendar.js";
 import {MultiLinechart} from "../../components/chart/MultiLinechart";
 import {PieChart} from "../../components/chart/ChartComponent";
 import ReportTable from "../../components/table/ReportTable";
+import {generateDummyDataByDay} from '../../function/CreateDummyByDay'
+import {generateDummyDataByProvider} from '../../function/CreateDummyByProvider'
 
 const antIcon = (
   <LoadingOutlined
@@ -36,25 +39,53 @@ const antIcon = (
   />
 );
 
+const dummyData = [{
+  "m_rvn": 0,
+  "m_impr": 0,
+  "m_cost": 0,
+  "m_odr": 0,
+  "m_rgr": 0,
+  "land": 0,
+  "rvn": 0,
+  "m_cart": 0,
+  "odr": 0,
+  "rgr": 0,
+  "m_conv": 0,
+  "m_click": 0,
+  "m_cpc": 0,
+  "m_ctr": 0,
+  "m_crt": 0,
+  "m_roas": 0,
+  "rvn_per_odr": 0,
+  "rgr_per_m_click": 0,
+  "odr_per_m_cost": 0,
+  "roas": 0
+}]
+
 const { Text } = Typography;
 const ExamReport =({colors})=>{
+  const location = useLocation();
+  const currentAd = location.search===undefined ? AdData[0].value : (location.search).split('=')[1]
   const [loading, setLoading] = useState(false)
 
-  const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
+  const [dateValue, setDateValue] = useState([`${format(addDays(new Date(), -7),"yyyy-MM-dd")}`,`${format(addDays(new Date(), -1),"yyyy-MM-dd")}`])
+  const [CompareDateValue, setCompareDateValue] = useState([`${format(addDays(new Date(), -14),"yyyy-MM-dd")}`,`${format(addDays(new Date(), -8),"yyyy-MM-dd")}`])
+  const [dateGap, setDateGap] = useState()
   const [vatValue, setVatValue] = useState(true);   //vat포함 여부
-  const [datas, setDatas] = useState([])      //날자별 데이터
-
-  const [adProviders, setAdProviders] = useState([])
-  const [adSite, setAdSite] = useState([]);
-const [adCampaign, setAdCampaign] = useState([])
-const [adPlatform, setAdPlatform] = useState([])
+  const [Linedatas, setLineDatas] = useState([])      //라인 데이터
+  const [Piedatas, setPiedatas] = useState([])      //파이차트 데이터
 
 
-  const location = useLocation();
-  let currentAd =location.search?.split('=')[1]
+  const [adProviderList, setAdProviderList] = useState([])
+  const [adSiteList, setAdSiteList] = useState([]);
+  const [adPlatformList, setAdPlatformList] = useState([])
+  const [adCampaignList, setAdCampaignList] = useState([])
+  const [adTypeList,   setAdTypeList] = useState([])
 
-
-    const [ChartOptions, setChartOptions] = useState(
+  const [DeviceList, setDeviceList] = useState([])
+  const [fetchedData, setFetchedData] = useState([]) //조회 데이터
+  const [fetchedCompareData, setFetchedCompareData] = useState([])  //비교 데이터
+  const [ChartOptions, setChartOptions] = useState(
       [
         {
           key: 1,
@@ -103,43 +134,40 @@ const [adPlatform, setAdPlatform] = useState([])
         },
       ]
     )
-    const [siteFilter, setSiteFilter] = useState([]); //사이트
-    const [mdFilter, setMdFilter] = useState([]);     //광고매체사
-    const [dataType, setDataType] =useState('media');        //스크립트,매체
-    
-    const [pfFilter, setPfFilter] = useState([]);       //플랫폼
-    const [campFilter, setCampFilter] = useState([]);   //캠페인
-    const [adMtFilter, setAdMtFilter] = useState([]);   //소재
-    const [adDevFilter, setAdDevFilter] = useState([]); //디바이스
+    const [SiteFilter, setSiteFilter] = useState([]); //사이트
+    const [ProviderFilter, setProviderFilter] = useState([]);     //광고매체사
+    const [dataType, setDataType] =useState("media");        //스크립트,매체
+    const [PlatformFilter, setPlatformFilter] = useState([]);       //플랫폼
+    const [CampaignFilter, setCampaignFilter] = useState([]);   //캠페인
+    const [AdTypeFilter, setAdTypeFilter] = useState([]);   //소재
+    const [DeviceFilter, setDeviceFilter] = useState([]); //디바이스
 
-    const [SelectedChartOption, setSelectedChartOption] = useState([ChartOptions[0]]);
+    const [SelectedChartOption, setSelectedChartOption] = useState(ChartOptions[0]);
 
 
     const fetchData = async ()=>{
-      if(currentAd==='undefined'){
-        currentAd = AdData[0].value
-      }
       const body =JSON.stringify({
         rptNo: '1000000',
         lookupTp: 'agg',
-        dimCd: ["ad_provider",'pfno'],
+        dimCd: ['pfno',"ad_provider","ad_platform",'campaign',"device","ad_type",'conv_type'],
         where: [
           {
             field: 'stat_date',
             operation: 'between',
-            value: ['2023-01-10', '2023-07-11'],
+            value: ['2022-01-10', format(addDays(new Date(), -1),'yyyy-MM-dd')],
           },
         ],
         sort: [{ field: 'land', order: 'asc' }],
         agencySeq: '1',
-        clientSeq: currentAd,
-        size: 30,
+        clientSeq: currentAd===undefined ? AdData[0].value : currentAd,
+        size: 10000,
       })
       const header = {
         headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
       }
       try{
         const response = await axios.post(
+          // 'http://223.130.136.182:9080/report/data', 로그인 필요
           'http://122.99.192.144:9080/report/data',
           body,
           header
@@ -157,19 +185,36 @@ const [adPlatform, setAdPlatform] = useState([])
           const data = await fetchData();
           const providers = new Set(data.map((item) => item.ad_provider));
           const pfno = new Set(data.map((item) => item.pfno));
-          setAdProviders(Array.from(providers).map(provider => ({
+          const campaign = new Set(data.map((item) => item.campaign));
+          const adPlatForm = new Set(data.map((item) => item.ad_platform));
+          const adType = new Set(data.map((item) => item.ad_type));
+          const device = new Set(data.map((item) => item.device));
+          setAdProviderList(Array.from(providers).map(provider => ({
             name: provider,
             value: provider
           })));
-          setAdSite(Array.from(pfno).map(site => ({
+          setAdSiteList(Array.from(pfno).map(site => ({
             name: site,
             value: site
           })));
-          setLoading(false)
+          setAdCampaignList(Array.from(campaign).map(campaign => ({
+            name: campaign,
+            value: campaign
+          })));
+          setAdPlatformList(Array.from(adPlatForm).map(adPlatForm => ({
+            name: adPlatForm,
+            value: adPlatForm
+          })));
+          setDeviceList(Array.from(device).map(device => ({
+            name: device,
+            value: device
+          })));
+          setAdTypeList(Array.from(adType).map(AdType => ({
+            name: AdType,
+            value: AdType
+          })));
         }
-
       getData();
-
     }, [currentAd]);
 
   const DataTypeChange = useCallback((value)=>{
@@ -296,164 +341,54 @@ const [adPlatform, setAdPlatform] = useState([])
     ];
 
     const DateChange = useCallback((value) => {
-      // //value의 0,1간의 날짜 차이
-      // const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
-      
-      const StatData=[]
-      // console.log("StatData선언 이후의 StatData", StatData)
-      const start_date = format(new Date(value[0]), "yyyy-MM-dd");
-      const end_date = format(new Date(value[1]), "yyyy-MM-dd");
-      const ad_provider = [];
-      for(const data of AbizStatData){
-        const stat_date = data.stat_date;
-        if( stat_date>= start_date && stat_date <= end_date){
-          const provider = data.ad_provider;
-          if(!ad_provider.includes(provider)){
-          ad_provider.push(provider);
-        }
-        }
-      }
-      // console.log("ad_provider",ad_provider)
-      for(const data of AbizStatData){
-        // console.log("data",data)
-        const stat_date = data.stat_date;
-          if( stat_date>= start_date && stat_date <= end_date){
-                StatData.push(data);
-                // console.log(data);
-          }
-    }
-    if(vatValue){
 
-          const updatedStatData = StatData.map((item) => {
-              return {
-              ...item,
-              m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
-              rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
-              m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
-              m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
-              rvn_per_odr: (item.rvn_per_odr + item.rvn_per_odr * 0.1).toFixed(0),
-              m_ctr : (item.m_ctr*100).toFixed(2),
-            };
-          });
-          setDatas(updatedStatData);
-      }else{
-        const updatedStatData = StatData.map((item) => {
-          return {
-          ...item,
-          m_ctr : (item.m_ctr*100).toFixed(2),
-        };
-      });
-          setDatas(updatedStatData);
-      }
-  }, [vatValue, AbizStatData,ChartOptions,SelectedChartOption]);
-
-  const adMaterial = [
-    {
-      key : 1,
-      name : 'SA',
-      value : 1,
-    },
-    {
-      key : 2,
-      name : 'DA',
-      value : 2,
-    },
-    {
-      key : 3,
-      name : 'PL',
-      value : 3,
-    },
-    {
-      key : 4,
-      name : 'SP',
-      value : 4,
-    },
-  ];
-
-  const adDevice = [
-    {
-      key : 1,
-      name : 'PC',
-      value : 1,
-    },
-    {
-      key : 2,
-      name : 'Mobile',
-      value : 2,
-    },
-  ];
-
-    
-    // const adSiteMap = new Map();
-    // const adProvidersSet = new Set();
-    // const adPlatformSet = new Set();
-    // const adCampaignSet = new Set();
-    
-    // for (const data of A_bizDetail) {
-    //   // Ad Site 처리
-    //   if (!adSiteMap.has(data.pfno)) {
-    //     const siteValue = AdSiteData.find(item => item.value === data.pfno);
-    //     if (siteValue) {
-    //       adSiteMap.set(data.pfno, { name: siteValue.name, value: siteValue.value });
-    //     }
-    //   }
-    
-    //   // Ad Providers 처리
-    //   adProvidersSet.add(data.ad_provider);
-    
-    //   // Ad Platform 처리
-    //   adPlatformSet.add(data.ad_platform);
-    
-    //   // Ad Campaign 처리
-    //   if (data.campaign !== "") {
-    //     adCampaignSet.add(data.campaign);
-    //   }
-    // }
-    
-    // const adSite = Array.from(adSiteMap.values());
-    // const adProviders = Array.from(adProvidersSet).map(provider => ({ name: provider, value: provider }));
-    // const adPlatform = Array.from(adPlatformSet).map(platform => ({ name: platform, value: platform }));
-    // const adCampaign = Array.from(adCampaignSet).map(campaign => ({ name: campaign, value: campaign }));
-
-
-
-
-
+      setDateValue(value);
+      //value의 0,1간의 날짜 차이
+      const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
+      setDateGap(daysDifference);
+      // //비교군의 날짜 산정
+      //종료 일시
+      const StatEndDate = new Date(value[0]);
+      StatEndDate.setDate(StatEndDate.getDate() - 1);
+      //시작일시
+      const StatStartDate = new Date(StatEndDate);
+      StatStartDate.setDate(StatEndDate.getDate() - daysDifference);
+      setCompareDateValue([`${format(StatStartDate,"yyyy-MM-dd")}`,`${format(StatEndDate,"yyyy-MM-dd")}`]);
+  
+    }, []);
 
     //대상, 필터 데이터 변경
-    const adsiteChange = useCallback((value) => {
-      const AdSitefilteredValue = value.filter((option) => option !== "selectAll");
-    setSiteFilter(AdSitefilteredValue);
-     
+    const SiteChange = useCallback((value) => {
+      const AdSiteSelectedValue = value.filter((option) => option !== "selectAll");
+      setSiteFilter(AdSiteSelectedValue);
       },[]);
 
-    const mdChange = useCallback((value) => {
-      const MdfilteredValue = value.filter((option) => option !== "selectAll");
-      setMdFilter(MdfilteredValue);
+    const ProviderChange = useCallback((value) => {
+      const ProviderSelectedValue = value.filter((option) => option !== "selectAll");
+      setProviderFilter(ProviderSelectedValue);
     }, []);
     
-    const pfChange = useCallback((value) => {
-      const PffilteredValue = value.filter((option) => option !== "selectAll");
-      setPfFilter(PffilteredValue);
+    const PlatformChange = useCallback((value) => {
+      const PlatformSelectedValue = value.filter((option) => option !== "selectAll");
+      setPlatformFilter(PlatformSelectedValue);
     }, []);
 
-    const CampChange = useCallback((value) => {
-      const CampfilteredValue = value.filter((option) => option !== "selectAll");
-      setCampFilter(CampfilteredValue);
+    const CampaignChange = useCallback((value) => {
+      const CampaignSelectedValue = value.filter((option) => option !== "selectAll");
+      setCampaignFilter(CampaignSelectedValue);
     }, []);
-
-    const AdMtChange = useCallback((value) => {
-      const MeterialfilteredValue = value.filter((option) => option !== "selectAll");
-      setAdMtFilter(MeterialfilteredValue);
+    const AdTypeChange = useCallback((value) => {
+      const AdTypeSelectedValue = value.filter((option) => option !== "selectAll");
+      setAdTypeFilter(AdTypeSelectedValue);
     }, []);
 
     const AdDeviceChange = useCallback((value) => {
-      const DevicefilteredValue = value.filter((option) => option !== "selectAll");
-      setAdDevFilter(DevicefilteredValue);
+      const DeviceSelectedValue = value.filter((option) => option !== "selectAll");
+      setDeviceFilter(DeviceSelectedValue);
     }, []);
 
    
-    
+
     const ChartFilter = useCallback((value) => {
       const updateData = ChartOptions.filter((item) => item.value === value)
       setSelectedChartOption(updateData);
@@ -463,507 +398,451 @@ const [adPlatform, setAdPlatform] = useState([])
       setVatValue(value)
     }
     const defaultFilterOptions = {
-      Pfno: adSite,
-      AdProvider: adProviders,
-      vatValue: vatValue,
+      Pfno: adSiteList,
+      AdProvider: adProviderList,
+      Campaign : adCampaignList,
+      PlatForm:adPlatformList,
+      AdType: adTypeList,
+      Device: DeviceList,
+      DataType:dataType,
+      VatValue:vatValue
     };
-  
+
     const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
-    
-
-  const updateFilter =()=>{
-    console.log('몰?루')
-  }
-
-    
-
-
-    return(
-        <>
-          <div className="MainContainer">
-              <div className="TitleBox">
-                  <Row className="title-Row">
-                    <Col xs={24}>
-                      <Breadcrumb items={items} />
-                    </Col>
-                    <Col xs={24}>
-                      <div className="active-title">
-                        <IoMdTimer className="title-icon" />
-                        <span className="title-text">광고 매체 분석 종합</span>
-                      </div>
-                    </Col>
-                  </Row>
-              </div>
-
-              <div style={{display:'flex', justifyContent:'end', paddingBottom:'10px'}}>
-                <Calendar onValueChange={DateChange} />
-              </div>
-              <div className="WhiteBox">
-                    <Space size="large">
-                       <Text strong level={4}>
-                                    대상&nbsp;
-                                    <FontAwesomeIcon icon={faCircleChevronRight} />
-                                </Text>
-                                <AdSitefilter options={adSite} onValueChange={adsiteChange} />
-                                <Mdfilter options={adProviders} onValueChange={mdChange} />
-                                <AdPlatform options={adPlatform} onValueChange={pfChange} />
-                                <AdCampaign options={adCampaign} onValueChange={CampChange} />
-                            </Space>
-                            <br/>
-                            <div style={{paddingTop:"20px"}}>
-                            <Space size="large">
-                                <Text strong level={4}>
-                                    필터&nbsp;
-                                    <FontAwesomeIcon icon={faCircleChevronRight} />
-                                </Text>
-                                <AdMaterial options={adMaterial} onValueChange={AdMtChange} />
-                                <AdDevice options={adDevice} onValueChange={AdDeviceChange} />
-                                <Datashow onValueChange={DataTypeChange} />
-                                <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>
-                                <Button className=""type="primary" onClick={updateFilter}>확인</Button>
-                            </Space>
-                    </div>
-                </div>
-                <div className="WhiteBox">
-                  <div>
-                  <Select
-                    className='ChartFilter'
-                    showSearch
-                    style={{
-                      width: 200,
-                    }}
-                    defaultValue={ChartOptions[0].value}
-                    options={ChartOptions}
-                    optionFilterProp="children"
-                    filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                    onChange={ChartFilter}
-                    value={SelectedChartOption}
-                    >
-                    </Select>
-                    <br/>
-                    <br/>
-                    <div style={{display:'flex', justifyContent:'start', alignContent:'center'}}>
-                      <div style={{width:'70%'}}>
-                      <MultiLinechart datas={datas} mdFilter={mdFilter} SelectedChartOption={SelectedChartOption} colors={colors}/>
-                      </div>
-                      <div>
-                      <Divider style={{height:'300px'}}type='vertical' />
-                      </div>
-                      <div style={{width:"30%"}}>
-                      <PieChart colors={colors} SelectedChartOption={SelectedChartOption}  datas={datas}></PieChart>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            </div>
-            <div>
-              <ReportTable/>
-            </div>
-        </>
-    )
-}
-export default ExamReport;
-
-
-/*
-
-import React,{useCallback, useState, useEffect} from 'react';
-import { Col, Tabs, Row,Space, Typography, Button,Switch,Divider,Select} from "antd";
-import format from "date-fns/format";
-import { useLocation} from "react-router-dom";
-
-//icon
-import { IoMdTimer } from "react-icons/io";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
-
-//data
-import AdData from "../../testData/AdData";
-import AdSiteData from "../../testData/AdSiteData";
-import adMediaData from "../../testData/AdMediaData";
-import AbizStatData from '../../testData/A_bizData/A_bizSatData';
-import A_bizDetail from '../../testData/A_bizData/A_bizDetail';
-import {adProvider} from '../../testData/A_bizData/Ad_Provider';
-
-//모듈
-import {Mdfilter, AdSitefilter,AdPlatform,AdCampaign,AdMaterial,AdDevice  } from "../../components/filter/filter.js";
-import {Datashow} from "../../components/filter/Datashow";
-import Breadcrumb from "../../components/Breadcrumd";
-import Calendar from "../../components/calendar.js";
-import {MultiLinechart} from "../../components/chart/MultiLinechart";
-import {PieChart} from "../../components/chart/ChartComponent";
-import ReportTable from "../../components/table/ReportTable";
-
-
-const { Text } = Typography;
-const ExamReport =({colors})=>{
-  const [dateValue, setDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")} - ${format(new Date(),"yyyy-MM-dd")}`])
-  const [vatValue, setVatValue] = useState(true);   //vat포함 여부
-  const [datas, setDatas] = useState([])      //날자별 데이터
-  const location = useLocation();
-  const currentAd =location.search?.split('=')[1]
-
-
-    const [ChartOptions, setChartOptions] = useState(
-      [
-        {
-          key: 1,
-          label: '노출수',
-          value: 'm_impr',
-        },
-        {
-          key: 2,
-          label: '클릭수',
-          value: 'm_click',
-        },
-        {
-          key: 3,
-          label: 'CTR',
-          value: 'm_ctr',
-        },
-        {
-          key: 4,
-          label: 'CPC',
-          value: 'm_cpc',
-        },
-        {
-          key: 5,
-          label: '광고비',
-          value: 'm_cost',
-        },
-        {
-          key: 6,
-          label: '전환수',
-          value: 'm_conv',
-        },
-        {
-          key: 7,
-          label: '전환율',
-          value: 'm_conv/click',
-        },
-        {
-          key: 8,
-          label: '매출액',
-          value: 'm_rvn',
-        },
-        {
-          key: 9,
-          label: 'ROAS',
-          value: 'm_roas',
-        },
-      ]
-    )
-    const [siteFilter, setSiteFilter] = useState([]); //사이트
-    const [mdFilter, setMdFilter] = useState([]);     //광고매체사
-    const [dataType, setDataType] =useState('media');        //스크립트,매체
-    
-    const [pfFilter, setPfFilter] = useState([]);       //플랫폼
-    const [campFilter, setCampFilter] = useState([]);   //캠페인
-    const [adMtFilter, setAdMtFilter] = useState([]);   //소재
-    const [adDevFilter, setAdDevFilter] = useState([]); //디바이스
-
-    const [SelectedChartOption, setSelectedChartOption] = useState([ChartOptions[0]]);
-
-  const DataTypeChange = useCallback((value)=>{
-    setDataType(value);
-    setSelectedChartOption(ChartOptions[0])
-    ChartFilter(ChartOptions[0].value)
-    if(value ==='script'){
-      setChartOptions([
-        {
-          key: 1,
-          label: '노출수',
-          value: 'm_impr',
-        },
-        {
-          key: 2,
-          label: '클릭수',
-          value: 'm_click',
-        },
-        {
-          key: 3,
-          label: 'CTR',
-          value: 'm_ctr',
-        },
-        {
-          key: 4,
-          label: 'CPC',
-          value: 'm_cpc',
-        },
-        {
-          key: 5,
-          label: '광고비',
-          value: 'm_cost',
-        },
-        {
-          key: 6,
-          label: '주문수',
-          value: 'odr',
-        },
-        {
-          key: 7,
-          label: '주문율',
-          value: 'odr_per_m_cost',
-        },
-        {
-          key: 8,
-          label: '주문금액',
-          value: 'rvn',
-        },
-        {
-          key: 9,
-          label: 'ROAS',
-          value: 'roas',
-        },
-        {
-          key: 10,
-          label: '구매단가',
-          value: 'rvn_per_odr',
-        },
-        {
-          key: 11,
-          label: '회원가입수',
-          value: 'rgr',
-        },
-        {
-          key: 12,
-          label: '회원가입율',
-          value: 'rgr_per_m_click',
-        },
-      ])
-    }else{
-      setChartOptions([
-        {
-          key: 1,
-          label: '노출수',
-          value: 'm_impr',
-        },
-        {
-          key: 2,
-          label: '클릭수',
-          value: 'm_click',
-        },
-        {
-          key: 3,
-          label: 'CTR',
-          value: 'm_ctr',
-        },
-        {
-          key: 4,
-          label: 'CPC',
-          value: 'm_cpc',
-        },
-        {
-          key: 5,
-          label: '광고비',
-          value: 'm_cost',
-        },
-        {
-          key: 6,
-          label: '전환수',
-          value: 'm_conv',
-        },
-        {
-          key: 7,
-          label: '전환율',
-          value: 'm_conv/click',
-        },
-        {
-          key: 8,
-          label: '매출액',
-          value: 'm_rvn',
-        },
-        {
-          key: 9,
-          label: 'ROAS',
-          value: 'm_roas',
-        },
-      ])
-    }
-  },[])
-
-    const items = [
-        { title: "AIR(매체 통합 리포트)", href: "/" },
-        { title: "리포트" },
-    ];
-
-    const DateChange = useCallback((value) => {
-      // //value의 0,1간의 날짜 차이
-      // const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
-      
-      const StatData=[]
-      // console.log("StatData선언 이후의 StatData", StatData)
-      const start_date = format(new Date(value[0]), "yyyy-MM-dd");
-      const end_date = format(new Date(value[1]), "yyyy-MM-dd");
-      const ad_provider = [];
-      for(const data of AbizStatData){
-        const stat_date = data.stat_date;
-        if( stat_date>= start_date && stat_date <= end_date){
-          const provider = data.ad_provider;
-          if(!ad_provider.includes(provider)){
-          ad_provider.push(provider);
-        }
-        }
+    useEffect(() => {
+      if (adProviderList.length > 0 && adSiteList.length > 0 && adCampaignList.length>0 && adPlatformList.length>0 && DeviceList.length>0) {
+        setFilterOptions((prevOptions) => ({
+          ...prevOptions,
+          Pfno: adSiteList,
+          AdProvider: adProviderList,
+          Campaign : adCampaignList,
+          PlatForm:adPlatformList,
+          AdType:adTypeList,
+          Device: DeviceList,
+          VatValue:vatValue
+        }));
       }
-      // console.log("ad_provider",ad_provider)
-      for(const data of AbizStatData){
-        // console.log("data",data)
-        const stat_date = data.stat_date;
-          if( stat_date>= start_date && stat_date <= end_date){
-                StatData.push(data);
-                // console.log(data);
-          }
-    }
-    if(vatValue){
+    }, [adProviderList, adSiteList, adCampaignList,adPlatformList,vatValue,DeviceList,adTypeList]);
+    
+    useEffect(() => {
+      if(currentAd === '0' || currentAd ===undefined){
+        // Filter the AdData based on the selected adFilter names
+        const SelectedAd = AdData[0].value;
+        const SelectedAdSite = adSiteList.filter((item) => SiteFilter.includes(item.name));
+        const SelectedAdProvider = adProviderList.filter((item)=> ProviderFilter.includes(item.value));
+        const SelectedCampaign = adCampaignList.filter((item)=> CampaignFilter.includes(item.value));
+        const SelectedPlatform = adPlatformList.filter((item)=> PlatformFilter.includes(item.value));
+        const SelectedAdType = adTypeList.filter((item)=> AdTypeFilter.includes(item.value));
+        const SelectedDevice = DeviceList.filter((item)=> DeviceFilter.includes(item.value));
 
-          const updatedStatData = StatData.map((item) => {
-              return {
-              ...item,
-              m_rvn: (item.m_rvn + item.m_rvn * 0.1).toFixed(0),
-              rvn: (item.rvn + item.rvn * 0.1).toFixed(0),
-              m_cost: (item.m_cost + item.m_cost * 0.1).toFixed(0),
-              m_cpc: (item.m_cpc + item.m_cpc * 0.1).toFixed(0),
-              rvn_per_odr: (item.rvn_per_odr + item.rvn_per_odr * 0.1).toFixed(0),
-              m_ctr : (item.m_ctr*100).toFixed(2),
-            };
-          });
-          setDatas(updatedStatData);
+          setFilterOptions((prevOptions) => ({
+            ...prevOptions,
+            Ad: SelectedAd,
+            Pfno:SelectedAdSite,
+            AdProvider:SelectedAdProvider,
+            Campaign : SelectedCampaign,
+            PlatForm:SelectedPlatform,
+            AdType: SelectedAdType,
+            Device: SelectedDevice,
+            date:dateValue,
+            DataType:dataType,
+            VatValue:vatValue
+          }));
       }else{
-        const updatedStatData = StatData.map((item) => {
-          return {
-          ...item,
-          m_ctr : (item.m_ctr*100).toFixed(2),
-        };
-      });
-          setDatas(updatedStatData);
+        const SelectedAdSite = adSiteList.filter((item) => SiteFilter.includes(item.value));
+        const SelectedAdProvider = adProviderList.filter((item)=> ProviderFilter.includes(item.value));
+        const SelectedCampaign = adCampaignList.filter((item)=> CampaignFilter.includes(item.value));
+        const SelectedPlatform = adPlatformList.filter((item)=> PlatformFilter.includes(item.value));
+        const SelectedAdType = adTypeList.filter((item)=> AdTypeFilter.includes(item.value));
+        const SelectedDevice = DeviceList.filter((item)=> DeviceFilter.includes(item.value));
+          setFilterOptions((prevOptions) => ({
+            ...prevOptions,
+            Pfno:SelectedAdSite,
+            AdProvider:SelectedAdProvider,
+            Campaign : SelectedCampaign,
+            PlatForm:SelectedPlatform,
+            AdType: SelectedAdType,
+            Device: SelectedDevice,
+            date:dateValue,
+            DataType:dataType,
+            VatValue:vatValue
+          }));
       }
-  }, [vatValue, AbizStatData,ChartOptions,SelectedChartOption]);
-
-  const adMaterial = [
-    {
-      key : 1,
-      name : 'SA',
-      value : 1,
-    },
-    {
-      key : 2,
-      name : 'DA',
-      value : 2,
-    },
-    {
-      key : 3,
-      name : 'PL',
-      value : 3,
-    },
-    {
-      key : 4,
-      name : 'SP',
-      value : 4,
-    },
-  ];
-
-  const adDevice = [
-    {
-      key : 1,
-      name : 'PC',
-      value : 1,
-    },
-    {
-      key : 2,
-      name : 'Mobile',
-      value : 2,
-    },
-  ];
-
+    }, [SiteFilter,ProviderFilter,PlatformFilter,CampaignFilter,AdTypeFilter,DeviceFilter,dateValue])
     
-    const adSiteMap = new Map();
-    const adProvidersSet = new Set();
-    const adPlatformSet = new Set();
-    const adCampaignSet = new Set();
-    
-    for (const data of A_bizDetail) {
-      // Ad Site 처리
-      if (!adSiteMap.has(data.pfno)) {
-        const siteValue = AdSiteData.find(item => item.value === data.pfno);
-        if (siteValue) {
-          adSiteMap.set(data.pfno, { name: siteValue.name, value: siteValue.value });
+    const updateFilter = () => {
+      
+    };
+    useEffect(() => {
+        getLineData(); //스코어카드용 데이터 조회
+        // getPieData();  //스코어카드용 비교 데이터 조회
+      // getFilteredProviderData();
+      // getCompareData();
+    }, [filterOptions]);
+  
+  
+    //Filter에 따른 ScoreCard용 데이터
+    const getLineData = async ()=>{
+      if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`&& filterOptions.AdProvider.length>0){
+        const body =JSON.stringify({
+          rptNo: '1000000',
+          lookupTp: 'agg',
+          dimCd: ["by_day",'ad_provider'],
+          where: [
+            {
+              field: 'stat_date',
+              operation: 'between',
+              value: [dateValue[0], dateValue[1]],
+            },
+            {
+              field: 'pfno',
+              operation: 'in',
+              value: filterOptions.Pfno.map((item)=>item.value),
+            },
+            {
+              field: 'ad_provider',
+              operation: 'in',
+              value: filterOptions.AdProvider.map((item)=>item.value),
+            },
+            {
+              field: 'ad_platform',
+              operation: 'in',
+              value: filterOptions.PlatForm.map((item)=>item.value),
+            },
+            {
+              field: 'campaign',
+              operation: 'in',
+              value: filterOptions.Campaign.map((item)=>item.value),
+            },
+            {
+              field: 'device',
+              operation: 'in',
+              value: filterOptions.Device.map((item)=>item.value),
+            },
+            {
+              field: 'ad_type',
+              operation: 'in',
+              value: filterOptions.AdType.map((item)=>item.value),
+            },
+          ],
+          metCd: [
+          "m_rvn",
+          "m_impr",
+          "m_cost",
+          "m_odr",
+          "m_rgr",
+          "land",
+          "rvn",
+          "m_cart",
+          "odr",
+          "rgr",
+          "m_conv",
+          "m_click",
+          "m_cpc",
+          "m_ctr",
+          "m_crt",
+          "m_roas",
+          "rvn_per_odr",
+          "rgr_per_m_click",
+          "odr_per_m_cost",
+          "roas"
+          ],
+          sort: [{ field: 'land', order: 'asc' }],
+          agencySeq: '1',
+          clientSeq: currentAd===undefined ? AdData[0].value : currentAd,
+          pfno:filterOptions.Pfno.map(item=>item.value),
+          size: 100000,
+        })
+        const header = {
+          headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
         }
+        try{
+          const response = await axios.post(
+            // 'http://223.130.136.182:9080/report/data', 로그인 필요
+            'http://122.99.192.144:9080/report/data',
+            body,
+            header
+          );
+          if(response.status===200){
+            if((response.data.data).length>0){
+            const responseData = response.data.data;
+            // const generateData = generateDummyDataByDay(responseData, dateValue);
+            // return setFetchedData(generateData);
+            const generateData = generateDummyDataByProvider(responseData, dateValue);
+              return setFetchedData(generateData);
+            }else{
+              return setFetchedData([]);
+            }
+         }else{
+          return setFetchedData([])
+         }
+        }catch(e){
+          return setFetchedData([])
+        }
+      }else{
+        return setFetchedData([])
       }
-    
-      // Ad Providers 처리
-      adProvidersSet.add(data.ad_provider);
-    
-      // Ad Platform 처리
-      adPlatformSet.add(data.ad_platform);
-    
-      // Ad Campaign 처리
-      if (data.campaign !== "") {
-        adCampaignSet.add(data.campaign);
+      setLoading(false)
+    }
+    const getPieData = async ()=>{
+      if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`&& filterOptions.AdProvider.length>0){
+        const body =JSON.stringify({
+          rptNo: '1000000',
+          lookupTp: 'agg',
+          dimCd: ["by_day",'ad_provider'],
+          where: [
+            {
+              field: 'stat_date',
+              operation: 'between',
+              value: [dateValue[0], dateValue[1]],
+            },
+            {
+              field: 'pfno',
+              operation: 'in',
+              value: filterOptions.Pfno.map((item)=>item.value),
+            },
+            {
+              field: 'ad_provider',
+              operation: 'in',
+              value: filterOptions.AdProvider.map((item)=>item.value),
+            },
+            {
+              field: 'ad_platform',
+              operation: 'in',
+              value: filterOptions.PlatForm.map((item)=>item.value),
+            },
+            {
+              field: 'campaign',
+              operation: 'in',
+              value: filterOptions.Campaign.map((item)=>item.value),
+            },
+            {
+              field: 'device',
+              operation: 'in',
+              value: filterOptions.Device.map((item)=>item.value),
+            },
+            {
+              field: 'ad_type',
+              operation: 'in',
+              value: filterOptions.AdType.map((item)=>item.value),
+            },
+          ],
+          metCd: [
+          "m_rvn",
+          "m_impr",
+          "m_cost",
+          "m_odr",
+          "m_rgr",
+          "land",
+          "rvn",
+          "m_cart",
+          "odr",
+          "rgr",
+          "m_conv",
+          "m_click",
+          "m_cpc",
+          "m_ctr",
+          "m_crt",
+          "m_roas",
+          "rvn_per_odr",
+          "rgr_per_m_click",
+          "odr_per_m_cost",
+          "roas"
+          ],
+          sort: [{ field: 'land', order: 'asc' }],
+          agencySeq: '1',
+          clientSeq: currentAd===undefined ? AdData[0].value : currentAd,
+          pfno:filterOptions.Pfno.map(item=>item.value),
+          size: 100000,
+        })
+        const header = {
+          headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
+        }
+        try{
+          const response = await axios.post(
+            // 'http://223.130.136.182:9080/report/data', 로그인 필요
+            'http://122.99.192.144:9080/report/data',
+            body,
+            header
+          );
+          if((response.data.data).length>0){
+          const responseData = response.data.data;
+          const generateData = generateDummyDataByDay(responseData, dateValue);
+            return setFetchedData(generateData);
+          }else{
+            setFetchedData([])
+          }
+          // }
+        }catch(e){
+          return setFetchedData([])
+        }
+      }else{
+        return setFetchedData([])
       }
     }
-    
-    const adSite = Array.from(adSiteMap.values());
-    const adProviders = Array.from(adProvidersSet).map(provider => ({ name: provider, value: provider }));
-    const adPlatform = Array.from(adPlatformSet).map(platform => ({ name: platform, value: platform }));
-    const adCampaign = Array.from(adCampaignSet).map(campaign => ({ name: campaign, value: campaign }));
 
+    //Filter선택에 따른 비교 데이터
+    const getCompareData = async ()=>{
+      if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}` && filterOptions.AdProvider.length>0){
+        const body =JSON.stringify({
+          rptNo: '1000000',
+          lookupTp: 'agg',
+          dimCd: ["by_day",'pfno','ad_provider','ad_platform','campaign','device','ad_type'],
+          where: [
+            {
+              field: 'stat_date',
+              operation: 'between',
+              value: [CompareDateValue[0], CompareDateValue[1]],
+            },
+            {
+              field: 'pfno',
+              operation: 'in',
+              value: filterOptions.Pfno.map((item)=>item.value),
+            },
+            {
+              field: 'ad_provider',
+              operation: 'in',
+              value: filterOptions.AdProvider.map((item)=>item.value),
+            },
+            {
+              field: 'ad_platform',
+              operation: 'in',
+              value: filterOptions.PlatForm.map((item)=>item.value),
+            },
+            {
+              field: 'campaign',
+              operation: 'in',
+              value: filterOptions.Campaign.map((item)=>item.value),
+            },
+            {
+              field: 'device',
+              operation: 'in',
+              value: filterOptions.Device.map((item)=>item.value),
+            },
+            {
+              field: 'ad_type',
+              operation: 'in',
+              value: filterOptions.AdType.map((item)=>item.value),
+            },
+          ],
+          metCd: ["m_rvn",
+          "m_impr",
+          "m_cost",
+          "m_odr",
+          "m_rgr",
+          "land",
+          "rvn",
+          "m_cart",
+          "odr",
+          "rgr",
+          "m_conv",
+          "m_click",
+          "m_cpc",
+          "m_ctr",
+          "m_crt",
+          "m_roas",
+          "rvn_per_odr",
+          "rgr_per_m_click",
+          "odr_per_m_cost",
+          "roas"
+          ],
+          sort: [{ field: 'land', order: 'asc' }],
+          agencySeq: '1',
+          clientSeq: currentAd===undefined ? AdData[0].value : currentAd,
+          pfno:filterOptions.Pfno.map(item=>item.value),
+          size: 100000,
+        })
+        const header = {
+          headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
+        }
+        try{
+          const response = await axios.post(
+            // 'http://223.130.136.182:9080/report/data', 로그인 필요
+            'http://122.99.192.144:9080/report/data',
+            body,
+            header
+          );
+          const responseData = response.data.data;
+          // setLoading(false)
+          return setFetchedCompareData(responseData);
+        }catch(e){
+          const dummydata = {
+            m_rvn: 0,
+            m_impr: 0,
+            m_cost: 0,
+            m_odr: 0,
+            m_rgr: 0,
+            land: 0,
+            rvn: 0,
+            m_cart: 0,
+            odr: 0,
+            rgr: 0,
+            m_conv: 0,
+            m_click: 0,
+            m_cpc: 0,
+            m_ctr: 0,
+            m_crt: 0,
+            m_roas: 0,
+            rvn_per_odr: 0,
+            rgr_per_m_click: 0,
+            odr_per_m_cost: 0,
+            roas: 0,
+          }
+          console.error(e)
+          setLoading(false)
+          return setFetchedCompareData([dummydata]);
+          
+        }
 
+      }else{
+        setLoading(false)
+        return null;
+      }
 
-
-
-
-    //대상, 필터 데이터 변경
-    const adsiteChange = useCallback((value) => {
-      const AdSitefilteredValue = value.filter((option) => option !== "selectAll");
-    setSiteFilter(AdSitefilteredValue);
-     
-      },[]);
-
-    const mdChange = useCallback((value) => {
-      const MdfilteredValue = value.filter((option) => option !== "selectAll");
-      setMdFilter(MdfilteredValue);
-    }, []);
-    
-    const pfChange = useCallback((value) => {
-      const PffilteredValue = value.filter((option) => option !== "selectAll");
-      setPfFilter(PffilteredValue);
-    }, []);
-
-    const CampChange = useCallback((value) => {
-      const CampfilteredValue = value.filter((option) => option !== "selectAll");
-      setCampFilter(CampfilteredValue);
-    }, []);
-
-    const AdMtChange = useCallback((value) => {
-      const MeterialfilteredValue = value.filter((option) => option !== "selectAll");
-      setAdMtFilter(MeterialfilteredValue);
-    }, []);
-
-    const AdDeviceChange = useCallback((value) => {
-      const DevicefilteredValue = value.filter((option) => option !== "selectAll");
-      setAdDevFilter(DevicefilteredValue);
-    }, []);
-
-   
-    
-    const ChartFilter = useCallback((value) => {
-      const updateData = ChartOptions.filter((item) => item.value === value)
-      setSelectedChartOption(updateData);
-    },[ChartOptions])
-    
-    const handleSwitchToggle =(value)=>{
-      setVatValue(value)
     }
 
-
-        const updateFilter =()=>{
-          console.log('update!')
-        }
-        
-
-
+    useEffect(() => {
+     if(fetchedData.length>0){
+          if(vatValue){
+            const updatedData =fetchedData?.map((item) => {
+              return {
+                ...item,
+                m_rvn: item.m_rvn + item.m_rvn * 0.1,
+                rvn: item.rvn + item.rvn * 0.1,
+                m_cost: item.m_cost + item.m_cost * 0.1,
+                m_cpc: item.m_cpc + item.m_cpc * 0.1,
+                rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
+              };
+            });
+            // const updatedCompareData = fetchedCompareData?.map((item) => {
+            //   return {
+            //     ...item,
+            //     m_rvn: item.m_rvn + item.m_rvn * 0.1,
+            //     rvn: item.rvn + item.rvn * 0.1,
+            //     m_cost: item.m_cost + item.m_cost * 0.1,
+            //     m_cpc: item.m_cpc + item.m_cpc * 0.1,
+            //     rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
+            //   };
+            // });
+            setLineDatas(updatedData);
+          }
+          else{
+            setLineDatas(fetchedData);
+          }
+      }else{
+        setLineDatas(fetchedData);
+      }
+      setLoading(false)
+    }, [fetchedData,vatValue,filterOptions]);
+console.log('datas',Linedatas)
     return(
         <>
+           {loading===true?
+          <div
+          style={{backgroundColor:"white",height: "80vh",display:'flex', justifyContent:'center',alignItems:'center'}}>
+          <Spin indicator={antIcon} />
+          </div>:
+          <>
           <div className="MainContainer">
               <div className="TitleBox">
                   <Row className="title-Row">
@@ -988,10 +867,10 @@ const ExamReport =({colors})=>{
                                     대상&nbsp;
                                     <FontAwesomeIcon icon={faCircleChevronRight} />
                                 </Text>
-                                <AdSitefilter options={adSite} onValueChange={adsiteChange} />
-                                <Mdfilter options={adProviders} onValueChange={mdChange} />
-                                <AdPlatform options={adPlatform} onValueChange={pfChange} />
-                                <AdCampaign options={adCampaign} onValueChange={CampChange} />
+                                <AdSitefilter options={adSiteList} onValueChange={SiteChange} /> 
+                                <Providerfilter options={adProviderList} onValueChange={ProviderChange} />
+                                <AdPlatform options={adPlatformList} onValueChange={PlatformChange} />
+                                <AdCampaign options={adCampaignList} onValueChange={CampaignChange} />
                             </Space>
                             <br/>
                             <div style={{paddingTop:"20px"}}>
@@ -1000,11 +879,11 @@ const ExamReport =({colors})=>{
                                     필터&nbsp;
                                     <FontAwesomeIcon icon={faCircleChevronRight} />
                                 </Text>
-                                <AdMaterial options={adMaterial} onValueChange={AdMtChange} />
-                                <AdDevice options={adDevice} onValueChange={AdDeviceChange} />
+                                <AdType options={adTypeList} onValueChange={AdTypeChange} /> 
+                                <AdDevice options={DeviceList} onValueChange={AdDeviceChange} />
                                 <Datashow onValueChange={DataTypeChange} />
                                 <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>
-                                <Button className=""type="primary" onClick={updateFilter}>확인</Button>
+                                {/* <Button className="" type="primary" onClick={updateFilter}>확인</Button> */}
                             </Space>
                     </div>
                 </div>
@@ -1028,13 +907,13 @@ const ExamReport =({colors})=>{
                     <br/>
                     <div style={{display:'flex', justifyContent:'start', alignContent:'center'}}>
                       <div style={{width:'70%'}}>
-                      <MultiLinechart datas={datas} mdFilter={mdFilter} SelectedChartOption={SelectedChartOption} colors={colors}/>
+                      <MultiLinechart datas={Linedatas} ProviderFilter={ProviderFilter} SelectedChartOption={SelectedChartOption} colors={colors}/>
                       </div>
                       <div>
                       <Divider style={{height:'300px'}}type='vertical' />
                       </div>
                       <div style={{width:"30%"}}>
-                      <PieChart colors={colors} SelectedChartOption={SelectedChartOption}  datas={datas}></PieChart>
+                      <PieChart colors={colors} SelectedChartOption={SelectedChartOption}  datas={Linedatas}></PieChart>
                       </div>
                     </div>
                   </div>
@@ -1043,9 +922,10 @@ const ExamReport =({colors})=>{
             <div>
               <ReportTable/>
             </div>
+            </>
+    }
         </>
     )
 }
 export default ExamReport;
 
-*/

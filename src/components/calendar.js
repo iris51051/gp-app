@@ -10,13 +10,13 @@ import addMonths from "date-fns/addMonths";
 import koKR from "rsuite/locales/ko_KR";
 
 const Calendar = ({onValueChange}) => {
-  const [selectedDate, setSelectedDate] = useState([addDays(new Date(), -6), new Date()]);
+  const [selectedDate, setSelectedDate] = useState([addDays(new Date(), -7), addDays(new Date(), -1)]);
   const [PickedRange, setPickedRange] = useState([new Date(), new Date()]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
   const disabledIncludeAfterToday = (date) => {
-    return date >= new Date();
+    return date >= addDays(new Date(), -1);
   };
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -44,27 +44,27 @@ const Calendar = ({onValueChange}) => {
     },
     {
       label: "최근 7일",
-      value: [subDays(new Date(), 7), new Date()],
+      value: [subDays(new Date(), 7), addDays(new Date(), -1)],
       placement: "left",
       closeOverlay: false,
     },
     {
       label: "최근 30일",
       // value: [subDays(new Date(), 29), new Date()],
-      value: [subDays(new Date(), 30), new Date()],
+      value: [subDays(new Date(), 30), addDays(new Date(), -1)],
       placement: "left",
       closeOverlay: false,
     },
     {
       label: "최근 90일",
       // value: [subDays(new Date(), 89), new Date()],
-      value: [subDays(new Date(), 90), new Date()],
+      value: [subDays(new Date(), 90), addDays(new Date(), -1)],
       placement: "left",
       closeOverlay: false,
     },
     {
       label: "이번 달",
-      value: [startOfMonth(new Date()), new Date()],
+      value: [startOfMonth(new Date()), addDays(new Date(), -1)],
       placement: "left",
       closeOverlay: false,
     },
@@ -79,7 +79,7 @@ const Calendar = ({onValueChange}) => {
     },
     {
       label: "이번 년도",
-      value: [new Date(new Date().getFullYear(), 0, 1), new Date()],
+      value: [new Date(new Date().getFullYear(), 0, 1), addDays(new Date(), -1)],
       placement: "left",
       closeOverlay: false,
     },
@@ -100,7 +100,7 @@ const Calendar = ({onValueChange}) => {
       className:'SelectDateRange',
       value: PickedRange,
       disable:true,
-      onmouseenter:'none',
+      onMouseEnter:'none',
       closeOverlay: false,
     },
   ];

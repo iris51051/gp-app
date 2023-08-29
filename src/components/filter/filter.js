@@ -15,7 +15,9 @@ const DropdownFilter = ({ name, options, onValueChange }) => {
   // const currentAd = location.search
 
  useEffect(() => {
+
    setSelectedOptions([...options.map(option => option.value),"selectAll"])
+
    }, [options])
 
   useEffect(() => {
@@ -182,7 +184,7 @@ export const Adfilter = (props) => <DropdownFilter name="광고주" {...props} /
 export const AdSitefilter = (props) => (
   <DropdownFilter  name="사이트" {...props} />
 );
-export const Mdfilter = (props) => (
+export const Providerfilter = (props) => (
   <DropdownFilter  name="광고매체사" {...props} />
 );
 
@@ -192,7 +194,7 @@ export const AdPlatform = (props) => (
 export const AdCampaign = (props) => (
   <DropdownFilter name="캠페인" {...props} />
 );
-export const AdMaterial = (props) => (
+export const AdType = (props) => (
   <DropdownFilter name="소재유형" {...props} />
 );
 export const AdDevice = (props) => (

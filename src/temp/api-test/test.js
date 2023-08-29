@@ -10,7 +10,10 @@ const Apitest = () => {
   const handleApiCall = async () => {
     try {
       // Use the JSONPlaceholder API '/posts' endpoint for POST request
-      const response = await axios.post('http://122.99.192.144:9080/report/data', {
+      const response = await axios.post(
+        // 'http://223.130.136.182:9080/report/data', 로그인 필요
+        'http://122.99.192.144:9080/report/data',
+        {
         rptNo: '1000000',
         lookupTp: 'agg',
         agencySeq: '1',

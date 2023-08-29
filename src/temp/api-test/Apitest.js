@@ -2,42 +2,61 @@
 
 import React, { useEffect,useState } from 'react';
 import fetchData from './DataFetchComponent'; // Replace with the correct path to DataFetchComponent.js
-import authData from './urltest'; // Replace with the correct path to DataFetchComponent.js
-import cpcdata from './cpcdata'; // Replace with the correct path to DataFetchComponent.js
+import authData from './AuthToken'; // Replace with the correct path to DataFetchComponent.js
+import viewList from './viewdata'; // Replace with the correct path to DataFetchComponent.js
+import ClientList from './clientList'; // Replace with the correct path to DataFetchComponent.js
+import getData from './getData'; // Replace with the correct path to DataFetchComponent.js
 
 const Apitest = () => {
   const [testData, setTestData] = useState(null)
   const [testToken, setTestToken] = useState(null)
-  const [getCpcDAta, setGetCpcDAta] = useState()
+  const [tokenType , setTokenType ] = useState(null)
+  const [getClientList, setClientList] = useState()
   useEffect(() => {
+    if(testToken!==null){
     const getDataAndLog = async () => {
-      const data = await fetchData();
+      const data = await getData(tokenType,testToken);
       if (data && data.length >0) {
        setTestData(data[0]);
       }
     };
     getDataAndLog();
-  }, []);
+  }
+  }, [testToken]);
   useEffect(() => {
-    const getAythToken = async () => {
+    const getAuthToken = async () => {
       const data = await authData();
-      if (data && data.length >0) {
-        setTestToken(data[0]);
+      if (data) {
+        console.log('token',data)
+        setTokenType(data.tokenType)
+        setTestToken(data.token);
       }
     };
-    getAythToken();
+    getAuthToken();
   }, []);
   useEffect(() => {
-    const getCpcDAta = async () => {
-      const data = await cpcdata();
+    if(testToken!==null){
+    const getviewList = async () => {
+      const data = await viewList(tokenType,testToken);
       if (data && data.length >0) {
-        console.log('data',data)
-        // setGetCpcDAta(data[0]);
+        console.log('GetviewList',data)
       }
     };
-    getCpcDAta();
-  }, []);
-  console.log('getCpcDAta',getCpcDAta)
+      getviewList();
+    }
+  }, [testToken]);
+  useEffect(() => {
+    if(testToken!==null){
+    const getClientList = async () => {
+      const data = await ClientList(tokenType,testToken);
+      if (data && data.length >0) {
+        console.log('getClientList',data)
+      }
+    };
+      getClientList();
+    }
+  }, [testToken]);
+
 
   return (
     <div>

@@ -11,21 +11,21 @@ import axios from 'axios';
 
 
 //
-import {generateDummyDataByProvider} from '../function/CreateDummy'
+import {generateDummyDataByProvider} from '../function/CreateDummyByProvider'
 import {generateDummyDataByDay} from '../function/CreateDummyByDay'
 
 import Breadcrumb from "../components/Breadcrumd";
 import MainTab1 from "./main-tab/main-Tab1";
 import MainTab2 from "./main-tab/main-Tab2";
 import Calendar from "../components/calendar.js";
-import { Adfilter, Mdfilter, AdSitefilter } from "../components/filter/filter.js";
+import { Adfilter, Providerfilter, AdSitefilter } from "../components/filter/filter.js";
 import ScoreCardChartComp from "../components/chart/ScoreChartCard";
-import AdData from "../testData/AdData";
-// import AdSiteData from "../testData/AdSiteData";
+import AdList from "../testData/AdData";
+
 import adMediaData from "../testData/AdMediaData";
 import {ByDateData} from "../testData/ByDateData";
 import {StatDateData} from "../testData/StatDateData";
-import {DefaultData,filteredData} from "../testData/ApiReq"
+// import {DefaultData,filteredData} from "../testData/ApiReq"
 
 const antIcon = (
   <LoadingOutlined
@@ -76,24 +76,26 @@ const Main = () => {
   const [collapsed2, setCollapsed2] = useState(false);
   const [vatValue, setVatValue] = useState(true);
   const [dateValue, setDateValue] = useState([`${format(addDays(new Date(), -6),"yyyy-MM-dd")}`,`${format(new Date(),"yyyy-MM-dd")}`])
-  const [CompareDateValue, setCompareDateValue] = useState([`${format(new Date(),"yyyy-MM-dd")}`,`${format(new Date(),"yyyy-MM-dd")}`])
+  const [CompareDateValue, setCompareDateValue] = useState([`${format(addDays(new Date(), -12),"yyyy-MM-dd")}`,`${format(addDays(new Date(), -6),"yyyy-MM-dd")}`])
   const [datas, setDatas] = useState([])
-  const [AllAdData, setAllAdData] = useState()
-  const [adProviders, setAdProviders] = useState([])
+  const [AllAdList, setAllAdList] = useState()
+  const [adProviderList, setAdProviderList] = useState([])
   const [loading, setLoading] = useState(false)
   const [fetchedData, setFetchedData] = useState([]) //조회 데이터
   const [fetchedCompareData, setFetchedCompareData] = useState([])  //비교 데이터
-  const [adSiteData, setAdSiteData] = useState([]);
+  const [adSiteList, setAdSiteList] = useState([]);
   const [dateGap, setDateGap] = useState();
-  const [ScoreStandardData, setScoreStandardData] = useState([])
-  const [ScoreCompareData, setScoreCompareData] = useState([])
-  const [ScoreData, setScoreData] = useState([])
+  const [FilteredProviderData, setFilteredProviderData] = useState([])
   //광고매체사 옵션
 
 
   //초기 랜더링시 pfno(사이트),ad_provider(광고매체) 조회용 axios
-  //ad_Provider,pfno에 대한 조회 범위가 너무 광범위해서 비효율적
-  //조회 관련 api나올시 교체.
+  // => 데이터 조회 시 사이트,광고매체를 먼저 선택한 후 날짜를 선택하여 데이터를 조회하기에
+  //    ad_porivder와 pfno는 무조건 초기 랜더링시에 필요
+  //    ad_Provider,pfno에 대한 조회 범위가 너무 광범위해서 비효율적
+  // => 별도의 조회 쿼리문이 없다면 전체 가입 기간에 대한 조회를 실행해야함.
+
+  // ****************************조회 관련 api나올시 교체.******************************************
 const fetchData = async ()=>{
   const body =JSON.stringify({
     rptNo: '1000000',
@@ -103,7 +105,7 @@ const fetchData = async ()=>{
       {
         field: 'stat_date',
         operation: 'between',
-        value: ['2023-01-10', format(new Date(),'yyyy-MM-dd')],
+        value: ['2020-01-10', format(new Date(),'yyyy-MM-dd')],
       },
     ],
     sort: [{ field: 'land', order: 'asc' }],
@@ -116,6 +118,8 @@ const fetchData = async ()=>{
   }
   try{
     const response = await axios.post(
+      // 로그인 필요
+      // 'http://223.130.136.182:9080/report/data',
       'http://122.99.192.144:9080/report/data',
       body,
       header
@@ -131,17 +135,16 @@ useEffect(() => {
   setLoading(true)
   const getFilterData= async () => {
     if (currentAd === '0' || currentAd === undefined) {
-      //전체 광고주 일 때의 검색.
-      //전체 광고주에 대한 api 미구현
+      setLoading(false)
     } else {
       const data = await fetchData();
       const providers = new Set(data.map((item) => item.ad_provider));
       const pfno = new Set(data.map((item) => item.pfno));
-      setAdProviders(Array.from(providers).map(provider => ({
+      setAdProviderList(Array.from(providers).map(provider => ({
         name: provider,
         value: provider
       })));
-      setAdSiteData(Array.from(pfno).map(site => ({
+      setAdSiteList(Array.from(pfno).map(site => ({
         name: site,
         value: site
       })));
@@ -155,22 +158,22 @@ useEffect(() => {
 
 
   const defaultFilterOptions = {
-    AdData: AdData,
-    Pfno: adSiteData,
-    AdProvider: adProviders,
+    Ad: AdList,
+    Pfno: adSiteList,
+    AdProvider: adProviderList,
     date : dateValue,
   };
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
   useEffect(() => {
-    if (adProviders.length > 0 && adSiteData.length > 0) {
+    if (adProviderList.length > 0 && adSiteList.length > 0) {
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
-        Pfno: adSiteData,
-        AdProvider: adProviders,
+        Pfno: adSiteList,
+        AdProvider: adProviderList,
       }));
     }
-  }, [adProviders, adSiteData]);
+  }, [adProviderList, adSiteList]);
 
 
   const coll1Change = () => {
@@ -185,23 +188,24 @@ useEffect(() => {
   const updateFilter = () => {
     if(currentAd === '0' || currentAd ===undefined){
       // Filter the AdData based on the selected adFilter names
-      const filteredAdData = AdData.filter((item) => adFilter.includes(item.name));
-      const filteredAdSiteData = adSiteData.filter((item) => siteFilter.includes(item.value));
-      const filteredAdProvider = adProviders.filter((item)=> mdFilter.includes(item.value));
+      const filteredAd = AdList.filter((item) => adFilter.includes(item.name));
+      const filteredAdSite = adSiteList.filter((item) => siteFilter.includes(item.value));
+      const filteredAdProvider = adProviderList.filter((item)=> mdFilter.includes(item.value));
         setFilterOptions((prevOptions) => ({
           ...prevOptions,
-          AdData: filteredAdData,
-          Pfno:filteredAdSiteData,
+          Ad: filteredAd,
+          Pfno:filteredAdSite,
           AdProvider:filteredAdProvider,
           date:dateValue,
         }));
     }else{
-      const filteredAdSiteData = adSiteData.filter((item) => siteFilter.includes(item.value));
-      const filteredAdProvider = adProviders.filter((item)=> mdFilter.includes(item.value));
+      const filteredAdSite = adSiteList.filter((item) => siteFilter.includes(item.value));
+
+      const filteredAdProvider = adProviderList.filter((item)=> mdFilter.includes(item.value));
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
-        AdData: currentAd,
-        Pfno:filteredAdSiteData,
+        Ad: currentAd,
+        Pfno:filteredAdSite,
         AdProvider:filteredAdProvider,
         date:dateValue,
       }));
@@ -210,84 +214,16 @@ useEffect(() => {
 
 
   useEffect(() => {
-    // getData();
+    if(filterOptions.AdProvider.length>0){
+    getScoreCardData(); //스코어카드용 데이터 조회
+    getScoreCardCompareData();  //스코어카드용 비교 데이터 조회
+    getFilteredProviderData();
     // getCompareData();
-    getScoreCardData();
-    getScoreCardCompareData();
+    }
   }, [filterOptions]);
 
-  // const getData = async ()=>{
-  //   if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
-  //     const body =JSON.stringify({
-  //       rptNo: '1000000',
-  //       lookupTp: 'agg',
-  //       dimCd: ["by_day","ad_provider",'pfno'],
-  //       where: [
-  //         {
-  //           field: 'stat_date',
-  //           operation: 'between',
-  //           value: [dateValue[0], dateValue[1]],
-  //         },
-  //       ],
-  //       metCd: ["m_rvn",
-  //       "m_impr",
-  //       "m_cost",
-  //       "m_odr",
-  //       "m_rgr",
-  //       "land",
-  //       "rvn",
-  //       "m_cart",
-  //       "odr",
-  //       "rgr",
-  //       "m_conv",
-  //       "m_click",
-  //       "m_cpc",
-  //       "m_ctr",
-  //       "m_crt",
-  //       "m_roas",
-  //       "rvn_per_odr",
-  //       "rgr_per_m_click",
-  //       "odr_per_m_cost",
-  //       "roas"
-  //       ],
-  //       sort: [{ field: 'land', order: 'asc' }],
-  //       agencySeq: '1',
-  //       clientSeq: currentAd,
-  //       pfno:filterOptions.Pfno.map(item=>item.value),
-  //       size: 10000,
-  //     })
-  //     const header = {
-  //       headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
-  //     }
-  //     try{
-  //       const response = await axios.post(
-  //         'http://122.99.192.144:9080/report/data',
-  //         body,
-  //         header
-  //       );
-  //       const responseData = response.data.data;
-  //       const generateData = generateDummyDataByProvider(responseData, dateValue, filterOptions.AdProvider);
-  //       const filteredData = generateData.filter((item) => {
-  //         return filterOptions.AdProvider.some((provider) => provider.value === item.ad_provider);
-  //       });
 
-  //       if(filteredData.length===0){
-  //         setFetchedData(dummyData)
-  //       }else{
-  //         return setFetchedData(filteredData);
-  //       }
-  //     }catch(e){
-  //       console.error(e)
-  //     }
-  //   }else{
-  //     const newDummyData = dummyData.map((data) => ({
-  //       ...data,
-  //       "by_day": format(new Date(),'yyyy-MM-dd'),
-  //     }));
-  //     setFetchedData(newDummyData)
-  //   }
-  // }
-  //선택 데이터
+  //Filter에 따른 ScoreCard용 데이터
   const getScoreCardData = async ()=>{
     if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`&& filterOptions.AdProvider.length>0){
       const body =JSON.stringify({
@@ -332,24 +268,25 @@ useEffect(() => {
         agencySeq: '1',
         clientSeq: currentAd,
         pfno:filterOptions.Pfno.map(item=>item.value),
-        size: 10000,
+        size: 100000,
       })
       const header = {
         headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
       }
       try{
         const response = await axios.post(
+          // 'http://223.130.136.182:9080/report/data', 로그인 필요
           'http://122.99.192.144:9080/report/data',
           body,
           header
         );
         const responseData = response.data.data;
         const generateData = generateDummyDataByDay(responseData, dateValue);
-        if(filteredData.length===0){
-          setFetchedData(dummyData)
-        }else{
+        // if(filteredData.length===0){
+        //   setFetchedData(dummyData)
+        // }else{
           return setFetchedData(generateData);
-        }
+        // }
       }catch(e){
         console.error(e)
       }
@@ -363,70 +300,7 @@ useEffect(() => {
 
   }
 
-
-  // const getCompareData = async ()=>{
-  //   if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
-  //     const body =JSON.stringify({
-  //       rptNo: '1000000',
-  //       lookupTp: 'agg',
-  //       dimCd: ["by_day","ad_provider",'pfno'],
-  //       where: [
-  //         {
-  //           field: 'stat_date',
-  //           operation: 'between',
-  //           value: [CompareDateValue[0], CompareDateValue[1]],
-  //         },
-  //       ],
-  //       metCd: ["m_rvn",
-  //       "m_impr",
-  //       "m_cost",
-  //       "m_odr",
-  //       "m_rgr",
-  //       "land",
-  //       "rvn",
-  //       "m_cart",
-  //       "odr",
-  //       "rgr",
-  //       "m_conv",
-  //       "m_click",
-  //       "m_cpc",
-  //       "m_ctr",
-  //       "m_crt",
-  //       "m_roas",
-  //       "rvn_per_odr",
-  //       "rgr_per_m_click",
-  //       "odr_per_m_cost",
-  //       "roas"
-  //       ],
-  //       sort: [{ field: 'land', order: 'asc' }],
-  //       agencySeq: '1',
-  //       clientSeq: currentAd,
-  //       // ad_providers:filterOptions.AdProvider.map((item)=>item.value),
-  //       pfno:filterOptions.Pfno.map(item=>item.value),
-  //       size: 10000,
-  //     })
-  //     const header = {
-  //       headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
-  //     }
-  //     try{
-  //       const response = await axios.post(
-  //         'http://122.99.192.144:9080/report/data',
-  //         body,
-  //         header
-  //       );
-  //       const responseData = response.data.data;
-  //       const filteredData = responseData.filter((item) => {
-  //         return filterOptions.AdProvider.some((provider) => provider.value === item.ad_provider);
-  //       });
-  //       return setFetchedCompareData(filteredData);
-  //     }catch(e){
-  //       console.error(e)
-  //     }
-  //   }else{
-  //     return null;
-  //   }
-  // }
-  //비교 데이터
+  //Filter선택에 따른 비교 데이터
   const getScoreCardCompareData = async ()=>{
     if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}` && filterOptions.AdProvider.length>0){
       const body =JSON.stringify({
@@ -470,6 +344,99 @@ useEffect(() => {
         agencySeq: '1',
         clientSeq: currentAd,
         pfno:filterOptions.Pfno.map(item=>item.value),
+        size: 100000,
+      })
+      const header = {
+        headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
+      }
+      try{
+        const response = await axios.post(
+          // 'http://223.130.136.182:9080/report/data', 로그인 필요
+          'http://122.99.192.144:9080/report/data',
+          body,
+          header
+        );
+        const responseData = response.data.data;
+
+        return setFetchedCompareData(responseData);
+      }catch(e){
+        const dummydata = {
+          m_rvn: 0,
+          m_impr: 0,
+          m_cost: 0,
+          m_odr: 0,
+          m_rgr: 0,
+          land: 0,
+          rvn: 0,
+          m_cart: 0,
+          odr: 0,
+          rgr: 0,
+          m_conv: 0,
+          m_click: 0,
+          m_cpc: 0,
+          m_ctr: 0,
+          m_crt: 0,
+          m_roas: 0,
+          rvn_per_odr: 0,
+          rgr_per_m_click: 0,
+          odr_per_m_cost: 0,
+          roas: 0,
+        }
+        console.error(e)
+        return setFetchedCompareData([dummydata]);
+        
+      }
+    }else{
+      return null;
+    }
+
+  }
+  
+  //MainTab 데이터.
+
+  const getFilteredProviderData = async ()=>{
+    if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
+      const body =JSON.stringify({
+        rptNo: '1000000',
+        lookupTp: 'agg',
+        dimCd: ["by_day","ad_provider",'pfno'],
+        where: [
+          {
+            field: 'stat_date',
+            operation: 'between',
+            value: [dateValue[0], dateValue[1]],
+          },
+          {
+            field: 'ad_provider',
+            operation: 'in',
+            value: filterOptions.AdProvider.map((item)=>item.value),
+          },
+        ],
+        metCd: ["m_rvn",
+        "m_impr",
+        "m_cost",
+        "m_odr",
+        "m_rgr",
+        "land",
+        "rvn",
+        "m_cart",
+        "odr",
+        "rgr",
+        "m_conv",
+        "m_click",
+        "m_cpc",
+        "m_ctr",
+        "m_crt",
+        "m_roas",
+        "rvn_per_odr",
+        "rgr_per_m_click",
+        "odr_per_m_cost",
+        "roas"
+        ],
+        sort: [{ field: 'land', order: 'asc' }],
+        agencySeq: '1',
+        clientSeq: currentAd,
+        pfno:filterOptions.Pfno.map(item=>item.value),
         size: 10000,
       })
       const header = {
@@ -477,20 +444,27 @@ useEffect(() => {
       }
       try{
         const response = await axios.post(
+          // 'http://223.130.136.182:9080/report/data', 로그인 필요
           'http://122.99.192.144:9080/report/data',
           body,
           header
         );
         const responseData = response.data.data;
-        return setFetchedCompareData(responseData);
+        const generateData = generateDummyDataByProvider(responseData, dateValue, filterOptions.AdProvider);
+        return setFilteredProviderData(generateData);
+
       }catch(e){
         console.error(e)
       }
     }else{
-      return null;
+      const newDummyData = dummyData.map((data) => ({
+        ...data,
+        "by_day": format(new Date(),'yyyy-MM-dd'),
+      }));
+      setFilteredProviderData(newDummyData)
     }
-
   }
+
   useEffect(() => {
 
     if(fetchedData.length>0){
@@ -525,10 +499,8 @@ useEffect(() => {
     setLoading(false)
   }, [fetchedData, fetchedCompareData,vatValue]);
 
-  
-
   const adChange = useCallback((value) => {
-    const AdfilteredValue = AdData.filter((item) => value.includes(item.value));
+    const AdfilteredValue = AdList.filter((item) => value.includes(item.value));
       setAdFilter(AdfilteredValue);
   }, []);
 
@@ -536,10 +508,12 @@ useEffect(() => {
     const filteredValue = value.filter((option) => option !== "selectAll");
     setMdFilter(filteredValue);
   }, []);
+
   const adsiteChange = useCallback((value) => {
     const AdSitefilteredValue = value.filter(
       (option) => option !== "selectAll"
     );
+    
       setSiteFilter(AdSitefilteredValue);
   }, []);
 
@@ -630,9 +604,9 @@ useEffect(() => {
               </Text>
               {currentAd >0 ?
                 ''
-              :<Adfilter className="test" options={AdData} onValueChange={adChange} />}
-              <AdSitefilter options={adSiteData} onValueChange={adsiteChange} />
-              <Mdfilter options={adProviders} onValueChange={adProviderChange} />
+              :<Adfilter className="test" options={AdList} onValueChange={adChange} />}
+              <AdSitefilter options={adSiteList} onValueChange={adsiteChange} />
+              <Providerfilter options={adProviderList} onValueChange={adProviderChange} />
               <Switch
                     checkedChildren="VAT포함"
                     unCheckedChildren="VAT제외"
@@ -655,13 +629,13 @@ useEffect(() => {
           </Space>
           <div className="FilterBox">
             <div style={{display:'flex', alignItems:'center'}}>
-            {currentAd >0 || !Array.isArray(filterOptions.AdData)?
+            {currentAd >0 || !Array.isArray(filterOptions.Ad)?
               ''
                 :
                  <>
               <span style={{fontSize:"12px"}}>광고주 :&nbsp;</span>
               <div className="AdFilterTagsDiv">
-                {filterOptions.AdData.map((item) => (
+                {filterOptions.Ad.map((item) => (
                   <Tag className="FilterTags" key={item.value}>{item.name}</Tag>
                 ))
                 }
@@ -696,7 +670,7 @@ useEffect(() => {
                 children:(
                   <div className="WhiteBox">
                     <div style={{padding:'20px'}}>
-                    <MainTab1/>
+                    <MainTab1 data={FilteredProviderData}/>
                     </div>
                   </div>
                 ),
@@ -815,7 +789,7 @@ const fetchData = async ()=>{
   }
   try{
     const response = await axios.post(
-      'http://122.99.192.144:9080/report/data',
+      'http://223.130.136.182:9080/report/data',
       body,
       header
     );
@@ -873,7 +847,7 @@ const updateData = async ()=>{
   }
   try{
     const response = await axios.post(
-      'http://122.99.192.144:9080/report/data',
+      'http://223.130.136.182:9080/report/data',
       body,
       header
     );

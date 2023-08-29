@@ -392,14 +392,14 @@ export const LineChart = ({ colors }) => {
  * */
 
  export const PieChart = ({ colors, datas, SelectedChartOption }) => {
-  const selectedOption = SelectedChartOption[0].value;
+  const selectedOption = SelectedChartOption[0]?.value;
   const seriesNames =[]
   datas.forEach(item => {
     if(!seriesNames.includes(item.ad_provider)){
       seriesNames.push(item.ad_provider)
     }
   })
- 
+
   const adProviderRes = seriesNames.reduce((results, provider) => {
     if (selectedOption === 'm_ctr') {
       const { totClick, totImpression } = datas.reduce((totals, item) => {

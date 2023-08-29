@@ -36,8 +36,9 @@ const generateDummyDataTable = (stat_date, ad_provider) => ({
   };
   
   
-  export const generateDummyDataByProvider = (data, date, provider) => {
+  export const generateDummyDataByProvider = (data, date) => {
     const newData = [...data];
+    const provider = new Set(data.map((item)=>item.ad_provider))
     const selectedDateRange = generateDateRange(date[0], date[1]);
     const existingCombinations = new Set(
       newData.map((item) => `${item.stat_date}-${item.ad_provider}`)
@@ -46,12 +47,12 @@ const generateDummyDataTable = (stat_date, ad_provider) => ({
   
     for (const currentDate of selectedDateRange) {
       for (const providerInfo of provider) {
-        const combination = `${currentDate}-${providerInfo.value}`;
+        const combination = `${currentDate}-${providerInfo}`;
   
         if (!existingCombinations.has(combination)) {
           const defaultData = generateDummyDataTable(
             currentDate,
-            providerInfo.value
+            providerInfo
           );
           updatedData.push(defaultData);
           existingCombinations.add(combination);
