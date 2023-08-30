@@ -4,10 +4,10 @@ import ECharts from "echarts-for-react";
 export const EmptyLineChart =()=>{
     const option = {
         grid: {
-            top:15,
-            left:25,
-            right : 10,
-            bottom: 10,
+          top: 10,
+          left: 70,
+          right: 37,
+          bottom: 40,
             show: true,
             backgroundColor: '#f2f2f2',
             containLabel:false,
@@ -113,10 +113,13 @@ export const EmptyLineChart =()=>{
           },
         },
       ],
+      grid: {
+        left: -20, // Adjust the left position of the chart
+      },
   series: [
     {
       type: 'pie',
-      radius: '90%',
+      radius: "85%",
       selectedOffset: 10,
     }
   ]

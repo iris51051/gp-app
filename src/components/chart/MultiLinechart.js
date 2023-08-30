@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect,useMemo } from "react";
+import { useState, useEffect } from "react";
 import ECharts from "echarts-for-react";
 import { EmptyLineChart } from "./EmptyChart";
 
@@ -193,7 +193,7 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
     tooltip: {
       trigger: "axis",
       formatter: function (params) {
-        let tooltipContent = `${params[0].name}<br/>`;
+        let tooltipContent ="";        
         let formattedValue="";
         params.sort((a, b) => {
           const aIndex = seriesNames.indexOf(a.seriesName);
@@ -231,6 +231,15 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
 
         return tooltipContent;
       },
+      axisPointer: {
+        snap: true,
+        label: {
+          show: true,
+          formatter: function(params) {
+            return params.value;
+          }
+        },
+      },
     },
     legend: {
       show: true,
@@ -240,7 +249,7 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
     },
     grid: {
       top: 10,
-      left: 50,
+      left: 70,
       right: 37,
       bottom: 40,
       show: true,
@@ -250,20 +259,22 @@ const xAxisData = [...new Set(datas.map((item) => item.stat_date))];
       type: "category",
       boundaryGap: false,
       data: xAxisData,
-      axisPointer: {
-        label: {
-          formatter: function (params) {
-            return (
-              params.value
-            );
-          }
-        }
-      },
     },
-    yAxis: {
+
+    yAxis: [
+      {
+
       type: "value",
       gap : '10',
     },
+    {
+      scale: true,
+      splitArea: {
+        show: true
+      }
+    },
+    
+  ],
     series:
       seriesNames.map((name,index) => ({
         color: colors[index],

@@ -72,7 +72,7 @@ const ExamReport =({colors})=>{
   const [CompareDateValue, setCompareDateValue] = useState([`${format(addDays(new Date(), -14),"yyyy-MM-dd")}`,`${format(addDays(new Date(), -8),"yyyy-MM-dd")}`])
   const [dateGap, setDateGap] = useState()
   const [vatValue, setVatValue] = useState(true);   //vat포함 여부
-  const [Linedatas, setLineDatas] = useState([])      //라인 데이터
+  const [ChartData, setChartData] = useState([])      //라인 데이터
   const [Piedatas, setPiedatas] = useState([])      //파이차트 데이터
 
 
@@ -84,7 +84,7 @@ const ExamReport =({colors})=>{
 
   const [DeviceList, setDeviceList] = useState([])
   const [fetchedData, setFetchedData] = useState([]) //조회 데이터
-  const [fetchedCompareData, setFetchedCompareData] = useState([])  //비교 데이터
+  const [fetchedTableData, setFetchedTableData] = useState([])  //비교 데이터
   const [ChartOptions, setChartOptions] = useState(
       [
         {
@@ -136,7 +136,7 @@ const ExamReport =({colors})=>{
     )
     const [SiteFilter, setSiteFilter] = useState([]); //사이트
     const [ProviderFilter, setProviderFilter] = useState([]);     //광고매체사
-    const [dataType, setDataType] =useState("media");        //스크립트,매체
+    const [ConvType, setConvType] =useState("MEDIA");        //스크립트,매체
     const [PlatformFilter, setPlatformFilter] = useState([]);       //플랫폼
     const [CampaignFilter, setCampaignFilter] = useState([]);   //캠페인
     const [AdTypeFilter, setAdTypeFilter] = useState([]);   //소재
@@ -149,7 +149,7 @@ const ExamReport =({colors})=>{
       const body =JSON.stringify({
         rptNo: '1000000',
         lookupTp: 'agg',
-        dimCd: ['pfno',"ad_provider","ad_platform",'campaign',"device","ad_type",'conv_type'],
+        dimCd: ['pfno',"ad_provider","ad_platform",'campaign',"device","ad_type"],
         where: [
           {
             field: 'stat_date',
@@ -159,7 +159,7 @@ const ExamReport =({colors})=>{
         ],
         sort: [{ field: 'land', order: 'asc' }],
         agencySeq: '1',
-        clientSeq: currentAd===undefined ? AdData[0].value : currentAd,
+        clientSeq: currentAd ||AdData[0].value,
         size: 10000,
       })
       const header = {
@@ -217,11 +217,11 @@ const ExamReport =({colors})=>{
       getData();
     }, [currentAd]);
 
-  const DataTypeChange = useCallback((value)=>{
-    setDataType(value);
+  const ConvTypeChange = useCallback((value)=>{
+    setConvType(value);
     setSelectedChartOption(ChartOptions[0])
     ChartFilter(ChartOptions[0].value)
-    if(value ==='script'){
+    if(value ==='SCRIPT'){
       setChartOptions([
         {
           key: 1,
@@ -404,7 +404,8 @@ const ExamReport =({colors})=>{
       PlatForm:adPlatformList,
       AdType: adTypeList,
       Device: DeviceList,
-      DataType:dataType,
+      ConvType:ConvType,
+       
       VatValue:vatValue
     };
 
@@ -445,7 +446,7 @@ const ExamReport =({colors})=>{
             AdType: SelectedAdType,
             Device: SelectedDevice,
             date:dateValue,
-            DataType:dataType,
+            ConvType:ConvType,
             VatValue:vatValue
           }));
       }else{
@@ -464,30 +465,39 @@ const ExamReport =({colors})=>{
             AdType: SelectedAdType,
             Device: SelectedDevice,
             date:dateValue,
-            DataType:dataType,
+            ConvType:ConvType,
             VatValue:vatValue
           }));
       }
-    }, [SiteFilter,ProviderFilter,PlatformFilter,CampaignFilter,AdTypeFilter,DeviceFilter,dateValue])
+    }, [SiteFilter,ProviderFilter,PlatformFilter,CampaignFilter,AdTypeFilter,DeviceFilter,dateValue,ConvType])
     
-    const updateFilter = () => {
-      
-    };
+
     useEffect(() => {
-        getLineData(); //스코어카드용 데이터 조회
-        // getPieData();  //스코어카드용 비교 데이터 조회
-      // getFilteredProviderData();
-      // getCompareData();
+      let test = 0;
+      for (const key in filterOptions) {
+        if (Array.isArray(filterOptions[key]) && filterOptions[key].length === 0) {
+            test=1;
+            setFetchedData([])
+            break;
+        }
+    }
+    if(test===0){
+      getChartData(); //스코어카드용 데이터 조회
+      getTableData(); //테이블 데이터 조회용
+    // getCompareData();
+    }
+
     }, [filterOptions]);
+
   
-  
-    //Filter에 따른 ScoreCard용 데이터
-    const getLineData = async ()=>{
+    //Filter에 따른 Line,Pie차트 데이터용 데이터
+    //날짜,광고매체만 표시
+    const getChartData = async ()=>{
       if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`&& filterOptions.AdProvider.length>0){
         const body =JSON.stringify({
           rptNo: '1000000',
           lookupTp: 'agg',
-          dimCd: ["by_day",'ad_provider'],
+          dimCd: ['by_day','ad_provider'],
           where: [
             {
               field: 'stat_date',
@@ -526,9 +536,15 @@ const ExamReport =({colors})=>{
             },
           ],
           metCd: [
-          "m_rvn",
           "m_impr",
+          "m_click",
+          "m_ctr",
+          "m_cpc",
           "m_cost",
+          "m_conv",
+          "m_crt",
+          "m_rvn",
+          "m_roas",
           "m_odr",
           "m_rgr",
           "land",
@@ -536,12 +552,6 @@ const ExamReport =({colors})=>{
           "m_cart",
           "odr",
           "rgr",
-          "m_conv",
-          "m_click",
-          "m_cpc",
-          "m_ctr",
-          "m_crt",
-          "m_roas",
           "rvn_per_odr",
           "rgr_per_m_click",
           "odr_per_m_cost",
@@ -549,7 +559,7 @@ const ExamReport =({colors})=>{
           ],
           sort: [{ field: 'land', order: 'asc' }],
           agencySeq: '1',
-          clientSeq: currentAd===undefined ? AdData[0].value : currentAd,
+          clientSeq: currentAd ||AdData[0].value,
           pfno:filterOptions.Pfno.map(item=>item.value),
           size: 100000,
         })
@@ -563,33 +573,39 @@ const ExamReport =({colors})=>{
             body,
             header
           );
-          if(response.status===200){
-            if((response.data.data).length>0){
-            const responseData = response.data.data;
-            // const generateData = generateDummyDataByDay(responseData, dateValue);
-            // return setFetchedData(generateData);
-            const generateData = generateDummyDataByProvider(responseData, dateValue);
-              return setFetchedData(generateData);
-            }else{
-              return setFetchedData([]);
-            }
-         }else{
-          return setFetchedData([])
-         }
+        //   if(response.status===200){
+        //     if((response.data.data).length>0){
+        //     const responseData = response.data.data;
+        //     // const generateData = generateDummyDataByDay(responseData, dateValue);
+        //     // return setFetchedData(generateData);
+        //     const generateData = generateDummyDataByProvider(responseData, dateValue);
+        //       return setFetchedData(generateData);
+        //     }else{
+        //       return setFetchedData([]);
+        //     }
+        //  }else{
+        //   return setFetchedData([])
+        //  }
+        const responseData = response.data.data;
+        // const generateData = generateDummyDataByDay(responseData, dateValue);
+        // return setFetchedData(generateData);
+        const generateData = generateDummyDataByProvider(responseData, dateValue);
+          return setFetchedData(generateData);
         }catch(e){
-          return setFetchedData([])
+          // return setFetchedData([])
         }
       }else{
-        return setFetchedData([])
+        // return setFetchedData([])
       }
-      setLoading(false)
     }
-    const getPieData = async ()=>{
-      if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`&& filterOptions.AdProvider.length>0){
+    //데이터 테이블에 대한 데이터 요청
+    //
+    const getTableData = async ()=>{
+      if(filterOptions.AdProvider.length>0){
         const body =JSON.stringify({
           rptNo: '1000000',
           lookupTp: 'agg',
-          dimCd: ["by_day",'ad_provider'],
+          dimCd: ["ad_provider","ad_platform",'ad_program'],
           where: [
             {
               field: 'stat_date',
@@ -651,7 +667,7 @@ const ExamReport =({colors})=>{
           ],
           sort: [{ field: 'land', order: 'asc' }],
           agencySeq: '1',
-          clientSeq: currentAd===undefined ? AdData[0].value : currentAd,
+          clientSeq: currentAd ||AdData[0].value,
           pfno:filterOptions.Pfno.map(item=>item.value),
           size: 100000,
         })
@@ -667,139 +683,19 @@ const ExamReport =({colors})=>{
           );
           if((response.data.data).length>0){
           const responseData = response.data.data;
-          const generateData = generateDummyDataByDay(responseData, dateValue);
-            return setFetchedData(generateData);
+            return setFetchedTableData(responseData);
           }else{
-            setFetchedData([])
+            setFetchedTableData([])
           }
-          // }
         }catch(e){
-          return setFetchedData([])
+          return setFetchedTableData([])
         }
       }else{
-        return setFetchedData([])
+        return setFetchedTableData([])
       }
     }
 
-    //Filter선택에 따른 비교 데이터
-    const getCompareData = async ()=>{
-      if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}` && filterOptions.AdProvider.length>0){
-        const body =JSON.stringify({
-          rptNo: '1000000',
-          lookupTp: 'agg',
-          dimCd: ["by_day",'pfno','ad_provider','ad_platform','campaign','device','ad_type'],
-          where: [
-            {
-              field: 'stat_date',
-              operation: 'between',
-              value: [CompareDateValue[0], CompareDateValue[1]],
-            },
-            {
-              field: 'pfno',
-              operation: 'in',
-              value: filterOptions.Pfno.map((item)=>item.value),
-            },
-            {
-              field: 'ad_provider',
-              operation: 'in',
-              value: filterOptions.AdProvider.map((item)=>item.value),
-            },
-            {
-              field: 'ad_platform',
-              operation: 'in',
-              value: filterOptions.PlatForm.map((item)=>item.value),
-            },
-            {
-              field: 'campaign',
-              operation: 'in',
-              value: filterOptions.Campaign.map((item)=>item.value),
-            },
-            {
-              field: 'device',
-              operation: 'in',
-              value: filterOptions.Device.map((item)=>item.value),
-            },
-            {
-              field: 'ad_type',
-              operation: 'in',
-              value: filterOptions.AdType.map((item)=>item.value),
-            },
-          ],
-          metCd: ["m_rvn",
-          "m_impr",
-          "m_cost",
-          "m_odr",
-          "m_rgr",
-          "land",
-          "rvn",
-          "m_cart",
-          "odr",
-          "rgr",
-          "m_conv",
-          "m_click",
-          "m_cpc",
-          "m_ctr",
-          "m_crt",
-          "m_roas",
-          "rvn_per_odr",
-          "rgr_per_m_click",
-          "odr_per_m_cost",
-          "roas"
-          ],
-          sort: [{ field: 'land', order: 'asc' }],
-          agencySeq: '1',
-          clientSeq: currentAd===undefined ? AdData[0].value : currentAd,
-          pfno:filterOptions.Pfno.map(item=>item.value),
-          size: 100000,
-        })
-        const header = {
-          headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
-        }
-        try{
-          const response = await axios.post(
-            // 'http://223.130.136.182:9080/report/data', 로그인 필요
-            'http://122.99.192.144:9080/report/data',
-            body,
-            header
-          );
-          const responseData = response.data.data;
-          // setLoading(false)
-          return setFetchedCompareData(responseData);
-        }catch(e){
-          const dummydata = {
-            m_rvn: 0,
-            m_impr: 0,
-            m_cost: 0,
-            m_odr: 0,
-            m_rgr: 0,
-            land: 0,
-            rvn: 0,
-            m_cart: 0,
-            odr: 0,
-            rgr: 0,
-            m_conv: 0,
-            m_click: 0,
-            m_cpc: 0,
-            m_ctr: 0,
-            m_crt: 0,
-            m_roas: 0,
-            rvn_per_odr: 0,
-            rgr_per_m_click: 0,
-            odr_per_m_cost: 0,
-            roas: 0,
-          }
-          console.error(e)
-          setLoading(false)
-          return setFetchedCompareData([dummydata]);
-          
-        }
 
-      }else{
-        setLoading(false)
-        return null;
-      }
-
-    }
 
     useEffect(() => {
      if(fetchedData.length>0){
@@ -814,27 +710,18 @@ const ExamReport =({colors})=>{
                 rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
               };
             });
-            // const updatedCompareData = fetchedCompareData?.map((item) => {
-            //   return {
-            //     ...item,
-            //     m_rvn: item.m_rvn + item.m_rvn * 0.1,
-            //     rvn: item.rvn + item.rvn * 0.1,
-            //     m_cost: item.m_cost + item.m_cost * 0.1,
-            //     m_cpc: item.m_cpc + item.m_cpc * 0.1,
-            //     rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
-            //   };
-            // });
-            setLineDatas(updatedData);
+            setChartData(updatedData);
+            setLoading(false)
           }
           else{
-            setLineDatas(fetchedData);
+            setChartData(fetchedData);
+            setLoading(false)
           }
       }else{
-        setLineDatas(fetchedData);
+        setChartData(fetchedData);
       }
-      setLoading(false)
+
     }, [fetchedData,vatValue,filterOptions]);
-console.log('datas',Linedatas)
     return(
         <>
            {loading===true?
@@ -881,7 +768,7 @@ console.log('datas',Linedatas)
                                 </Text>
                                 <AdType options={adTypeList} onValueChange={AdTypeChange} /> 
                                 <AdDevice options={DeviceList} onValueChange={AdDeviceChange} />
-                                <Datashow onValueChange={DataTypeChange} />
+                                <Datashow onValueChange={ConvTypeChange} />
                                 <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>
                                 {/* <Button className="" type="primary" onClick={updateFilter}>확인</Button> */}
                             </Space>
@@ -907,20 +794,20 @@ console.log('datas',Linedatas)
                     <br/>
                     <div style={{display:'flex', justifyContent:'start', alignContent:'center'}}>
                       <div style={{width:'70%'}}>
-                      <MultiLinechart datas={Linedatas} ProviderFilter={ProviderFilter} SelectedChartOption={SelectedChartOption} colors={colors}/>
+                      <MultiLinechart datas={ChartData} ProviderFilter={ProviderFilter} SelectedChartOption={SelectedChartOption} colors={colors}/>
                       </div>
                       <div>
                       <Divider style={{height:'300px'}}type='vertical' />
                       </div>
                       <div style={{width:"30%"}}>
-                      <PieChart colors={colors} SelectedChartOption={SelectedChartOption}  datas={Linedatas}></PieChart>
+                      <PieChart colors={colors} SelectedChartOption={SelectedChartOption}  datas={ChartData}></PieChart>
                       </div>
                     </div>
                   </div>
                 </div>
             </div>
             <div>
-              <ReportTable/>
+              <ReportTable Incomedata={fetchedTableData}/>
             </div>
             </>
     }

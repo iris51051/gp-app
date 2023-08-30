@@ -7,13 +7,13 @@ export const Datashow = ({onValueChange}) => {
   const options = [
     {
       key: "1",
-      value: 'script',
-      label: "스크립트 전환 데이터",
+      value: 'MEDIA',
+      label: "매체 전환 데이터 ",
     },
     {
       key: "2",
-      value: 'media',
-      label: "매체 전환 데이터 ",
+      value: 'SCRIPT',
+      label: "스크립트 전환 데이터",
     },
   ]
   const [DataType, setDataType] =useState()
@@ -29,7 +29,7 @@ export const Datashow = ({onValueChange}) => {
       style={{ width: "210px" }}
       suffixIcon={<VscTriangleDown style={{ color: "black" }} />}
       size="small"
-      defaultValue={'media'}
+      defaultValue={'MEDIA'}
       onChange={handleChange}
       options={options}
     />

@@ -666,7 +666,7 @@ border-end-start-radius: 0px !important;
   border: 1px solid #e4e7ea;
 }
 .ProdTable tbody .BlankTd {
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid #f7fafc;
 }
 .total {
   border-top: 1px double black !important;

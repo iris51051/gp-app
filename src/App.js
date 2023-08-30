@@ -12,7 +12,8 @@ import Main from "./temp/Main";
 import Apitest from "./temp/api-test/Apitest";
 import Working from "./temp/workingonit";
 import "./index.css";
-import ReportExam from './temp/Report/Exam';
+import Report1 from './temp/Report/Report1';
+import Report2 from './temp/Report/Report2';
 
 const { Content } = Layout;
 
@@ -59,7 +60,8 @@ const App = () => {
                 <Route path="/temp/apitest" element={<Apitest/>}></Route>
                 <Route path="/temp/alarm/setting" element={<Working/>}></Route>
                 <Route path="/temp/alarm/story"element={<Working/>}></Route>
-                <Route path="/temp/report/Exam"element={<ReportExam colors={colors}/>}></Route>
+                <Route path="/temp/report/Report1"element={<Report1 colors={colors}/>}></Route>
+                <Route path="/temp/report/Report2"element={<Report2 colors={colors}/>}></Route>
                 <Route path="/temp/media/export"element={<Working/>}></Route>
                 <Route path="/temp/media/download"element={<Working/>}></Route>
               </Routes>

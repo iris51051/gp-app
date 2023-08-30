@@ -35,7 +35,23 @@ const sideItems =[{
   key: "3",
   icon: <UploadOutlined />,
   value : "/temp/report/Exam",
-  label: <Link to="/temp/report/Exam">리포트</Link>,
+  label: '광고 매체사/플랫폼/상품',
+  children: [
+    {
+      key: "3-1",
+      value : "/temp/report/Report1",
+      label: (
+            <Link to="/temp/report/Report1">광고 매체 분석 종합</Link>
+            ),
+    },
+    {
+      key: "3-2",
+      value : "/temp/report/Report2",
+      label: (
+            <Link to="/temp/report/Report2">광고 매체 추세</Link>
+            ),
+    },
+  ],
 },
 {
   key: "4",
