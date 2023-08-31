@@ -66,7 +66,7 @@ const App = () => {
                 <Route path="/temp/media/download"element={<Working/>}></Route>
               </Routes>
             </Content>
-            <Bottom/>
+            <Bottom collapse={collapse}/>
           </Layout>
         </Layout>
       </Layout>

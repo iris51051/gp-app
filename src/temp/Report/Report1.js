@@ -27,8 +27,10 @@ import Calendar from "../../components/calendar.js";
 import {MultiLinechart} from "../../components/chart/MultiLinechart";
 import {PieChart} from "../../components/chart/ChartComponent";
 import ReportTable from "../../components/table/ReportTable";
+import EmptyReportTable from "../../components/table/EmptyReportTable";
 import {generateDummyDataByDay} from '../../function/CreateDummyByDay'
 import {generateDummyDataByProvider} from '../../function/CreateDummyByProvider'
+
 
 const antIcon = (
   <LoadingOutlined
@@ -731,6 +733,7 @@ const ExamReport =({colors})=>{
           }
       }else{
         setChartData(fetchedData);
+        setLoading(false)
       }
 
     }, [fetchedData,vatValue,filterOptions,fetchedTableData]);
@@ -819,7 +822,10 @@ const ExamReport =({colors})=>{
                 </div>
             </div>
             <div>
+            {ChartData.length>0 ? 
               <ReportTable Incomedata={TableData}/>
+              : <EmptyReportTable/>
+            }
             </div>
             </>
     }
