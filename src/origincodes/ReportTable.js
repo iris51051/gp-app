@@ -165,7 +165,7 @@ export const ReportTable =React.memo(({Incomedata})=> {
             platformSum['rvn_per_odr'] = platformSum['odr'] !== 0 ? platformSum['rvn'] / platformSum['odr']  : 0;
             platformSum['rgr_per_m_click'] = platformSum['m_click'] !== 0 ? platformSum['rgr'] / platformSum['m_click']  : 0;
             platformSum['odr_per_m_cost'] = platformSum['m_cost'] !== 0 ? platformSum['odr'] / platformSum['m_cost']  : 0;
-            platformSum['roas'] = platformSum['m_cost'] !== 0 ? platformSum['rvn'] / platformSum['m_cost'] : 0;
+            platformSum['roas'] = platformSum['m_cost'] !== 0 ? platformSum['rvn'] / platformSum['m_cost']  : 0;
 
             // Add the individual property sums to the programEntry
             for (const prop in platformSum) {
@@ -248,16 +248,15 @@ console.log(TableData);
       m_roas: 2,
     },
   ];
-  const sum = TableData.reduce(
+  const sum = clientData.reduce(
     (total, current) => {
       total.m_impr += current.m_impr;
       total.m_click += current.m_click;
       total.m_cost += current.m_cost;
       total.m_rvn += current.m_rvn;
-      total.m_conv += current.m_conv
       return total;
     },
-    { m_impr: 0, m_click: 0, m_cost: 0, m_rvn: 0, m_conv:0 }
+    { m_impr: 0, m_click: 0, m_cost: 0, m_rvn: 0 }
   );
 
   const calculate = (key) => {
@@ -283,31 +282,44 @@ console.log(TableData);
       })
         .format(res)
         .replace('₩', '₩\u00A0');
-    }else if (key === 'm_crt') {
-      return ((sum.m_conv/sum.m_click) * 100).toFixed(2) + '%'
-    }else if (key === 'm_roas') {
-      return ((sum.m_rvn/sum.m_cost) * 100).toFixed(2) + '%'
-    }
-     else {
+    } else {
       return '';
     }
   };
 
-  const showTablePlatform = (key) => {
-
-    setShowingTablePlatform((prevShowingPlatform) => {
+  const showPlatform = (key) => {
+    setShowingPlatform((prevShowingPlatform) => {
       if (!prevShowingPlatform.includes(key)) {
         return [...prevShowingPlatform, key];
       } else {
-        const mainkey=key.toString()[0]
-        setShowingTableProgram((prevShowingProgram) => {
-          return prevShowingProgram.filter((item) => item[0] !== mainkey);
+        setShowingProgram((prevShowingProgram) => {
+          return prevShowingProgram.filter((item) => item !== key);
         });
         return prevShowingPlatform.filter((item) => item !== key);
       }
     });
   };
-
+  const showTablePlatform = (key) => {
+    setShowingTablePlatform((prevShowingPlatform) => {
+      if (!prevShowingPlatform.includes(key)) {
+        return [...prevShowingPlatform, key];
+      } else {
+        setShowingTableProgram((prevShowingProgram) => {
+          return prevShowingProgram.filter((item) => item !== key);
+        });
+        return prevShowingPlatform.filter((item) => item !== key);
+      }
+    });
+  };
+  const showProgram = (key) => {
+    setShowingProgram((prevShowingProgram) => {
+      if (!prevShowingProgram.includes(key)) {
+        return [...prevShowingProgram, key];
+      } else {
+        return prevShowingProgram.filter((item) => item !== key);
+      }
+    });
+  };
   const showTableProgram = (key) => {
     setShowingTableProgram((prevShowingProgram) => {
       if (!prevShowingProgram.includes(key)) {
@@ -318,6 +330,18 @@ console.log(TableData);
     });
   };
 
+  const sortedClientData = [...clientData].sort((a, b) => {
+    if (!sortConfig.key) return 0;
+
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+
+    if (sortConfig.direction === 'asc') {
+      return aValue - bValue;
+    } else {
+      return bValue - aValue;
+    }
+  });
   const sortedTableData = [...TableData].sort((a, b) => {
     if (!sortConfig.key) return 0;
 
@@ -338,11 +362,10 @@ console.log(TableData);
     }
     setSortConfig({ key, direction });
   };
- 
-  const dataTableRender =(value,index)=>{
+  const dataRender =(value,index)=>{
     if(index === 'm_ctr' ||  index==='m_roas'|| index==='m_crt'){
-        return value.toFixed(2)+'%'
-    }else if(index ==='m_cost' || index === 'm_rvn'){
+        return (value).toFixed(2)+'%'
+    }else if(index ==='m_cost' || index === 'mrvn'){
         return Intl.NumberFormat('ko-KR', {
             style: 'currency',
             currency: 'KRW',
@@ -364,6 +387,59 @@ console.log(TableData);
         return Intl.NumberFormat('ko-KR').format(value)
     }
   }
+  const dataTableRender =(value,index)=>{
+    if(index === 'm_ctr' ||  index==='m_roas'|| index==='m_crt'){
+        return (value).toFixed(2)+'%'
+    }else if(index ==='m_cost' || index === 'mrvn'){
+        return Intl.NumberFormat('ko-KR', {
+            style: 'currency',
+            currency: 'KRW',
+          })
+            .format(value)
+            .replace('₩', '₩\u00A0');
+    }else if(index === 'm_cpc'){
+        return Intl.NumberFormat('ko-KR', {
+            style: 'currency',
+            currency: 'KRW',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+            .format(value)
+            .replace('₩', '₩\u00A0');
+    }else if (typeof value === 'string') {
+        return value
+    }else{
+        return Intl.NumberFormat('ko-KR').format(value)
+    }
+  }
+  const data2ndRender =(value,index,item)=>{
+    console.log('value',value)
+    console.log('item',item.children.index)
+    console.log('index',index)
+    // if(index === 'm_ctr' ||  index==='m_roas'|| index==='m_crt'){
+    //     return (value).toFixed(2)+'%'
+    // }else if(index ==='m_cost' || index === 'mrvn'){
+    //     return Intl.NumberFormat('ko-KR', {
+    //         style: 'currency',
+    //         currency: 'KRW',
+    //       })
+    //         .format(value)
+    //         .replace('₩', '₩\u00A0');
+    // }else if(index === 'm_cpc'){
+    //     return Intl.NumberFormat('ko-KR', {
+    //         style: 'currency',
+    //         currency: 'KRW',
+    //         minimumFractionDigits: 2,
+    //         maximumFractionDigits: 2,
+    //       })
+    //         .format(value)
+    //         .replace('₩', '₩\u00A0');
+    // }else if (typeof value === 'string') {
+    //     return value
+    // }else{
+    //     return Intl.NumberFormat('ko-KR').format(value)
+    // }
+  }
   const borderStyle = (key, index) => {
     if (!showingProgram.includes(key) && index === 'ad_provider') {
       return '1px solid #e4e7ea';
@@ -371,9 +447,177 @@ console.log(TableData);
       return '1px solid #f7fafc';
     }
   };
-  console.log('sortedTableData',sortedTableData)
+
   return (
     <>
+    <div>
+        <p>조회된 항목 수: {clientData.map((item)=>item.key).length}</p>
+    </div>
+      <table className="ProdTable" style={{ border: '1px solid black',fontSize: '12px',  }}>
+        <thead>
+          <tr>
+          {columns.map((item) => (
+            <th
+                style={{
+                width: `${item.width}`, 
+                textAlign: 'center' ,
+                padding: '10px 8px',
+                cursor: !['ad_provider', 'ad_platform', 'ad_program'].includes(item.key) ? 'pointer' : 'default',
+                }}
+                key={item.key}
+                onClick={() => {
+                if (!['ad_provider', 'ad_platform', 'ad_program'].includes(item.key)) {
+                    requestSort(item.dataIndex);
+                }
+                }}
+            >
+                <span style={{ verticalAlign: 'middle' }}>{item.title}</span>
+                {['ad_provider', 'ad_platform', 'ad_program'].includes(item.key) ? (
+                sortConfig.key === item.dataIndex && (
+                    sortConfig.direction === 'asc' ? (
+                    <CaretUpOutlined style={{ fontSize: '10px' }} />
+                    ) : (
+                    <CaretDownOutlined style={{ fontSize: '10px' }} />
+                    )
+                )
+                ) : (
+                <div className="arrows-container">
+                    {sortConfig.key === item.dataIndex && sortConfig.direction === 'asc' ? (
+                    <CaretUpOutlined className='arrow-up' style={{ fontSize: '8px', marginBottom: '-2px', color:'blue'}} />
+                    ) : (
+                    <CaretUpOutlined className='arrow-up' style={{ fontSize: '8px', marginBottom: '-2px', opacity: 0.3 }} />
+                    )}
+                    {sortConfig.key === item.dataIndex && sortConfig.direction === 'desc' ? (
+                    <CaretDownOutlined className='arrow-down' style={{ fontSize: '8px', color:'blue'}} />
+                    ) : (
+                    <CaretDownOutlined className='arrow-down' style={{ fontSize: '8px', opacity: 0.3 }} />
+                    )}
+                </div>
+                )}
+            </th>
+            ))}
+
+          </tr>
+        </thead>
+        <tbody>
+        {/* 광고 매체사 데이터 */}
+          {sortedClientData.map((item) => (
+            <React.Fragment key={item.key}>
+              <tr>
+                {columns.map((column) => (
+                  <td
+                    style={{
+                      width: `${column.width}`,
+                    }}
+                    key={column.key}
+                    className={column.dataIndex === 'ad_provider' ? 'AdTd' : ''}
+                  >
+                    {column.dataIndex === 'ad_platform' ? (
+                      !showingPlatform.includes(item.key) ? (
+                        <PlusOutlined
+                          onClick={() => showPlatform(item.key)}
+                        />
+                      ) : (
+                        <MinusOutlined
+                          onClick={() => showPlatform(item.key)}
+                        />
+                      )
+                    ) : column.dataIndex === 'ad_program' ? (
+                      ''
+                    ) : 
+                        (item[column.dataIndex] === 0 ? '-' : dataRender(item[column.dataIndex],column.dataIndex))
+                    }
+                  </td>
+                ))}
+              </tr>
+              {/* 광고 플랫폼 데이터 */}
+              {showingPlatform.includes(item.key) && (
+                <tr style={{backgroundColor:"#f7fafc"}}>
+                  {columns.map((column) => (
+                    <td
+                      style={{
+                        width: `${column.width}`,
+                        borderBottom: borderStyle(item.key, column.dataIndex),
+                      }}
+                      className={
+                        column.dataIndex === 'ad_provider' ? 'BlankTd' : ''
+                      }
+                      key={column.key}
+                    >
+                      {column.dataIndex === 'ad_provider' ? (
+                        ''
+                      ) : column.dataIndex === 'ad_program' ? (
+                        <span>
+                          {showingProgram.includes(item.key) ? (
+                            <MinusOutlined
+                              onClick={() => showProgram(item.key)}
+                            />
+                          ) : (
+                            <PlusOutlined
+                              onClick={() => showProgram(item.key)}
+                            />
+                          )}
+                        </span>
+                      ) : (
+                        item[column.dataIndex] === 0 ? '-' : dataRender(item[column.dataIndex],column.dataIndex)
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              )}
+              {/* 광고상품 데이터 */}
+              {showingProgram.includes(item.key) && (
+                <tr style={{backgroundColor:'#f7f7f7'}}>
+                  {columns.map((column) => (
+                    <td
+                      style={{
+                        width: `${column.width}`,
+                      }}
+                      key={column.key}
+                      className={
+                        column.dataIndex === 'ad_provider'
+                          ? 'BlankProdTd'
+                          : column.dataIndex === 'ad_platform'
+                          ? 'BlankProdTd'
+                          : ''
+                      }
+                    >
+                      {column.dataIndex === 'ad_provider'
+                        ? ''
+                        : column.dataIndex === 'ad_platform'
+                        ? ''
+                        : item[column.dataIndex] === 0 ? '-' : item[column.dataIndex]}
+                    </td>
+                  ))}
+                </tr>
+              )}
+            </React.Fragment>
+          ))}
+          <tr className="total">
+            {columns.map((column) => (
+              <td
+                className="BottomTd"
+                style={{
+                  width: `${column.width}`,
+                }}
+                key={column.key}
+              >
+                {calculate(column.key)}
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+      <br/>
+      <br/>
+
+
+      {/*
+      *******************************************************************************************************************
+      *****************************************API데이터 연결*************************************************************
+      *******************************************************************************************************************
+      */}
+
     <div>
         <p>조회된 항목 수: {TableData.map((item)=>item.key).length}</p>
     </div>
@@ -449,75 +693,72 @@ console.log(TableData);
                     ) : column.dataIndex === 'ad_program' ? (
                       ''
                     ) : 
-                    (item[column.dataIndex] === 0 ? '-' : dataTableRender(item[column.dataIndex],column.dataIndex))
+                      {/* 여기 마저 수정해야함!!!!!!!!!!!!! */}
+                        (item[column.dataIndex] === 0 ? '-' : dataTableRender(item.children.map((item)=>item.column.dataIndex),column.dataIndex))
                     }
                   </td>
                 ))}
               </tr>
               {/* 광고 플랫폼 데이터 */}
               {showingTablePlatform.includes(item.key) && (
-                <>
-                  {item.children.map((child) => (
-                    <React.Fragment key={`${child.key}`}>
-                      <tr style={{ backgroundColor: "#f7fafc" }}>
-                        {columns.map((column) => (
-                          <td
-                            style={{
-                              width: `${column.width}`,
-                              borderBottom: borderStyle(item.key, column.dataIndex),
-                            }}
-                            className={column.dataIndex === "ad_provider" ? "BlankTd" : ""}
-                            key={column.key}
-                          >
-                            {column.dataIndex === "ad_provider"
-                              ? `${child.key}`
-                              : column.dataIndex === "ad_program" ? (
-                                  <span>
-                                    {showingTableProgram.includes(child.key) ? (
-                                      <MinusOutlined onClick={() => showTableProgram(child.key)} />
-                                    ) : (
-                                      <PlusOutlined onClick={() => showTableProgram(child.key)} />
-                                    )}
-                                  </span>
-                                ) : child[column.dataIndex] === 0 ? (
-                                  "-"
-                                ) : (
-                                  dataTableRender(child[column.dataIndex], column.dataIndex)
-                                )}
-                          </td>
-                        ))}
-                      </tr>
-                      {/* 광고 프로그램 데이터 */}
-                      {showingTableProgram.includes(child.key) && (
-                        <>
-                      {child.children.map((adProgram) => (
-                        <React.Fragment key={`${adProgram.key}`}>
-                            <tr key={`${adProgram.key}`} style={{ backgroundColor: "#f7f7f7" }}>
-                              {columns.map((column) => (
-                                <td
-                                  style={{
-                                    width: `${column.width}`,
-                                  }}
-                                  key={column.key}
-                                  className={column.dataIndex === "ad_provider" ? "BlankProdTd" : column.dataIndex === "ad_platform" ? "BlankProdTd" : ""}
-                                >
-                                  {column.dataIndex === "ad_provider"
-                                    ? `${adProgram.key}`
-                                    : column.dataIndex === "ad_platform"
-                                    ? ""
-                                    : adProgram[column.dataIndex] === 0
-                                    ? "-"
-                                    : dataTableRender(adProgram[column.dataIndex], column.dataIndex)}
-                                </td>
-                              ))}
-                            </tr>
-                        </React.Fragment>
-                        ))}
-                        </>
-                        )}
-                    </React.Fragment>
+                <tr style={{backgroundColor:"#f7fafc"}}>
+                  {columns.map((column) => (
+                    <td
+                      style={{
+                        width: `${column.width}`,
+                        borderBottom: borderStyle(item.key, column.dataIndex),
+                      }}
+                      className={
+                        column.dataIndex === 'ad_provider' ? 'BlankTd' : ''
+                      }
+                      key={column.key}
+                    >
+                      {column.dataIndex === 'ad_provider' ? (
+                        ''
+                      ) : column.dataIndex === 'ad_program' ? (
+                        <span>
+                          {showingTableProgram.includes(item.key) ? (
+                            <MinusOutlined
+                              onClick={() => showTableProgram(item.key)}
+                            />
+                          ) : (
+                            <PlusOutlined
+                              onClick={() => showTableProgram(item.key)}
+                            />
+                          )}
+                        </span>
+                      ) : (
+                        item.children[column.dataIndex] === 0 ? '-' : data2ndRender(item.children[column.dataIndex],column.dataIndex,item)
+                      )}
+                    </td>
                   ))}
-                </>
+                </tr>
+              )}
+              {/* 광고상품 데이터 */}
+              {showingTableProgram.includes(item.key) && (
+                <tr style={{backgroundColor:'#f7f7f7'}}>
+                  {columns.map((column) => (
+                    <td
+                      style={{
+                        width: `${column.width}`,
+                      }}
+                      key={column.key}
+                      className={
+                        column.dataIndex === 'ad_provider'
+                          ? 'BlankProdTd'
+                          : column.dataIndex === 'ad_platform'
+                          ? 'BlankProdTd'
+                          : ''
+                      }
+                    >
+                      {column.dataIndex === 'ad_provider'
+                        ? ''
+                        : column.dataIndex === 'ad_platform'
+                        ? ''
+                        : item[column.dataIndex] === 0 ? '-' : item[column.dataIndex]}
+                    </td>
+                  ))}
+                </tr>
               )}
             </React.Fragment>
           ))}
