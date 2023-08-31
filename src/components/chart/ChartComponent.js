@@ -441,8 +441,6 @@ export const LineChart = ({ colors }) => {
         return totals;
       }, { totRvn: 0, totCost: 0 });
       results[provider] = totCost !== 0 ?  (totRvn/totCost).toFixed(2) : 0;
-
-
     }else if(selectedOption ==='odr_per_m_cost'){
       const { totOdr, totCost } = datas.reduce((totals, item) => {
         if (item.ad_provider === provider) {
@@ -518,7 +516,28 @@ export const LineChart = ({ colors }) => {
         fontSize: 15,
         color: "#000000",
       },
-      formatter: `{b}: {c} ({d})`,
+      // formatter: `{b}: {c} ({d})`,
+      formatter : function (params){
+        if(selectedOption==='m_cost'|| selectedOption==='m_rvn'){
+          const formattedValue = Intl.NumberFormat('ko-KR', {
+            style: 'currency',
+            currency: 'KRW',
+          }).format(params.value).replace('₩', '₩\u00A0');
+          return `${params.name}: ${formattedValue} (${params.percent.toFixed(1)}%)`
+        }else if(selectedOption==='m_cpc') {
+          const formattedValue = Intl.NumberFormat('ko-KR', {
+            style: 'currency',
+            currency: 'KRW',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(params.value).replace('₩', '₩\u00A0');
+          return `${params.name}: ${formattedValue} (${params.percent.toFixed(1)}%)`
+        }else{
+          const formattedValue = Intl.NumberFormat('ko-KR').format(params.value).replace('₩', '₩\u00A0');
+          return `${params.name}: ${formattedValue} (${params.percent.toFixed(1)}%)`
+        }
+        
+      }
     },
     legend: {
       orient: "vertical",

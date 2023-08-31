@@ -264,7 +264,9 @@ console.log(TableData);
     if (key === 'ad_provider') {
       return '총합계';
     } else if (sum.hasOwnProperty(key)) {
-      if (key === 'm_cost' || key === 'm_rvn') {
+      if(sum[key]===0){
+        return '-'
+      }else if (key === 'm_cost' || key === 'm_rvn') {
         return Intl.NumberFormat('ko-KR', {
           style: 'currency',
           currency: 'KRW',
@@ -274,19 +276,19 @@ console.log(TableData);
       }
       return Intl.NumberFormat('ko-KR').format(sum[key]);
     } else if (key === 'm_ctr') {
-      return ((sum.m_click / sum.m_impr) * 100).toFixed(2) + '%';
+      return sum.m_impr!==0?((sum.m_click / sum.m_impr) * 100).toFixed(2) + '%' : '-';
     } else if (key === 'm_cpc') {
       const res = sum.m_cost / sum.m_click;
-      return Intl.NumberFormat('ko-KR', {
+      return sum.m_click !==0 ? Intl.NumberFormat('ko-KR', {
         style: 'currency',
         currency: 'KRW',
       })
         .format(res)
-        .replace('₩', '₩\u00A0');
+        .replace('₩', '₩\u00A0') : '-';
     }else if (key === 'm_crt') {
-      return ((sum.m_conv/sum.m_click) * 100).toFixed(2) + '%'
+      return sum.m_click !==0 ? ((sum.m_conv/sum.m_click) * 100).toFixed(2) + '%' : '-'
     }else if (key === 'm_roas') {
-      return ((sum.m_rvn/sum.m_cost) * 100).toFixed(2) + '%'
+      return sum.m_cost !==0 ? ((sum.m_rvn/sum.m_cost) * 100).toFixed(2) + '%' : '-'
     }
      else {
       return '';
@@ -340,7 +342,7 @@ console.log(TableData);
   };
  
   const dataTableRender =(value,index)=>{
-    if(index === 'm_ctr' ||  index==='m_roas'|| index==='m_crt'){
+   if(index === 'm_ctr' ||  index==='m_roas'|| index==='m_crt'){
         return value.toFixed(2)+'%'
     }else if(index ==='m_cost' || index === 'm_rvn'){
         return Intl.NumberFormat('ko-KR', {
@@ -470,7 +472,7 @@ console.log(TableData);
                             key={column.key}
                           >
                             {column.dataIndex === "ad_provider"
-                              ? `${child.key}`
+                              ? ``
                               : column.dataIndex === "ad_program" ? (
                                   <span>
                                     {showingTableProgram.includes(child.key) ? (
@@ -502,7 +504,7 @@ console.log(TableData);
                                   className={column.dataIndex === "ad_provider" ? "BlankProdTd" : column.dataIndex === "ad_platform" ? "BlankProdTd" : ""}
                                 >
                                   {column.dataIndex === "ad_provider"
-                                    ? `${adProgram.key}`
+                                    ? ``
                                     : column.dataIndex === "ad_platform"
                                     ? ""
                                     : adProgram[column.dataIndex] === 0
