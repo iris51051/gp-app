@@ -3,6 +3,8 @@ import {
   UploadOutlined,
   UserOutlined,
   VideoCameraOutlined,
+  BellOutlined,
+  AreaChartOutlined
 } from "@ant-design/icons";
 import { Link,useLocation, useNavigate   } from "react-router-dom";
 import { Layout, Menu, Divider,Select } from "antd";
@@ -33,7 +35,7 @@ const sideItems =[{
 },
 {
   key: "3",
-  icon: <UploadOutlined />,
+  icon: <AreaChartOutlined />,
   value : "/temp/report/Exam",
   label: '광고 매체사/플랫폼/상품',
   children: [
@@ -55,26 +57,36 @@ const sideItems =[{
 },
 {
   key: "4",
-  icon: <UploadOutlined />,
+  icon: <BellOutlined />,
   value : "/temp/alarm",
-  label: '모니터링 알람',
+  label: '모니터링 알림',
   children: [
     {
       key: "4-1",
-      value : "/temp/alarm/setting",
+      value : "/temp/alarm/History",
       label: (
-        <Link to="/temp/alarm/setting">알람 설정</Link>
-        ),
-      },
-    {
-      key: "4-2",
-      value : "/temp/alarm/story",
-      label: (
-        <Link to="/temp/alarm/story">
-          알람 실행 스토리
+        <Link to="/temp/alarm/History">
+          알림 히스토리
         </Link>
       ),
     },
+    {
+      key: "4-2",
+      value : "/temp/alarm/setting",
+      label:  '알림 설정',
+        children: [
+          {
+            key: "4-2-1",
+            value : "/temp/alarm/setting/ListSet",
+            label: (
+              <Link to="/temp/alarm/setting/ListSet">
+                알림 목록 및 설정
+              </Link>
+            ),
+          },
+        ]
+    },
+    
   ],
 },
 {
@@ -170,6 +182,13 @@ const Lnb = ({ collapsed ,onValueChange}) => {
           if (child.value === path) {
             return { selected: child, parent: item };
           }
+          if(child.children){
+            for(const childs of child.children){
+              if(childs.value === path){
+              return { selected: child, parent: child };
+            }
+          }
+          }
         }
       }
     }
@@ -178,6 +197,8 @@ const Lnb = ({ collapsed ,onValueChange}) => {
 
   const findSideMenu = useMemo(() => {
     const { selected, parent } = findSelectedMenuItemAndParent(sideItems, currentPath);
+    console.log('selected',selected)
+    console.log('selected',parent)
     if (selected) {
       setSelectedSider([selected.key]);
       if (parent) {

@@ -6,7 +6,7 @@ import { useLocation} from "react-router-dom";
 import axios from 'axios';
 
 //icon
-import {LoadingOutlined } from '@ant-design/icons'
+import {LoadingOutlined,AreaChartOutlined } from '@ant-design/icons'
 import { IoMdTimer } from "react-icons/io";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
@@ -753,7 +753,7 @@ const ExamReport =({colors})=>{
                     </Col>
                     <Col xs={24}>
                       <div className="active-title">
-                        <IoMdTimer className="title-icon" />
+                      <AreaChartOutlined className="title-icon"/>
                         <span className="title-text">광고 매체 분석 종합</span>
                       </div>
                     </Col>

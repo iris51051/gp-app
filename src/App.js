@@ -14,6 +14,8 @@ import Working from "./temp/workingonit";
 import "./index.css";
 import Report1 from './temp/Report/Report1';
 import Report2 from './temp/Report/Report2';
+import History from './temp/alarm/History';
+import ListSet from './temp/alarm/setting/ListSet';
 
 const { Content } = Layout;
 
@@ -52,15 +54,15 @@ const App = () => {
               style={{
                 left: collapse ? 0 : 240,
                 width: collapse ? '100%' : '87.4%',
-                marginBottom : 80
+                marginBottom:100
               }}
             >
               <Routes>
                 <Route path="/" element={<Main selectedAd={selectedAd} colors={colors}/>}></Route>
                 <Route path="/temp/modules" element={<Modules colors={colors}/>}></Route>
                 <Route path="/temp/apitest" element={<Apitest/>}></Route>
-                <Route path="/temp/alarm/setting" element={<Working/>}></Route>
-                <Route path="/temp/alarm/story"element={<Working/>}></Route>
+                <Route path="/temp/alarm/setting/ListSet" element={<ListSet/>}></Route>
+                <Route path="/temp/alarm/History" element={<History/>}></Route>
                 <Route path="/temp/report/Report1"element={<Report1 colors={colors}/>}></Route>
                 <Route path="/temp/report/Report2"element={<Report2 colors={colors}/>}></Route>
                 <Route path="/temp/media/export"element={<Working/>}></Route>

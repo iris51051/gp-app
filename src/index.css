@@ -120,9 +120,7 @@ body {
 }
 
 /* **********************************Main **********************************/
-.MainContainer{
-  padding-bottom: 100px;
-}
+
 .active-title {
   display: flex;
   align-items: center;

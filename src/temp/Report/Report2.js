@@ -6,7 +6,7 @@ import { useLocation} from "react-router-dom";
 import axios from 'axios';
 
 //icon
-import {LoadingOutlined } from '@ant-design/icons'
+import {LoadingOutlined,AreaChartOutlined } from '@ant-design/icons'
 import { IoMdTimer } from "react-icons/io";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
@@ -27,8 +27,10 @@ import Calendar from "../../components/calendar.js";
 import {MultiLinechart} from "../../components/chart/MultiLinechart";
 import {PieChart} from "../../components/chart/ChartComponent";
 import ReportTable from "../../components/table/ReportTable";
+import EmptyReportTable from "../../components/table/EmptyReportTable";
 import {generateDummyDataByDay} from '../../function/CreateDummyByDay'
 import {generateDummyDataByProvider} from '../../function/CreateDummyByProvider'
+
 
 const antIcon = (
   <LoadingOutlined
@@ -73,8 +75,7 @@ const ExamReport =({colors})=>{
   const [dateGap, setDateGap] = useState()
   const [vatValue, setVatValue] = useState(true);   //vat포함 여부
   const [ChartData, setChartData] = useState([])      //라인 데이터
-  const [Piedatas, setPiedatas] = useState([])      //파이차트 데이터
-
+  const [TableData, setTableData] = useState([])      //테이블 데이터
 
   const [adProviderList, setAdProviderList] = useState([])
   const [adSiteList, setAdSiteList] = useState([]);
@@ -84,7 +85,7 @@ const ExamReport =({colors})=>{
 
   const [DeviceList, setDeviceList] = useState([])
   const [fetchedData, setFetchedData] = useState([]) //조회 데이터
-  const [fetchedTableData, setFetchedTableData] = useState([])  //비교 데이터
+  const [fetchedTableData, setFetchedTableData] = useState([])  //데이터 테이블  조회 데이터
   const [ChartOptions, setChartOptions] = useState(
       [
         {
@@ -710,18 +711,32 @@ const ExamReport =({colors})=>{
                 rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
               };
             });
+            const updatedTableData = fetchedTableData?.map((item)=>{
+              return {
+                ...item,
+                m_rvn: item.m_rvn + item.m_rvn * 0.1,
+                rvn: item.rvn + item.rvn * 0.1,
+                m_cost: item.m_cost + item.m_cost * 0.1,
+                m_cpc: item.m_cpc + item.m_cpc * 0.1,
+                rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
+              };
+            })
+
             setChartData(updatedData);
+            setTableData(updatedTableData);
             setLoading(false)
           }
           else{
+            setTableData(fetchedTableData)
             setChartData(fetchedData);
             setLoading(false)
           }
       }else{
         setChartData(fetchedData);
+        setLoading(false)
       }
 
-    }, [fetchedData,vatValue,filterOptions]);
+    }, [fetchedData,vatValue,filterOptions,fetchedTableData]);
     return(
         <>
            {loading===true?
@@ -738,7 +753,7 @@ const ExamReport =({colors})=>{
                     </Col>
                     <Col xs={24}>
                       <div className="active-title">
-                        <IoMdTimer className="title-icon" />
+                      <AreaChartOutlined className="title-icon"/>
                         <span className="title-text">광고 매체 분석 종합</span>
                       </div>
                     </Col>
@@ -807,7 +822,10 @@ const ExamReport =({colors})=>{
                 </div>
             </div>
             <div>
-              <ReportTable Incomedata={fetchedTableData}/>
+            {ChartData.length>0 ? 
+              <ReportTable Incomedata={TableData} ConvType={ConvType}/>
+              : <EmptyReportTable/>
+            }
             </div>
             </>
     }

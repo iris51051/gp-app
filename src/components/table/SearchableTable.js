@@ -1,0 +1,319 @@
+import React, { useState } from 'react';
+import { Button, Table, Input } from 'antd';
+import { utils as XLSXUtils, writeFile } from 'xlsx';
+import {
+  CaretUpOutlined,
+  CaretDownOutlined,
+  MinusOutlined,
+  ReloadOutlined,
+} from '@ant-design/icons';
+
+const SearchableTable = ({column,IncomeData}) => {
+  const [filteredInfo, setFilteredInfo] = useState({});
+  const [sortedInfo, setSortedInfo] = useState({});
+  const [searchText, setSearchText] = useState('');
+  const [data, setData] = useState(IncomeData);
+
+  const handleChange = (pagination, filters, sorter) => {
+    setFilteredInfo(filters);
+    setSortedInfo(sorter);
+  };
+
+  const clearAll = () => {
+    setData(IncomeData);
+    setSortedInfo({});
+  };
+
+  const tablerender = (record, mode) => {
+    if (mode[0] !== 'roas') {
+      const cur = record[mode[0]];
+      const pre = record[mode[1]];
+      const res = ((cur - pre) / (pre / 100)).toFixed(0);
+      const diff =
+        pre === undefined || res === 0 || pre === 0 ? (
+          <MinusOutlined />
+        ) : res > 0 ? (
+          <CaretUpOutlined className="ArrowUp" />
+        ) : (
+          <CaretDownOutlined className="ArrowDown" />
+        );
+
+      return (
+        <>
+          {cur ?
+                Intl.NumberFormat('ko-KR', {
+                  style: 'currency',
+                  currency: 'KRW',
+                }).format(cur).replace('₩', '₩\u00A0')
+
+            : '-'}
+          {pre === undefined || pre === 0
+            ? '(-%'
+            : res === 0
+            ? '(-%'
+            : `(${res}%`}
+          {diff})
+        </>
+      );
+    } else {
+      const cur = record[mode[0]];
+      const pre = record[mode[1]];
+      const res = ((cur - pre) / (pre / 100)).toFixed(0);
+      const diff =
+        pre === undefined || res === 0 ? (
+          <MinusOutlined />
+        ) : res > 0 ? (
+          <CaretUpOutlined className="ArrowUp" />
+        ) : (
+          <CaretDownOutlined className="ArrowDown" />
+        );
+
+      return (
+        <>
+          {cur ? cur + '%' : '-'}
+          {pre === undefined || pre === 0
+            ? `(${cur}%`
+            : res === 0
+            ? '(-%)'
+            : `(${res}%)`}
+          {diff})
+        </>
+      );
+    }
+  };
+
+
+  const columns = [
+    {
+      title: (
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
+        광고주
+      </div>
+      ),
+      dataIndex: 'id',
+      align: 'start',
+      key: 'id',
+      sorter: (a, b) => a.id - b.id,
+      sortOrder: sortedInfo.columnKey === 'id' ? sortedInfo.order : null,
+      ellipsis: true,
+      width : '10%',
+    },
+    {
+      title: '통계',
+      align: 'center',
+      dataIndex: 'statistics',
+      key: 'statistics',
+      width : '10%',
+      ellipsis: true,
+      render: (text, record) => {
+      return (
+        <>
+        <a href="">
+      <Button key={text}>상세보기</Button>
+      </a>
+      </>
+      )
+      }
+    },
+    {
+      title: (
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
+        총 광고비
+      </div>
+      ),
+      dataIndex: 'totad',
+      key: 'totad',
+      align: 'end',
+      ellipsis: true,
+      width : '15%',
+      sorter: (a, b) => a.totad - b.totad,
+      sortOrder: sortedInfo.columnKey === 'totad' ? sortedInfo.order : null,
+
+      render: (text, record) => {
+        const mode = ['totad', 'pretotad'];
+        return tablerender(record, mode);
+      },
+    },
+    {
+      title: (
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
+        총 광고비(이전기간)
+      </div>
+      ),
+      dataIndex: 'pretotad',
+      align: 'end',
+      key: 'pretotad',
+      ellipsis: true,
+      width : '15%',
+      sorter: (a, b) => a.pretotad - b.pretotad,
+      sortOrder: sortedInfo.columnKey === 'pretotad' ? sortedInfo.order : null,
+
+      render: (text) => {
+        if (text) {
+          return Intl.NumberFormat('ko-KR', {
+            style: 'currency',
+            currency: 'KRW',
+          }).format(text).replace('₩', '₩\u00A0');
+        } else {
+          return '-';
+        }
+      },
+    },
+    {
+      title: (
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
+       총 매출액
+      </div>
+      ),
+      dataIndex: 'totsale',
+      ellipsis: true,
+      align: 'end',
+      key: 'totsale',
+      width : '15%',
+      sorter: (a, b) => a.totsale - b.totsale,
+      sortOrder: sortedInfo.columnKey === 'totsale' ? sortedInfo.order : null,
+      render: (text, record) => {
+        const mode = ['totsale', 'pretotsale'];
+        return tablerender(record, mode);
+      },
+    },
+    {
+      title:(
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
+       총 매출액(이전기간)
+      </div>
+      ),
+      dataIndex: 'pretotsale',
+      key: 'pretotsale',
+      width : '15%',
+      sorter: (a, b) => a.pretotsale - b.pretotsale,
+      sortOrder:
+        sortedInfo.columnKey === 'pretotsale' ? sortedInfo.order : null,
+      ellipsis: true,
+      align: 'end',
+      render: (text) => {
+        if (text) {
+          return Intl.NumberFormat('ko-KR', {
+            style: 'currency',
+            currency: 'KRW',
+          }).format(text).replace('₩', '₩\u00A0'); 
+        } else {
+          return '-';
+        }
+      },
+    },
+    {
+      title: (
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
+       ROAS(%)
+      </div>
+      ),
+      dataIndex: 'roas',
+      key: 'roas',
+      width : '10%',
+      sorter: (a, b) => a.roas - b.roas,
+      sortOrder: sortedInfo.columnKey === 'roas' ? sortedInfo.order : null,
+      ellipsis: true,
+      align: 'end',
+      render: (text, record) => {
+        const mode = ['roas', 'preroas'];
+        return tablerender(record, mode);
+      },
+    },
+    {
+      title:(
+        <div className="ADResHeader"style={{ textAlign: 'center' }}>
+       ROAS(%)(이전기간)
+      </div>
+      ),
+      dataIndex: 'preroas',
+      key: 'preroas',
+      width : '10%',
+      sorter: (a, b) => a.preroas - b.preroas,
+      sortOrder: sortedInfo.columnKey === 'preroas' ? sortedInfo.order : null,
+      align: 'end',
+      ellipsis: true,
+      render: (text) => {
+        if (text) {
+          return `${text}%`;
+        } else {
+          return '-';
+        }
+      },
+    },
+  ];
+  const { Search } = Input;
+  const rowClassName = (record, index) => {
+    return index % 2 === 0 ? 'even-row' : 'odd-row';
+  };
+  const onSearch = (value) => {
+    setSearchText(value);
+    const filteredData = data.filter((item) => {
+      const itemValues = Object.values(item);
+      return itemValues.some((itemValue) =>
+        itemValue.toString().toLowerCase().includes(value.toLowerCase())
+      );
+    });
+
+    setFilteredInfo({});
+    setSortedInfo({});
+    setData(filteredData);
+  };
+
+  //Excel 파일로 다운로드
+  const handleDownload = () => {
+    //새로운 workbook 생성
+    const workbook = XLSXUtils.book_new();
+    //테이블가져와서 시트로 반환
+    const worksheet = XLSXUtils.table_to_sheet(
+      document.getElementById('table')
+    );
+    //시트를 워크북에 첨부
+    XLSXUtils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    //워크북을 파일로 저장하여 지정된이름으로 다운로드
+    writeFile(workbook, 'type2_table.xlsx');
+  };
+  
+  return (
+    <>
+      <div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginBottom: 16,
+          }}
+        >
+          <div style={{ marginRight: 'auto' }}>
+            <Button onClick={clearAll}>
+              <ReloadOutlined />
+            </Button>
+          </div>
+
+          <div style={{ display: 'flex' }}>
+            <Search
+              placeholder="검색"
+              onSearch={onSearch}
+              className="searchBtn"
+            />
+            <Button className="btn excelBtn" onClick={handleDownload}>
+              Excel
+            </Button>
+          </div>
+        </div>
+        <Table
+          rowSelection
+        //   columns={columns}
+            columns={column}
+            bordered
+            dataSource={data}
+            onChange={handleChange}
+            rowClassName={rowClassName}
+            showSorterTooltip={false}
+            size='small'
+        />
+      </div>
+    </>
+  );
+};
+export default SearchableTable;
