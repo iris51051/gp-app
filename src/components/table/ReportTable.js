@@ -386,7 +386,7 @@ console.log(TableData);
       const res = sum.m_click !==0 ? (sum.rgr/sum.m_click) : 0;
       return res !==0 ? (res * 100).toFixed(2) + '%' : '-'
     }else if (key === 'odr_per_m_cost') {
-      const res = sum.cost !==0 ? (sum.odr/sum.m_cost) : 0;
+      const res = sum.m_cost !==0 ? (sum.odr/sum.m_cost) : 0;
       return res !==0 ? (res * 100).toFixed(2) + '%' : '-'
     }
      else {
