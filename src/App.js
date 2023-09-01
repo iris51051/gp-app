@@ -52,6 +52,7 @@ const App = () => {
               style={{
                 left: collapse ? 0 : 240,
                 width: collapse ? '100%' : '87.4%',
+                marginBottom : 80
               }}
             >
               <Routes>

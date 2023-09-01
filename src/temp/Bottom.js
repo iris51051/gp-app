@@ -8,13 +8,15 @@ const Bottom = ({collapse})=>{
         <Footer
         collapsed={collapse}
         style={{
-          textAlign: 'center',
           zIndex:1,
           backgroundColor: 'white',
           borderTop: '1px solid rgba(0, 0, 0, 0.08)',
-          marginTop : '50px',
+          height : 40,
           marginLeft: collapse===true ? 0 : 240,
           width: collapse===true  ? '100%' : '87.4%',
+          display:'flex',
+          justifyContent:'center',
+          alignItems:'center',
         }}
       >
         Copyright © BizSpring Inc.

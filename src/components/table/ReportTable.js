@@ -1,4 +1,4 @@
-import React, { useState,useMemo } from 'react';
+import React, { useState,useMemo,useEffect } from 'react';
 import {
 PlusOutlined, 
 MinusOutlined,
@@ -8,17 +8,24 @@ CaretDownOutlined,
  } from '@ant-design/icons';
 
 
-export const ReportTable =React.memo(({Incomedata})=> {
-  const [showingPlatform, setShowingPlatform] = useState([]);
+export const ReportTable =React.memo(({Incomedata,ConvType})=> {
   const [showingTablePlatform, setShowingTablePlatform] = useState([]);
-  const [showingProgram, setShowingProgram] = useState([]);
   const [showingTableProgram, setShowingTableProgram] = useState([]);
-
+  const [DataType, setDataType] = useState('MEDIA')
   const [sortConfig, setSortConfig] = useState({
     key: 'm_impr',
-    direction: 'desc', // 'asc' or 'desc'
+    direction: 'desc',
   });
-  const columns = [
+
+const renderTitle=(title)=>{
+  return( 
+     <>
+      {title}<span className="ico-script">s</span>
+    </>
+  )  
+}
+
+  const Mediacolumns = [
     {
       title: '광고매체사',
       dataIndex: 'ad_provider',
@@ -92,6 +99,106 @@ export const ReportTable =React.memo(({Incomedata})=> {
       width: '7%',
     },
   ];
+  const Scriptcolumn = [
+    {
+      title: '광고매체사',
+      dataIndex: 'ad_provider',
+      key: 'ad_provider',
+      width: '8%',
+    },
+    {
+      title: '광고플랫폼',
+      dataIndex: 'ad_platform',
+      key: 'ad_platform',
+      width: '6%',
+    },
+    {
+      title: '광고상품',
+      dataIndex: 'ad_program',
+      key: 'ad_program',
+      width: '7%',
+    },
+    {
+      title: '노출수',
+      dataIndex: 'm_impr',
+      key: 'm_impr',
+      width: '6%',
+    },
+    {
+      title: '클릭수',
+      dataIndex: 'm_click',
+      key: 'm_click',
+      width: '6%',
+    },
+    {
+      title: 'CTR',
+      dataIndex: 'm_ctr',
+      key: 'm_ctr',
+      width: '5%',
+    },
+    {
+      title: 'CPC',
+      dataIndex: 'm_cpc',
+      key: 'm_cpc',
+      width: '5%',
+    },
+    {
+      title: '광고비',
+      dataIndex: 'm_cost',
+      key: 'm_cost',
+      width: '8%',
+    },
+    {
+      title: renderTitle(`주문수`),
+      dataIndex: 'odr',
+      key: 'odr',
+      width: '6%',
+    },
+    {
+      title: renderTitle(`주문율`),
+      dataIndex: 'odr_per_m_cost',
+      key: 'odr_per_m_cost',
+      width: '5%',
+    },
+    {
+      title: renderTitle(`주문금액`),
+      dataIndex: 'rvn',
+      key: 'rvn',
+      width: '7%',
+    },
+    {
+      title: renderTitle(`ROAS`),
+      dataIndex: 'roas',
+      key: 'roas',
+      width: '6%',
+    },
+    {
+      title: renderTitle(`구매단가`),
+      dataIndex: 'rvn_per_odr',
+      key: 'rvn_per_odr',
+      width: '7%',
+    },
+    {
+      title: renderTitle(`회원가입수`),
+      dataIndex: 'rgr',
+      key: 'rgr',
+      width: '8%',
+    },
+    {
+      title: renderTitle(`회원가입율`),
+      dataIndex: 'rgr_per_m_click',
+      key: 'rgr_per_m_click',
+      width: '7%',
+    },
+  ];
+  const [columns, setColumns] = useState(Mediacolumns)  
+  useMemo(() => {
+    if(ConvType==='SCRIPT'){
+      setColumns(Scriptcolumn)
+    }else{
+    setColumns(Mediacolumns)
+  }
+  }, [ConvType])
   const TableData = [];
 
   for (const item of Incomedata) {
@@ -343,7 +450,7 @@ console.log(TableData);
  
   const dataTableRender =(value,index)=>{
    if(index === 'm_ctr' ||  index==='m_roas'|| index==='m_crt'){
-        return value.toFixed(2)+'%'
+        return (value*100).toFixed(2)+'%'
     }else if(index ==='m_cost' || index === 'm_rvn'){
         return Intl.NumberFormat('ko-KR', {
             style: 'currency',
@@ -367,9 +474,9 @@ console.log(TableData);
     }
   }
   const borderStyle = (key, index) => {
-    if (!showingProgram.includes(key) && index === 'ad_provider') {
+    if (!showingTableProgram.includes(key) && index === 'ad_provider') {
       return '1px solid #e4e7ea';
-    } else if (showingProgram.includes(key) && index === 'ad_platform') {
+    } else if (showingTableProgram.includes(key) && index === 'ad_platform') {
       return '1px solid #f7fafc';
     }
   };

@@ -823,7 +823,7 @@ const ExamReport =({colors})=>{
             </div>
             <div>
             {ChartData.length>0 ? 
-              <ReportTable Incomedata={TableData}/>
+              <ReportTable Incomedata={TableData} ConvType={ConvType}/>
               : <EmptyReportTable/>
             }
             </div>
