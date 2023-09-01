@@ -323,38 +323,7 @@ const renderTitle=(title)=>{
 console.log(TableData);
   
 
-  const clientData = [
-    {
-      key: '1',
-      ad_provider: '네이버',
-      ad_platform: '네이버 검색',
-      ad_program: '브랜드검색',
-      m_impr: 1000,
-      m_click: 200,
-      m_ctr: 20,
-      m_cpc: 5,
-      m_cost: 1000,
-      m_conv: 50,
-      m_crt: 10,
-      m_rvn: 2000,
-      m_roas: 2,
-    },
-    {
-      key: '2',
-      ad_provider: '카카오',
-      ad_platform: '카카오 검색',
-      ad_program: '키워드검색',
-      m_impr: 2316854,
-      m_click: 10,
-      m_ctr: 20,
-      m_cpc: 5,
-      m_cost: 65489,
-      m_conv: 50,
-      m_crt: 10,
-      m_rvn: 126154,
-      m_roas: 2,
-    },
-  ];
+
   const sum = TableData.reduce(
     (total, current) => {
       total.m_impr += current.m_impr;
@@ -362,18 +331,23 @@ console.log(TableData);
       total.m_cost += current.m_cost;
       total.m_rvn += current.m_rvn;
       total.m_conv += current.m_conv
+      total.rvn += current.rvn
+      total.odr += current.odr
+      total.rgr += current.rgr
       return total;
     },
-    { m_impr: 0, m_click: 0, m_cost: 0, m_rvn: 0, m_conv:0 }
+    { m_impr: 0, m_click: 0, m_cost: 0, m_rvn: 0, m_conv:0 ,rvn:0,odr:0,rgr:0}
   );
 
   const calculate = (key) => {
     if (key === 'ad_provider') {
       return '총합계';
-    } else if (sum.hasOwnProperty(key)) {
+    }
+     //sum으로 집계된 데이터에 key값이 있을 경우
+     else if (sum.hasOwnProperty(key)) {
       if(sum[key]===0){
         return '-'
-      }else if (key === 'm_cost' || key === 'm_rvn') {
+      }else if (key === 'm_cost' || key === 'm_rvn' ||key ==='rvn') {
         return Intl.NumberFormat('ko-KR', {
           style: 'currency',
           currency: 'KRW',
@@ -382,20 +356,38 @@ console.log(TableData);
           .replace('₩', '₩\u00A0');
       }
       return Intl.NumberFormat('ko-KR').format(sum[key]);
+      //sum으로 집계된 데이터에 key값이 없을 경우
     } else if (key === 'm_ctr') {
-      return sum.m_impr!==0?((sum.m_click / sum.m_impr) * 100).toFixed(2) + '%' : '-';
+      const res = sum.m_impr!==0?(sum.m_click / sum.m_impr) : 0;
+      return res !==0 ? (res * 100).toFixed(2) + '%' : '-';
     } else if (key === 'm_cpc') {
-      const res = sum.m_cost / sum.m_click;
-      return sum.m_click !==0 ? Intl.NumberFormat('ko-KR', {
+      const res = sum.m_click!==0?sum.m_cost / sum.m_click : 0;
+      return res !==0 ? Intl.NumberFormat('ko-KR', {
         style: 'currency',
         currency: 'KRW',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
       })
         .format(res)
         .replace('₩', '₩\u00A0') : '-';
     }else if (key === 'm_crt') {
-      return sum.m_click !==0 ? ((sum.m_conv/sum.m_click) * 100).toFixed(2) + '%' : '-'
+      const res = sum.m_click !==0 ? (sum.m_conv/sum.m_click) : 0;
+      return res !==0 ? (res * 100).toFixed(2) + '%' : '-'
     }else if (key === 'm_roas') {
-      return sum.m_cost !==0 ? ((sum.m_rvn/sum.m_cost) * 100).toFixed(2) + '%' : '-'
+      const res = sum.m_cost !==0 ? (sum.m_rvn/sum.m_cost) : 0;
+      return res !==0 ? (res * 100).toFixed(2) + '%' : '-'
+    }else if (key === 'roas') {
+      const res = sum.m_cost !==0 ? (sum.rvn/sum.m_cost) : 0;
+      return res !==0 ? ((res) * 100).toFixed(2) + '%' : '-'
+    }else if (key === 'rvn_per_odr') {
+      const res = sum.odr !==0 ? (sum.rvn/sum.odr) : 0;
+      return res !==0 ? (res * 100).toFixed(2) + '%' : '-'
+    }else if (key === 'rgr_per_m_click') {
+      const res = sum.m_click !==0 ? (sum.rgr/sum.m_click) : 0;
+      return res !==0 ? (res * 100).toFixed(2) + '%' : '-'
+    }else if (key === 'odr_per_m_cost') {
+      const res = sum.cost !==0 ? (sum.odr/sum.m_cost) : 0;
+      return res !==0 ? (res * 100).toFixed(2) + '%' : '-'
     }
      else {
       return '';
@@ -449,16 +441,16 @@ console.log(TableData);
   };
  
   const dataTableRender =(value,index)=>{
-   if(index === 'm_ctr' ||  index==='m_roas'|| index==='m_crt'){
+   if(index === 'm_ctr' ||  index==='m_roas'|| index==='m_crt' || index==='odr_per_m_cost' || index ==='roas'|| index === 'rgr_per_m_click'){
         return (value*100).toFixed(2)+'%'
-    }else if(index ==='m_cost' || index === 'm_rvn'){
+    }else if(index ==='m_cost' || index === 'm_rvn' || index==='rvn'){
         return Intl.NumberFormat('ko-KR', {
             style: 'currency',
             currency: 'KRW',
           })
             .format(value)
             .replace('₩', '₩\u00A0');
-    }else if(index === 'm_cpc'){
+    }else if(index === 'm_cpc' || index === 'rvn_per_odr'){
         return Intl.NumberFormat('ko-KR', {
             style: 'currency',
             currency: 'KRW',
