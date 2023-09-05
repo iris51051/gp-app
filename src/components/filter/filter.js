@@ -109,7 +109,6 @@ const modifiedOptions = options.map((option) => ({
                   display: "flex",
                   width : 'auto',
                }}
-
               checked={selectedOptions.length === options.length + 1}
               indeterminate={
                 selectedOptions.length > 0 &&

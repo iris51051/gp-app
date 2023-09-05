@@ -16,6 +16,8 @@ import Report1 from './temp/Report/Report1';
 import Report2 from './temp/Report/Report2';
 import History from './temp/alarm/History';
 import ListSet from './temp/alarm/setting/ListSet';
+import AddAlarm from "./temp/alarm/setting/AddAlarm";
+import Demo from "./temp/alarm/setting/Demo";
 
 const { Content } = Layout;
 
@@ -67,6 +69,8 @@ const App = () => {
                 <Route path="/temp/report/Report2"element={<Report2 colors={colors}/>}></Route>
                 <Route path="/temp/media/export"element={<Working/>}></Route>
                 <Route path="/temp/media/download"element={<Working/>}></Route>
+                <Route path="/add-alarm" element={<AddAlarm/>}></Route>
+                <Route path="/Demo" element={<Demo/>}></Route>
               </Routes>
             </Content>
             <Bottom collapse={collapse}/>

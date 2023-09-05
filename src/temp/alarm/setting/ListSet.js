@@ -1,9 +1,11 @@
-import React from 'react'
-import { Breadcrumb,Select,Switch,Dropdown,Table } from "antd";
+import React,{useState} from 'react'
+import { Breadcrumb,Select,Switch,Dropdown,Table,Button } from "antd";
+import dayjs from 'dayjs';
 
 import SearchableTable from "../../../components/table/SearchableTable"
-
-
+import AddAlarm from "./AddAlarm"
+import Demo from "./Demo"
+import { Link } from 'react-router-dom';
 
 import {
     RightCircleFilled,
@@ -12,10 +14,11 @@ import {
 
 export const ListSet =()=>{
     const items = [
-        { title: " 모니터링알림", href: "/" },
-        { title: "알림 설정",href: "/" },
-        { title: "알람 목록 및 설정" },
-    ];
+          { title: " 모니터링알림", href: "/" },
+          { title: "알림 설정",href: "/" },
+          { title: "알람 목록 및 설정" },
+      ];
+
     const SiteOption = [
         {
           value: 'jack',
@@ -35,6 +38,7 @@ export const ListSet =()=>{
           disabled: true,
         },
       ]
+
       const GroupOption = [
         {
           value: 'jack',
@@ -54,6 +58,7 @@ export const ListSet =()=>{
           disabled: true,
         },
       ]
+
       const ReceiveOption = [
         {
           value: 'jack',
@@ -73,6 +78,7 @@ export const ListSet =()=>{
           disabled: true,
         },
       ]
+
       const ImpOption = [
         {
           value: 'jack',
@@ -92,16 +98,18 @@ export const ListSet =()=>{
           disabled: true,
         },
       ]
+
       const slectorStyle ={
         marginRight:10,
         width: 200
       }
+
       const StandardColumn=[
         {
             key:1,
             title: 'ON/OFF',
             dataIndex: 'switch',
-            width: '10%',
+            width: '5%',
             align:'center'
         },{
             key:2,
@@ -164,7 +172,8 @@ export const ListSet =()=>{
             align:'center'
         },
       ]
-      const manageOptions =[
+
+      const StandardOptions =[
         {
             key:1,
             label:'히스토리',
@@ -186,10 +195,44 @@ export const ListSet =()=>{
             value:'history'
         },
       ]
+      const manageDrop =(value)=>{
+        if(value ==='standard'){
+          return (
+            <>
+            <Dropdown
+                menu={{
+                    items:StandardOptions,
+                }}
+                
+                trigger='click'
+                placement="bottomRight"
+                arrow
+                >
+                <Button icon={<SettingOutlined/>}></Button>
+                </Dropdown>
+                </>
+          )
+        }else{
+          return (
+            <>
+            <Dropdown
+                menu={{
+                    items:CustomOptions,
+                }}
+                trigger='click'
+                placement="bottomRight"
+                arrow
+                >
+                <Button icon={<SettingOutlined/>}></Button>
+                </Dropdown>
+                </>
+          )
+        }
+      }
       const StandardData = [
         {
             key:1,
-            switch:(<Switch defaultChecked/>),
+            switch:(<Switch defaultChecked size='small'/>),
             group: '기본 알림',
             alarmname:'AD-ADC',
             domain:'bizspring',
@@ -206,45 +249,48 @@ export const ListSet =()=>{
                 </>
             ),
             constructor:'BizSpring',
-            manage:(
-                <>
-                <Dropdown
-                    menu={{
-                        items:manageOptions,
-                    }}
-                    trigger='click'
-                    placement="bottomLeft"
-                    arrow
-                    >
-                     <SettingOutlined style={{fontSize: '20px',padding:5,border:'1px solid black'}}/>
-                    </Dropdown>
-                    </>
-           )
+            manage:manageDrop('standard')
         }
       ]
+      const childrenSorter=(column)=>(a,b)=>{
+          const strA=a[column].props.children.join("")
+          const strB=b[column].props.children.join("")
+          return strA.localeCompare(strB)
+      }
+      function dateSorter(a, b) {
+        const dateA = dayjs(a.mkdate);
+        const dateB = dayjs(b.mkdate);
+        
+        if (dateA.isBefore(dateB)) return -1;
+        if (dateA.isAfter(dateB)) return 1;
+        return 0;
+      }
+
       const CustomColumn=[
 
         {
-            key:1,
+            key:'switch',
             title: 'ON/OFF',
             dataIndex: 'switch',
-            width: '7%',
+            width: '5%',
             align:'center'
             
         },{
-            key:2,
+            key:'group',
             title : '알림 그룹',
             dataIndex: 'group',
             width: '10%',
-            align:'center'
+            align:'center',
+            sorter: (a, b) => a.group.localeCompare(b.group), 
         },{
-            key:3,
+            key:'alarmname',
             title : '알림 이름',
             dataIndex: 'alarmname',
             width: '10%',
-            align:'center'
+            align:'center',
+            sorter: (a, b) => a.alarmname.localeCompare(b.alarmname), 
         },{
-            key:4,
+            key:'domain',
             title:(
                 <>
                     [사이트명]<br/>
@@ -253,81 +299,136 @@ export const ListSet =()=>{
             ),
             dataIndex: 'domain',
             width: '10%',
-            align:'center'
-        },{
-            key:5,
+            align:'center',
+            sorter : childrenSorter('domain'),
+          },{
+            key:'condition',
             title : '조건',
             dataIndex: 'condition',
-            width: '10%',
-            align:'center'
+            width: '13%',
+            align:'center',
+            sorter: childrenSorter('condition'), 
         },{
-            key:6,
+            key:'method',
             title : '수신 방법',
             dataIndex: 'method',
-            width: '10%',
-            align:'center'
+            width: '9%',
+            align:'center',
+            sorter: childrenSorter('method'), 
         },{
-            key:7,
+            key:'receiver',
             title : '수신자',
             dataIndex: 'receiver',
-            width: '10%',
-            align:'center'
+            width: '7%',
+            align:'center',
+            sorter: (a, b) => a.receiver.localeCompare(b.receiver), 
         },{
-            key:8,
+            key:'period',
             title : '주기',
             dataIndex: 'period',
             width: '10%',
-            align:'center'
+            align:'center',
+            sorter: childrenSorter('period'), 
         },{
-            key:8,
+            key:'constructor',
             title : '생성자',
             dataIndex: 'constructor',
             width: '10%',
-            align:'center'
+            align:'center',
+            sorter: (a, b) => a.constructor.localeCompare(b.constructor), 
         },{
-            key:9,
-            title : '관리',
-            dataIndex: 'manage',
+            key:'mkdate',
+            title : '생성일시',
+            dataIndex: 'mkdate',
             width: '10%',
-            align:'center'
+            align:'center',
+            sorter: dateSorter, 
+        },{
+          key:'manage',
+          title : '관리',
+          dataIndex: 'manage',
+          width: '10%',
+          align:'center',
+          sorter: (a, b) => a.manage.localeCompare(b.manage), 
+      },
+      ]
+      const CustomOptions =[
+        {
+            key:1,
+            label:'히스토리',
+            value:'history'
+        },
+        {
+            key:2,
+            label:'알림항목',
+            value:'history'
+        },
+        {
+            key:3,
+            label:'복사',
+            value:'history'
+        },
+        {
+            key:4,
+            label:'삭제',
+            value:'history'
         },
       ]
       const CustomData = [
         {
             key:1,
-            switch:(<Switch defaultChecked/>),
-            group: '기본 알림',
-            alarmname:'AD-ADC',
-            domain:'bizspring',
+            switch:'on',
+            group: '네이버 광고',
+            alarmname:'계정 알림',
+            domain:<>
+                  [비즈스프링]<br/>bizspring.co.kr
+            </>,
             condition:(
                 <>
-                    광고<br/>유입/탐색<br/>전환
+                    네이버<br/> 광고비 잔액 1000원 미만<br/>
                 </>
             ),
-            method :'이메일',
+            method :<>
+                    이메일<br/>
+                    카카오톡<br/>
+            </>,
             receiver:'마케팅1팀',
             period:(
                 <>
                     매일 9시<br/>(주말제외)
                 </>
             ),
-            constructor:'BizSpring',
-            manage:(
-                <>
-                <Dropdown
-                    menu={{
-                        items:manageOptions,
-                    }}
-                    trigger='click'
-                    placement="bottomLeft"
-                    arrow
-                    >
-                     <SettingOutlined style={{fontSize: '20px',padding:5,border:'1px solid black'}}/>
-                    </Dropdown>
-                    </>
-           )
-        }
+            constructor:'김서연',
+            mkdate:'2021/01/01',
+            manage:manageDrop()
+        },  {
+          key:2,
+          switch:'off',
+          group: '카카오 광고',
+          alarmname:'순위권 이탈 알림',
+          domain:<>
+                [A 비즈스프링]<br/>bizspring.co.kr
+          </>,
+          condition:(
+              <>
+                  카카오<br/> 순위권이 3위를 벗어날 경우<br/>
+              </>
+          ),
+          method :<>
+                  이메일<br/>
+          </>,
+          receiver:'마케팅3팀',
+          period:(
+              <>
+                  매일 14시<br/>(주말제외)
+              </>
+          ),
+          constructor:'팀 쿡',
+          mkdate:'2022/07/15',
+          manage: manageDrop()
+      }
       ]
+
     return (
       <>
       <div style={{marginTop:10,marginBottom:10}}>
@@ -350,34 +451,7 @@ export const ListSet =()=>{
                 <span style={{fontSize:20,fontWeight:1000, marginRight:10}}>기본 알림</span>
                 <span>광고 운영, 유입/탐색, 전환 데이터 항목을 분류하여 정의된 SCORING으로 조건 설정없이 알림을 받을 수 있습니다.</span>
             </div>
-            {/* <table style={{border:'1px solid black', borderCollapse:'true', width:'100%'}}>
-                <thead>
-                {StandardColumn.map((item)=>
-                    <th style={{border:"1px solid black",whiteSpace:'pre'}} key={item.key} width={item.width}>
-                    {item.label}
-                    </th>
-                )}
-                </thead>
-                <tbody>
-                {StandardData.map((item)=>
-                    <React.Fragment key={item.key}>
-                    <tr>
-                    {StandardColumn.map((column)=>
-                        <td 
-                        key={column.value}
-                        style={{width:`${column.width}`,border:'1px solid black'}}
-                        align='center'
-                        >
-                        {item[column.value]}
-
-                        </td>
-                    )}
-                    </tr>
-                    </React.Fragment>
-                )}
-                </tbody>
-            </table> */}
-            <Table className='StandardDataTable' bordered columns={StandardColumn} dataSource={StandardData} />
+            <Table style={{marginTop:16}}className='StandardDataTable' bordered columns={StandardColumn} dataSource={StandardData} />
         </div>
         <div className='WhiteBox'>
             <div>
@@ -385,6 +459,11 @@ export const ListSet =()=>{
                 <span>사용자가 정의한 맞춤 알림 항목입니다.</span>
             </div>
             <SearchableTable column={CustomColumn}  IncomeData={CustomData}/>
+            <div>
+            <Button>
+            <Link to="/Demo">새 알림 등록</Link>
+            </Button>     
+            </div>
         </div>
       </>
     )
