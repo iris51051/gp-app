@@ -6,7 +6,8 @@ import MDTransPie from "../../components/chart/MediaTransition/MDTransPie.js";
 import DeviceTransPie from "../../components/chart/MediaTransition/DeviceTransPie.js";
 import LineChart from "../../components/chart/LineChart";
 
-const MainTab1 = () => {
+const MainTab1 = ({data}) => {
+  console.log('MainTab1 data',data)
 
 // 매체별 전환 비중 pie chart 데이터
   const MDTransData=[
@@ -166,7 +167,7 @@ const MainTab1 = () => {
       </div>
       <div>
         <h4 className="MDResult">광고 매체사별 성과</h4>
-        <MDResultTable/>
+        <MDResultTable Incomedata={data}/>
       </div>
 
       <div className="fotterChartCompdiv">

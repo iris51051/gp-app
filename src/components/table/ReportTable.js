@@ -1,21 +1,29 @@
 import React, { useState,useMemo,useEffect } from 'react';
+import {Button} from 'antd'
 import {
 PlusOutlined, 
 MinusOutlined,
 CaretUpOutlined,
 CaretDownOutlined,
-
+LeftOutlined,
+RightOutlined
  } from '@ant-design/icons';
+
+
 
 
 export const ReportTable =React.memo(({Incomedata,ConvType})=> {
   const [showingTablePlatform, setShowingTablePlatform] = useState([]);
   const [showingTableProgram, setShowingTableProgram] = useState([]);
+  const [itemsPerPage] = useState(10); // 페이지당 표시할 항목 수
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 번호
   const [DataType, setDataType] = useState('MEDIA')
   const [sortConfig, setSortConfig] = useState({
     key: 'm_impr',
     direction: 'desc',
   });
+
+
 
 const renderTitle=(title)=>{
   return( 
@@ -242,6 +250,13 @@ const renderTitle=(title)=>{
 
       platformEntry.children.push(programEntry);
   }
+
+  const totalPages = Math.ceil(TableData.length / itemsPerPage);
+  const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
 // Calculate sum totals
   TableData.forEach(providerEntry => {
@@ -473,6 +488,11 @@ console.log(TableData);
     }
   };
   console.log('sortedTableData',sortedTableData)
+  const pagingStyle={
+    border: '1px solid blue',
+    background: 'none',
+    boxShadow : 'none',
+  }
   return (
     <>
     <div>
@@ -637,6 +657,42 @@ console.log(TableData);
           </tr>
         </tbody>
       </table>
+      <div className="pagination" style={{display:'flex', justifyContent:'flex-end', marginTop:'10px'}}>
+      <div style={{display:'flex', justifyContent:'center', height:'30px'}}>
+        <Button
+          style={{border:'none',background:'none'}}
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage ===1}
+          >
+          <LeftOutlined />
+          </Button>
+          {pageNumbers.map((pageNumber) => (
+            <button
+              style={{
+                border: pageNumber === currentPage ? '1px solid #4096ff' : 'none',
+                borderRadius: '10px',
+                background: 'none',
+                boxShadow : 'none',
+                display:'flex',
+                justifyContent:'center',
+                alignItems:'center',
+                width:'28px'
+                }}
+              key={pageNumber}
+              onClick={() => handlePageChange(pageNumber)}
+          >
+                      <span style={{color:pageNumber === currentPage ? '#4096ff' : 'black',fontSize:14}}>{pageNumber}</span>
+          </button>
+          ))}
+          <Button
+          style={{border:'none',background:'none',boxShadow:'none'}}
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage >= totalPages}
+          >
+          <RightOutlined />
+          </Button>
+          </div>
+      </div>
     </>
   )
 });

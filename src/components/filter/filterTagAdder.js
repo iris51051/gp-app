@@ -78,10 +78,6 @@ export const FilterTagAdder = () => {
     setVisible(false);
   };
 
-  // useEffect(() => {
-  //   resetFilter();
-  // }, [updatedValue]);
-
   const closeButtonStyle = {
     position: "absolute",
     top: "8px",
@@ -132,11 +128,6 @@ export const FilterTagAdder = () => {
   };
   const saveFilter = () => {
     if (
-      //내부 데이터를 하나씩 다 조회해서 존재 여부 확인
-      // !filter.hasOwnProperty('include') ||
-      // !filter.hasOwnProperty('session') ||
-      // !filter.hasOwnProperty('date')
-
       //filter의 데이터의 수량을 파악해서 확인
       Object.keys(filter).length !== 3
     ) {

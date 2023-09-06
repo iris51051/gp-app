@@ -10,15 +10,25 @@ import {
 
 
 const Demo = () => {
-    const [value, setValue] = useState(1);
+    const [alarmType, setAlarmType] = useState(1);
     const [visible, setVisible] = useState(false)
+    const [selectedValues, setSelectedValues] = useState(
+        {}
+        );
+    const [modalOpen, setModalOpen] = useState(false);
+    const [dataOption, setDataOption] = useState([])
     const onChange = (e) => {
-        setValue(e.target.value);
+        setAlarmType(e.target.value);
     };
+    useEffect(() => {
+          console.log('dataOption',dataOption)
+        
+    }, [dataOption])
+    
 
-    const SelectRender=(value)=>{
-        console.log('value',value)
-        const [dataOption, setDataOption] = useState([])
+    const SelectRender=(alarmType)=>{
+        console.log('alarmType',alarmType)
+
         const selectorData =[
             {
                 key:1,
@@ -26,7 +36,7 @@ const Demo = () => {
                     {
                         key:1,
                         title:'[사이트명] 도메인 선택',
-                        value:'domain',
+                        value:'pfno',
                         children:[
                             {
                                 key:1,
@@ -93,23 +103,174 @@ const Demo = () => {
                 ]
             },{
                 key:2,
+                children:[
+                    {
+                        key:1,
+                        title:'[사이트명] 도메인 선택2',
+                        value:'pfno',
+                        children:[
+                            {
+                                key:1,
+                                value:'로거2',
+                                label:'로거2',
+                            },                {
+                                key:2,
+                                value:'비즈2',
+                                label:'비즈2',
+                            },                {
+                                key:3,
+                                value:'미샤2',
+                                label:'미샤2',
+                            },                {
+                                key:4,
+                                value:'카페2',
+                                label:'카페2',
+                            }
+                        ]
+                    },{
+                        key:2,
+                        title:'광고 매체사 선택2',
+                        value:'provider',
+                        children:[
+                            {
+                                key:1,
+                                value:'네이버2',
+                                label:'네이버2'
+                            },{
+                                key:2,
+                                value:'구글2',
+                                label:'구글2'
+                            },{
+                                key:3,
+                                value:'카카오2',
+                                label:'카카오2'
+                            },{
+                                key:4,
+                                value:'페이스북2',
+                                label:'페이스북2'
+                            }
+                        ]
+                    },{
+                        key:3,
+                        title:'알림 대상 선택2',
+                        value:'target',
+                        children:[
+                            {
+                                key:1,
+                                value:'캠페인2',
+                                label:'캠페인2',
+                            },                        {
+                                key:2,
+                                value:'그룹2',
+                                label:'그룹2',
+                            },                        {
+                                key:3,
+                                value:'키워드2',
+                                label:'키워드2',
+                            },
+                        ],
+                        
+                    }
+                ]
             },{
                 key:3,
+                children:[
+                    {
+                        key:1,
+                        title:'[사이트명] 도메인 선택3',
+                        value:'pfno',
+                        children:[
+                            {
+                                key:1,
+                                value:'로거3',
+                                label:'로거3',
+                            },                {
+                                key:2,
+                                value:'비즈3',
+                                label:'비즈3',
+                            },                {
+                                key:3,
+                                value:'미샤3',
+                                label:'미샤3',
+                            },                {
+                                key:4,
+                                value:'카페3',
+                                label:'카페3',
+                            }
+                        ]
+                    },{
+                        key:2,
+                        title:'광고 매체사 선택3',
+                        value:'provider',
+                        children:[
+                            {
+                                key:1,
+                                value:'네이버3',
+                                label:'네이버3'
+                            },{
+                                key:2,
+                                value:'구글3',
+                                label:'구글3'
+                            },{
+                                key:3,
+                                value:'카카오3',
+                                label:'카카오3'
+                            },{
+                                key:4,
+                                value:'페이스북3',
+                                label:'페이스북3'
+                            }
+                        ]
+                    },{
+                        key:3,
+                        title:'알림 대상 선택3',
+                        value:'target',
+                        children:[
+                            {
+                                key:1,
+                                value:'캠페인3',
+                                label:'캠페인3',
+                            },                        {
+                                key:2,
+                                value:'그룹3',
+                                label:'그룹3',
+                            },                        {
+                                key:3,
+                                value:'키워드3',
+                                label:'키워드3',
+                            },
+                        ],
+                        
+                    }
+                ]
             }
         ]
-        const DataChoose=(value)=>{
-            // const data = (selectorData.filter((item)=>item.key===value)).map(item=>item.children)
-            const data = selectorData.filter((item)=>(item.key===value)).map(item=>item.children)[0]
-            console.log('data',data)
-            console.log('data',typeof data)
-            console.log('data.children',data[0].children.key)
+        const DataChoose=(alarmType)=>{
+            const data = selectorData.filter((item)=>(item.key===alarmType)).map(item=>item.children)[0]
             setDataOption(data)
-
+            let defaultData =[]
+            for(const item of data){
+                for(const child of item.children){
+                defaultData[item.value]=child.value
+                break;
+                }
+            }
+            setSelectedValues(defaultData)
         }
         useEffect(() => {
-            DataChoose(value)
-        }, [value])
-        
+            DataChoose(alarmType)
+        }, [alarmType])
+
+        const handleSelectChange = (selectKey, selectedValue) => {
+            console.log('selectKey',selectKey)
+            console.log('selectedValue',selectedValue)
+            setSelectedValues((prevSelectedValues) => ({
+              ...prevSelectedValues,
+              [selectKey]: selectedValue,
+            }));
+          };
+
+
         return(
             <>
             <div style={{display:'flex'}}>
@@ -120,11 +281,11 @@ const Demo = () => {
                     <Select
                     
                     style={{width:100}}
-                    defaultValue= {item.value!=='target' ? item.children[0] : ""}
+                    value={selectedValues[item.value]}
                     options={item.children}
+                    onChange={(selectedValue) => handleSelectChange(item.value, selectedValue)}
                     >
                     </Select>
-
                     <p>{((item.children).filter((item)=>item.key===1)).value}</p>
                 </div>
                 {/* <Divider type='vertical' style={{marginTop:5,height:50,width:20, display:'block',justifyItems:'center' }}></Divider> */}
@@ -139,55 +300,37 @@ const Demo = () => {
         )
     }
     const tagClick=()=>{
-
+        setModalOpen(true)
     }
+
     const CustomModal =()=>{
-        const [modal1Open, setModal1Open] = useState(false);
-        const [modal2Open, setModal2Open] = useState(false);
+        console.log('modal',selectedValues)
         return (
           <>
-            <Modal
-              title="20px to Top"
-              style={{
-                top: 20,
-              }}
-              open={modal1Open}
-              onOk={() => setModal1Open(false)}
-              onCancel={() => setModal1Open(false)}
+             <Modal
+                title="Vertically centered modal dialog"
+                centered
+                open={modalOpen}
+                onOk={() => setModalOpen(false)}
+                onCancel={() => setModalOpen(false)}
             >
-              <p>some contents...</p>
-              <p>some contents...</p>
-              <p>some contents...</p>
-            </Modal>
-            <br />
-            <br />
-            <Button type="primary" onClick={() => setModal2Open(true)}>
-              Vertically centered modal dialog
-            </Button>
-            <Modal
-              title="Vertically centered modal dialog"
-              centered
-              open={modal2Open}
-              onOk={() => setModal2Open(false)}
-              onCancel={() => setModal2Open(false)}
-            >
-              <p>some contents...</p>
-              <p>some contents...</p>
-              <p>some contents...</p>
+            
+   
+
             </Modal>
           </>
         );
       };
-
+console.log('selectValues',selectedValues)
   return (
     <>
         <div>
-        <Radio.Group onChange={onChange} value={value}>
+        <Radio.Group onChange={onChange} value={alarmType}>
             <Radio value={1}>광고 운영</Radio>
             <Radio value={2}>유입/탐색</Radio>
             <Radio value={3}>전환 데이터</Radio>
         </Radio.Group>
-         {SelectRender(value)}
+         {SelectRender(alarmType)}
          <table>
             <tr style={{height:100}}>
                 <td style={{background:'#f3f3f3'}}>대상</td>
@@ -197,6 +340,7 @@ const Demo = () => {
             </tr>
          </table>
         </div>
+        <CustomModal/>
     </>
   )
 }

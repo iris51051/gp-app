@@ -629,6 +629,7 @@ border-end-start-radius: 0px !important;
 
 /****************************************************************************************************/
 .fotterChartCompdiv{
+  margin-top: 10px;
   display : flex;
   height: 400;
 }

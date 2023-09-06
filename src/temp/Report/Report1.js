@@ -68,7 +68,7 @@ const { Text } = Typography;
 const ExamReport =({colors})=>{
   const location = useLocation();
   const currentAd = location.search===undefined ? AdData[0].value : (location.search).split('=')[1]
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const [dateValue, setDateValue] = useState([`${format(addDays(new Date(), -7),"yyyy-MM-dd")}`,`${format(addDays(new Date(), -1),"yyyy-MM-dd")}`])
   const [CompareDateValue, setCompareDateValue] = useState([`${format(addDays(new Date(), -14),"yyyy-MM-dd")}`,`${format(addDays(new Date(), -8),"yyyy-MM-dd")}`])
@@ -574,30 +574,16 @@ const ExamReport =({colors})=>{
             body,
             header
           );
-        //   if(response.status===200){
-        //     if((response.data.data).length>0){
-        //     const responseData = response.data.data;
-        //     // const generateData = generateDummyDataByDay(responseData, dateValue);
-        //     // return setFetchedData(generateData);
-        //     const generateData = generateDummyDataByProvider(responseData, dateValue);
-        //       return setFetchedData(generateData);
-        //     }else{
-        //       return setFetchedData([]);
-        //     }
-        //  }else{
-        //   return setFetchedData([])
-        //  }
         const responseData = response.data.data;
-        // const generateData = generateDummyDataByDay(responseData, dateValue);
-        // return setFetchedData(generateData);
         const generateData = generateDummyDataByProvider(responseData, dateValue);
+        setLoading(false)
           return setFetchedData(generateData);
         }catch(e){
-          // return setFetchedData([])
+          console.error(e)
         }
-      }else{
-        // return setFetchedData([])
+
       }
+
     }
     //데이터 테이블에 대한 데이터 요청
     //
@@ -724,18 +710,17 @@ const ExamReport =({colors})=>{
 
             setChartData(updatedData);
             setTableData(updatedTableData);
-            setLoading(false)
           }
           else{
             setTableData(fetchedTableData)
             setChartData(fetchedData);
-            setLoading(false)
           }
+
       }else{
         setChartData(fetchedData);
-        setLoading(false)
-      }
 
+      }
+      
     }, [fetchedData,vatValue,filterOptions,fetchedTableData]);
     return(
         <>
