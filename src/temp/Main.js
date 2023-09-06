@@ -158,10 +158,11 @@ useEffect(() => {
 
 
   const defaultFilterOptions = {
-    Ad: AdList,
+    Ad: currentAd >0 ? currentAd : AdList,
     Pfno: adSiteList,
     AdProvider: adProviderList,
     date : dateValue,
+    vatValue : vatValue
   };
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
@@ -197,6 +198,7 @@ useEffect(() => {
           Pfno:filteredAdSite,
           AdProvider:filteredAdProvider,
           date:dateValue,
+          vatValue : vatValue
         }));
     }else{
       const filteredAdSite = adSiteList.filter((item) => siteFilter.includes(item.value));
@@ -208,6 +210,7 @@ useEffect(() => {
         Pfno:filteredAdSite,
         AdProvider:filteredAdProvider,
         date:dateValue,
+        vatValue : vatValue
       }));
     }
   };
@@ -673,7 +676,7 @@ useEffect(() => {
                 children:(
                   <div className="WhiteBox">
                     <div style={{padding:'20px'}}>
-                    <MainTab1 data={FilteredProviderData}/>
+                    <MainTab1 filterOptions={filterOptions}/>
                     </div>
                   </div>
                 ),

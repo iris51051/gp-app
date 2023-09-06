@@ -217,7 +217,6 @@ const renderTitle=(title)=>{
       delete ad_data.ad_provider; // Remove ad_provider property
       delete ad_data.ad_platform;  // Remove ad_platform property
       delete ad_data.ad_program;   // Remove ad_program property
-  console.log('ad_data',ad_data)
       let providerEntry = TableData.find(entry => entry.ad_provider === ad_provider);
 
       if (!providerEntry) {
@@ -487,12 +486,7 @@ console.log(TableData);
       return '1px solid #f7fafc';
     }
   };
-  console.log('sortedTableData',sortedTableData)
-  const pagingStyle={
-    border: '1px solid blue',
-    background: 'none',
-    boxShadow : 'none',
-  }
+
   return (
     <>
     <div>

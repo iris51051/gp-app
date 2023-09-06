@@ -27,8 +27,6 @@ const SearchableTable = ({column,IncomeData}) => {
   const { Search } = Input;
 
   const onSearch = (value) => {
-    console.log(value)
-    console.log(typeof value)
     if(value===""){
       clearAll()
     }else{

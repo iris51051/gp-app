@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import format from "date-fns/format";
+import addDays from "date-fns/addDays";
+import axios from 'axios';
+
 import AdResultTable from "../../components/table/AdResultTable";
 import MDResultTable from "../../components/table/MDResultTable.js";
 import MDTransBar from "../../components/chart/MediaTransition/MDTransBar.js";
@@ -6,8 +10,189 @@ import MDTransPie from "../../components/chart/MediaTransition/MDTransPie.js";
 import DeviceTransPie from "../../components/chart/MediaTransition/DeviceTransPie.js";
 import LineChart from "../../components/chart/LineChart";
 
-const MainTab1 = ({data}) => {
-  console.log('MainTab1 data',data)
+const MainTab1 = ({filterOptions}) => {
+  const [providerResult, setProviderResult] = useState([])
+  const [programResult, setProgramResult] = useState([])
+  const [providerData, setProviderData] = useState([])
+  const [programData, setProgramData] = useState([])
+
+  
+  //광고 매체사별 성과 데이터
+  const getProgramData = async ()=>{
+    if(filterOptions.date[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
+      const body =JSON.stringify({
+        rptNo: '1000000',
+        lookupTp: 'agg',
+        dimCd: ["ad_provider","ad_program"],
+        where: [
+          {
+            field: 'stat_date',
+            operation: 'between',
+            value: [filterOptions.date[0], filterOptions.date[1]],
+          },{
+            field: 'pfno',
+            operation: 'in',
+            value: filterOptions.Pfno.map((item)=>item.value),
+          },
+          {
+            field: 'ad_provider',
+            operation: 'in',
+            value: filterOptions.AdProvider.map((item)=>item.value),
+          }
+        ],
+        metCd: ["m_rvn",
+        "m_impr",
+        "m_cost",
+        "m_odr",
+        "m_rgr",
+        "land",
+        "rvn",
+        "m_cart",
+        "odr",
+        "rgr",
+        "m_conv",
+        "m_click",
+        "m_cpc",
+        "m_ctr",
+        "m_crt",
+        "m_roas",
+        "rvn_per_odr",
+        "rgr_per_m_click",
+        "odr_per_m_cost",
+        "roas"
+        ],
+        sort: [{ field: 'land', order: 'asc' }],
+        agencySeq: '1',
+        clientSeq: filterOptions.Ad,
+        pfno:filterOptions.Pfno.map(item=>item.value),
+        size: 10000,
+      })
+      const header = {
+        headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
+      }
+      try{
+        const response = await axios.post(
+          // 'http://223.130.136.182:9080/report/data', 로그인 필요
+          'http://122.99.192.144:9080/report/data',
+          body,
+          header
+        );
+        const responseData = response.data.data;
+        return setProgramResult(responseData);
+
+      }catch(e){
+        console.error(e)
+      }
+    }else{
+      setProgramResult([])
+    }
+  }
+  const getProviderData = async ()=>{
+    if(filterOptions.date[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
+      const body =JSON.stringify({
+        rptNo: '1000000',
+        lookupTp: 'agg',
+        dimCd: ["ad_provider"],
+        where: [
+          {
+            field: 'stat_date',
+            operation: 'between',
+            value: [filterOptions.date[0], filterOptions.date[1]],
+          },{
+            field: 'pfno',
+            operation: 'in',
+            value: filterOptions.Pfno.map((item)=>item.value),
+          },
+          {
+            field: 'ad_provider',
+            operation: 'in',
+            value: filterOptions.AdProvider.map((item)=>item.value),
+          }
+        ],
+        metCd: ["m_rvn",
+        "m_impr",
+        "m_cost",
+        "m_odr",
+        "m_rgr",
+        "land",
+        "rvn",
+        "m_cart",
+        "odr",
+        "rgr",
+        "m_conv",
+        "m_click",
+        "m_cpc",
+        "m_ctr",
+        "m_crt",
+        "m_roas",
+        "rvn_per_odr",
+        "rgr_per_m_click",
+        "odr_per_m_cost",
+        "roas"
+        ],
+        sort: [{ field: 'land', order: 'asc' }],
+        agencySeq: '1',
+        clientSeq: filterOptions.Ad,
+        pfno:filterOptions.Pfno.map(item=>item.value),
+        size: 10000,
+      })
+      const header = {
+        headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
+      }
+      try{
+        const response = await axios.post(
+          // 'http://223.130.136.182:9080/report/data', 로그인 필요
+          'http://122.99.192.144:9080/report/data',
+          body,
+          header
+        );
+        const responseData = response.data.data;
+        return setProviderResult(responseData);
+
+      }catch(e){
+        console.error(e)
+      }
+    }else{
+      setProviderResult([])
+    }
+  }
+  useEffect(() => {
+    getProgramData()
+    getProviderData()
+  }, [filterOptions])
+
+  useEffect(() => {
+    if(programResult.length>0){
+        if(filterOptions.vatValue){
+          const updatedProgramData =programResult?.map((item) => {
+            return {
+              ...item,
+              m_rvn: item.m_rvn + item.m_rvn * 0.1,
+              rvn: item.rvn + item.rvn * 0.1,
+              m_cost: item.m_cost + item.m_cost * 0.1,
+              m_cpc: item.m_cpc + item.m_cpc * 0.1,
+              rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
+            };
+          });
+          const updatedProviderData =providerResult?.map((item) => {
+            return {
+              ...item,
+              m_rvn: item.m_rvn + item.m_rvn * 0.1,
+              rvn: item.rvn + item.rvn * 0.1,
+              m_cost: item.m_cost + item.m_cost * 0.1,
+              m_cpc: item.m_cpc + item.m_cpc * 0.1,
+              rvn_per_odr: item.rvn_per_odr + item.rvn_per_odr * 0.1,
+            };
+          });
+          setProgramData(updatedProgramData)
+          setProviderData(updatedProviderData);
+        }else{
+          setProgramData(programResult)
+          setProviderData(providerResult);
+        }
+      }
+  }, [providerResult,programResult,filterOptions]);
+
 
 // 매체별 전환 비중 pie chart 데이터
   const MDTransData=[
@@ -167,7 +352,7 @@ const MainTab1 = ({data}) => {
       </div>
       <div>
         <h4 className="MDResult">광고 매체사별 성과</h4>
-        <MDResultTable Incomedata={data}/>
+        <MDResultTable Incomedata={programData}/>
       </div>
 
       <div className="fotterChartCompdiv">
@@ -175,14 +360,14 @@ const MainTab1 = ({data}) => {
           <div>
         <h6 className="fotterBarchartTitle">매체별 전환수 & 전환율</h6>
         </div>
-              <MDTransBar data={MDTransData} colors={colors}/>
+              <MDTransBar data={providerData} colors={colors}/>
 
         </div>
         <div className="fotterMDPiechart" style={{width:'25%'}}>
             <div>
                 <h6 className="fotterMDPiecharttitle">매체별 전환 비중</h6>
             </div>
-             <MDTransPie data ={MDTransData} colors={colors}/>
+             <MDTransPie data ={providerData} colors={colors}/>
         </div>
         <div className="fotterDevPiechart"  style={{width:'25%'}}>
           <div>

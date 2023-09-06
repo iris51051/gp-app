@@ -1,7 +1,17 @@
-import React from 'react';
+import React,{useState} from 'react';
 import Echarts from 'echarts-for-react'
 
 const MDTransPie =({colors,data})=>{
+  const convData= []
+    for(const props of data){
+      const conv = props.m_conv
+      const ad_provider = props.ad_provider
+      convData.push({
+        name: ad_provider,
+        value:conv,
+      })
+    }
+
         const ColoredData = data.map((item) => ({
             ...item,
             itemStyle: {
@@ -35,7 +45,6 @@ const MDTransPie =({colors,data})=>{
           },
         series: [
             {
-              name: "Access From",
               type: "pie",
               radius: "55%",
               selectedMode: 'multiple',

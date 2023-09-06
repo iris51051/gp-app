@@ -75,7 +75,7 @@ export const MdResult =React.memo(({Incomedata})=> {
       const ad_data = { ...item }; // Copy all properties from the current item
       delete ad_data.ad_provider; // Remove ad_provider property
       delete ad_data.ad_program;   // Remove ad_program property
-  console.log('ad_data',ad_data)
+
       let providerEntry = TableData.find(entry => entry.ad_provider === ad_provider);
 
       if (!providerEntry) {
@@ -127,7 +127,6 @@ export const MdResult =React.memo(({Incomedata})=> {
                   platformSum[prop] = (platformSum[prop] || 0) + programEntry[prop];
                 }
             }
-            console.log('platformSum',platformSum)
             platformSum['m_ctr'] = platformSum['m_impr'] !== 0 ? platformSum['m_click'] / platformSum['m_impr']  : 0;
             platformSum['m_cpc'] = platformSum['m_click'] !== 0 ? platformSum['m_cost'] / platformSum['m_click']  : 0;
             platformSum['m_crt'] = platformSum['m_click'] !== 0 ? platformSum['m_conv'] / platformSum['m_click']  : 0;
@@ -143,9 +142,6 @@ export const MdResult =React.memo(({Incomedata})=> {
           });
 
     });
-console.log('TableData',TableData);
-  
-
 
   const sum = TableData.reduce(
     (total, current) => {
@@ -295,12 +291,7 @@ console.log('TableData',TableData);
       return '1px solid #f7fafc';
     }
   };
-  console.log('sortedTableData',sortedTableData)
-  const pagingStyle={
-    border: 'none',
-    background: 'none',
-    boxShadow : 'none',
-  }
+
   return (
     <>
     <div>

@@ -668,7 +668,7 @@ border-end-start-radius: 0px !important;
   border-bottom: 1px solid #f7fafc;
 }
 .total {
-  border-top: 1px double black !important;
+  border-top: 4px double black !important;
 }
 .ProdTable tbody .BottomTd {
   font-size: 12px;
