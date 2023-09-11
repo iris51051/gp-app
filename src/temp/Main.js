@@ -75,7 +75,7 @@ const Main = () => {
   const [collapsed1, setCollapsed1] = useState(false);
   const [collapsed2, setCollapsed2] = useState(false);
   const [vatValue, setVatValue] = useState(true);
-  const [dateValue, setDateValue] = useState([`${format(addDays(new Date(), -6),"yyyy-MM-dd")}`,`${format(new Date(),"yyyy-MM-dd")}`])
+  const [dateValue, setDateValue] = useState([`${format(addDays(new Date(), -7),"yyyy-MM-dd")}`,`${format(new Date(),"yyyy-MM-dd")}`])
   const [CompareDateValue, setCompareDateValue] = useState([`${format(addDays(new Date(), -12),"yyyy-MM-dd")}`,`${format(addDays(new Date(), -6),"yyyy-MM-dd")}`])
   const [datas, setDatas] = useState([])
   const [AllAdList, setAllAdList] = useState()

@@ -705,11 +705,62 @@ border-end-start-radius: 0px !important;
 
 /****************************************************************************************************/
 /* .AlarmPreset{
-   flex-direction: column;
-    width : 100%;
-    overflow: hidden;
-    display: flex;
-    transition: height 0.3s ease;
-    justify-content: center;
+  flex-direction: column;
+  width : 100%;
+  overflow: hidden;
+  display: flex;
+  transition: height 0.3s ease;
+  justify-content: center;
     align-items: center;
-} */
+  } */
+  /****************************************************************************************************/
+  
+  /*************                                MainTab1Footer                              ***********/  
+  
+  /****************************************************************************************************/
+  
+  .criticFace{
+    color: black;
+    background-color: red;
+    border-radius: 22px;
+    font-size: 30px;
+  }
+  .mediumFace{
+    color: black;
+    background-color: yellow;
+    border-radius: 22px;
+    font-size: 30px;
+  }
+  .lowFace{
+    color: black;
+    background-color: green;
+    border-radius: 22px;
+    font-size: 30px;
+  }
+  .highFace{
+    color: black;
+    background-color: orange;
+    border-radius: 22px;
+    font-size: 30px;
+  }
+.HistoryTime .ant-timeline-item-left{
+  padding-bottom : 40px !important;
+}
+
+.HistoryTime .ant-timeline-item-label{
+  text-align: start !important;
+  width:15% !important;
+}
+.HistoryTime .ant-timeline-item-tail{
+  inset-inline-start : 15% !important;
+  width:15%;
+}
+.HistoryTime .ant-timeline-item-head-blue{
+  inset-inline-start : 15% !important;
+  padding:0;
+  width:10%
+}
+.HistoryTime .ant-timeline-item-content{
+  inset-inline-start : 20% !important;
+  width:100% !important;
+}

@@ -93,10 +93,21 @@ export const AddAlarm=()=>{
         <div style={{marginTop:10,marginBottom:10}}>
             <Breadcrumb separator=">" items={items}/>
         </div>
-        <div className='WhiteBox' style={{ display: 'grid',padding:0,border:'none'}}>
-            <div style={{padding:5,border: '1px solid black',display: 'flex',
-            justifyContent: 'flex-end',backgroundColor:'#f3f3f3'}}>
-                <span style={{marginRight:'auto'}}> 자주 사용하는 알람 유형 활용하기</span>
+        <div className='WhiteBox' style={{
+            display: 'grid',
+            padding:0,
+            border:'none'}}>
+            <div style={{
+                padding:5,
+                border: '1px solid black',
+                display: 'flex',
+                justifyContent: 'flex-end',
+                backgroundColor:'#f3f3f3'}}>
+
+                <span style={{
+                    marginRight:'auto'
+                    }}> 자주 사용하는 알람 유형 활용하기</span>
+                    
             {collapse===false ? 
             <CaretDownOutlined style={{ marginRight:'10', fontSize: '20px' }} onClick={HanbleChangeCollapse}/>
             :<CaretUpOutlined style={{marginRight:'10',fontSize: '20px' }} onClick={HanbleChangeCollapse}/>

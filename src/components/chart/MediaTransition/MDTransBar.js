@@ -2,20 +2,30 @@ import React from 'react';
 import Echart from 'echarts-for-react';
 
 const MDTransBar = ({colors, data}) => {
+
+  const defaultSeriesOrder = ['ADN PC', 'DABLE', 'FACEBOOK', '구글', '네이버', '카카오', '페이스북'];
+  const sortData = data.sort((a,b)=>{
+    const testA = a.m_conv;
+    const testB = b.m_conv;
+    if (testA === testB) {
+      const indexA = defaultSeriesOrder.indexOf(a);
+      const indexB = defaultSeriesOrder.indexOf(b);
+  
+      if (indexA === -1) return 1; // If not found in defaultSeriesOrder, move it to the end
+      if (indexB === -1) return -1; // If not found in defaultSeriesOrder, move it to the end
+  
+      return indexA - indexB;
+    }
+    return testB - testA;
+  });
+
   const sourceArray = [['product', '총 전환수', '총 전환율']];
-  // data.map((item) => {
-  //   const { ad_provider, m_conv, m_crt } = item;
-  //     sourceArray.push([ad_provider, m_conv, m_crt]);
-  // });
-  for(const detail of data){
-    console.log('detail',detail)
-    console.log('data',data)
+  for(const detail of sortData){
     const ad_provider = detail.ad_provider
     const m_conv = detail.m_conv
-    const m_crt = detail.m_crt.toFixed(2)
+    const m_crt = ((detail.m_crt)*100).toFixed(2);
     sourceArray.push([ad_provider,m_conv,m_crt])
   }
-  console.log('sourceArray',sourceArray)
   const option = {
     legend: {
       bottom: 'bottom',
@@ -75,10 +85,18 @@ const MDTransBar = ({colors, data}) => {
         axisTick: {
           show: true,
         },
+        axisLabel: {
+          formatter: function(value){
+            return value+'%';
+          },
+        },
       },
     ],
     series: [
       { type: 'bar', name: '총 전환수', encode: { x: 'product', y: '총 전환수' },
+      itemStyle: {
+        color: colors[0]
+      },
       tooltip: {
         valueFormatter: function (value) {
           if(value>0){
@@ -88,7 +106,11 @@ const MDTransBar = ({colors, data}) => {
         }
         }
       },},
-      { type: 'bar', name : '총 전환율',yAxisIndex: 1,encode: { x: 'product', y: '총 전환율' },  tooltip: {
+      { type: 'bar', name : '총 전환율',yAxisIndex: 1,encode: { x: 'product', y: '총 전환율' },
+      itemStyle: {
+        color: colors[1]
+      },
+        tooltip: {
         valueFormatter: function (value) {
           if(value>0){
             return value + '%';
@@ -102,7 +124,7 @@ const MDTransBar = ({colors, data}) => {
 
   return (
     <>
-      <Echart option={option} colors={colors} style={{ width: '90%', height: 344 }} />
+      <Echart option={option} style={{ width: '90%', height: 344 }} />
     </>
   );
 };

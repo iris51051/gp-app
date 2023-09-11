@@ -1,23 +1,49 @@
 import React from 'react';
 import Echarts from 'echarts-for-react'
 
-const MDTransPie =({colors})=>{
+const MDTransPie =({colors,incomedata})=>{
 
-      const data=            
-        [
-          { value: 1748, name: 'P' },
-          { value: 735, name: 'M' },
-        ]
+  console.log('incomedata',incomedata)
 
-        const ColoredData = data.map((item) => ({
-            ...item,
+    const convData= []
+    for(const props of incomedata){
+      const name = props.device
+      const value = props.m_cost
+      convData.push({
+        name: name,
+        value:value,
+      })
+    }
+
+    const defaultSeriesOrder = ['ADN PC', 'DABLE', 'FACEBOOK', '구글', '네이버', '카카오', '페이스북'];
+    convData.sort((a, b) => {
+      const testA = a.value || 0; // If sum is undefined, set it to 0
+      const testB = b.value || 0; // If sum is undefined, set it to 0
+    
+      if (testA === testB) {
+        const indexA = defaultSeriesOrder.indexOf(a);
+        const indexB = defaultSeriesOrder.indexOf(b);
+    
+        if (indexA === -1) return 1; // If not found in defaultSeriesOrder, move it to the end
+        if (indexB === -1) return -1; // If not found in defaultSeriesOrder, move it to the end
+    
+        return indexA - indexB;
+      }
+      return testB - testA;
+    });
+
+
+        const ColoredData = convData.map((item) => ({
+           ...item,
             itemStyle: {
               color:
                 item.name === "기타"
                   ? "#bababa"
-                  : colors[data.findIndex((d) => d.name === item.name)],
+                  : colors[convData.findIndex((d) => d.name === item.name)],
             },
           }));
+
+
     const option = {
         tooltip: {
             trigger: "item",
@@ -42,7 +68,6 @@ const MDTransPie =({colors})=>{
           },
         series: [
             {
-              name: "Access From",
               type: "pie",
               radius: "55%",
               selectedMode: 'multiple',
@@ -76,7 +101,7 @@ const MDTransPie =({colors})=>{
 
     return(
     <>
-     <Echarts option={option} color={colors} style={{width:'100%', height:'400px',marginLeft:"-30px"}}/>
+     <Echarts option={option} style={{width:'100%', height:'400px',marginLeft:"-30px"}}/>
     </>
     )
 }

@@ -2,6 +2,7 @@ import React,{useState} from 'react';
 import Echarts from 'echarts-for-react'
 
 const MDTransPie =({colors,data})=>{
+  console.log('MDTransPie',data)
   const convData= []
     for(const props of data){
       const conv = props.m_conv
@@ -11,16 +12,33 @@ const MDTransPie =({colors,data})=>{
         value:conv,
       })
     }
+    const defaultSeriesOrder = ['ADN PC', 'DABLE', 'FACEBOOK', '구글', '네이버', '카카오', '페이스북'];
+    convData.sort((a, b) => {
+      const testA = a.value || 0; // If sum is undefined, set it to 0
+      const testB = b.value || 0; // If sum is undefined, set it to 0
+    
+      if (testA === testB) {
+        const indexA = defaultSeriesOrder.indexOf(a);
+        const indexB = defaultSeriesOrder.indexOf(b);
+    
+        if (indexA === -1) return 1; // If not found in defaultSeriesOrder, move it to the end
+        if (indexB === -1) return -1; // If not found in defaultSeriesOrder, move it to the end
+    
+        return indexA - indexB;
+      }
+      return testB - testA;
+    });
 
-        const ColoredData = data.map((item) => ({
-            ...item,
-            itemStyle: {
-              color:
-                item.name === "기타"
-                  ? "#bababa"
-                  : colors[data.findIndex((d) => d.name === item.name)],
-            },
-          }));
+    const ColoredData = convData.map((item) => ({
+      ...item,
+      itemStyle: {
+        color:
+        item.name === "기타"
+        ? "#bababa"
+        : colors[convData.findIndex((d) => d.name === item.name)],
+      },
+    }));
+    console.log('ColoredData',ColoredData)
     const option = {
         tooltip: {
             trigger: "item",
@@ -78,7 +96,7 @@ const MDTransPie =({colors,data})=>{
 
     return(
     <>
-        <Echarts option={option} color={colors} style={{width:'100%', height:'400px',marginLeft:"-30px"}}/>
+        <Echarts option={option} style={{width:'100%', height:'400px',marginLeft:"-30px"}}/>
     </>
     )
 }

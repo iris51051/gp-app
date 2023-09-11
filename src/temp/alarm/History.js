@@ -1,7 +1,16 @@
-import React  from 'react'
+import React,{useState}  from 'react'
 import { Breadcrumb,Tabs } from "antd";
-import HistoryTab from './History/historyTab'
+import format from "date-fns/format";
+import subDays from "date-fns/subDays";
+import addDays from "date-fns/addDays";
+
+import HistoryTab from './History/HistoryTab';
+import Calendar from '../../components/calendar'
+
+
 export const History =()=>{
+  // const [selectedDate, setSelectedDate] = useState([addDays(new Date(), -7), addDays(new Date(), -1)])
+  const [selectedDate, setSelectedDate] = useState([])
     const items = [
         { title: " 모니터링알림", href: "/" },
         { title: "알림 히스토리" },
@@ -10,7 +19,7 @@ export const History =()=>{
       { key :1,
         label :'전체',
         children:(
-          <div className="WhiteBox">
+          <div >
             <div style={{padding:'20px'}}>
             <HistoryTab config={'전체'}/>
             </div>
@@ -30,7 +39,7 @@ export const History =()=>{
         key :3,
         label :'페이스북 광고',
         children:(
-          <div className="WhiteBox">
+          <div>
             <div style={{padding:'20px'}}>
             <HistoryTab config={'페이스북 광고'}/>
             </div>
@@ -42,10 +51,17 @@ export const History =()=>{
   const onChange = (key)=>{
     console.log(key)
   }
+  const DateChange =(value)=>{
+    // setSelectedDate(value)
+    console.log('dateChagne',value)
+  }
 
     return (
       <>
+      <div style={{marginTop:10,display:'flex',justifyContent:'space-between'}}>
         <Breadcrumb separator=">" items={items}/>
+        <Calendar onValueChange={DateChange}/>
+        </div>
         <Tabs
           onChange={onChange}
           type="card"

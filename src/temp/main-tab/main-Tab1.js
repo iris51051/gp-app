@@ -12,11 +12,12 @@ import LineChart from "../../components/chart/LineChart";
 
 const MainTab1 = ({filterOptions}) => {
   const [providerResult, setProviderResult] = useState([])
+  const [deviceResult, setDeviceResult] = useState([])
   const [programResult, setProgramResult] = useState([])
   const [providerData, setProviderData] = useState([])
   const [programData, setProgramData] = useState([])
 
-  
+  console.log('MainTabbbbbbbbbbbbbbbbbbbb',filterOptions)
   //광고 매체사별 성과 데이터
   const getProgramData = async ()=>{
     if(filterOptions.date[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
@@ -128,7 +129,7 @@ const MainTab1 = ({filterOptions}) => {
         "rvn_per_odr",
         "rgr_per_m_click",
         "odr_per_m_cost",
-        "roas"
+        "roas",
         ],
         sort: [{ field: 'land', order: 'asc' }],
         agencySeq: '1',
@@ -156,9 +157,61 @@ const MainTab1 = ({filterOptions}) => {
       setProviderResult([])
     }
   }
+  const getDeviceData = async ()=>{
+    if(filterOptions.date[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
+      const body =JSON.stringify({
+        rptNo: '1000000',
+        lookupTp: 'agg',
+        dimCd: ["device"],
+        where: [
+          {
+            field: 'stat_date',
+            operation: 'between',
+            value: [filterOptions.date[0], filterOptions.date[1]],
+          },{
+            field: 'pfno',
+            operation: 'in',
+            value: filterOptions.Pfno.map((item)=>item.value),
+          },
+          {
+            field: 'ad_provider',
+            operation: 'in',
+            value: filterOptions.AdProvider.map((item)=>item.value),
+          }
+        ],
+        metCd: [
+        "m_cost",
+        ],
+        sort: [{ field: 'land', order: 'asc' }],
+        agencySeq: '1',
+        clientSeq: filterOptions.Ad,
+        pfno:filterOptions.Pfno.map(item=>item.value),
+        size: 10000,
+      })
+      const header = {
+        headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
+      }
+      try{
+        const response = await axios.post(
+          // 'http://223.130.136.182:9080/report/data', 로그인 필요
+          'http://122.99.192.144:9080/report/data',
+          body,
+          header
+        );
+        const responseData = response.data.data;
+        return setDeviceResult(responseData);
+
+      }catch(e){
+        console.error(e)
+      }
+    }else{
+      setDeviceResult([])
+    }
+  }
   useEffect(() => {
     getProgramData()
     getProviderData()
+    getDeviceData()
   }, [filterOptions])
 
   useEffect(() => {
@@ -192,27 +245,6 @@ const MainTab1 = ({filterOptions}) => {
         }
       }
   }, [providerResult,programResult,filterOptions]);
-
-
-// 매체별 전환 비중 pie chart 데이터
-  const MDTransData=[
-      { value: 36260, name: '구글',children:
-        { name: "총 전환율", value : 32.70}},
-      { value: 9366, name: 'AND PC',children:
-      { name: "총 전환율", value : 1.35} },
-      { value: 9250, name: 'DABLE',children:
-      { name: "총 전환율", value : 3.32} },
-      { value: 359, name: '네이버',children:
-      { name: "총 전환율", value : 1.57} },
-      { value: 96, name: '카카오',children:
-      { name: "총 전환율", value : 60.76} },
-      { value: 0, name: 'FACEBOOK',children:
-      { name: "총 전환율", value : 0} },
-      { value: 0, name: '모비온' ,children:
-      { name: "총 전환율", value : 0}},
-      { value: 0, name: '페이스북',children:
-      { name: "총 전환율", value : 0}},
-  ]
 
   
       //실제 데이터 (이름, 값)
@@ -373,7 +405,7 @@ const MainTab1 = ({filterOptions}) => {
           <div>
           <h6 className="fotterDevPiechartTitle">디바이스별 광고비 비중</h6>
           </div>
-              <DeviceTransPie  colors={colors}/>
+              <DeviceTransPie incomedata ={deviceResult}  colors={colors}/>
         </div>
       </div>
     </>
