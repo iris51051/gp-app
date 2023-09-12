@@ -8,7 +8,6 @@ const HistoryTab = () => {
   const [form] = Form.useForm();
   const [statList, setStatList] = useState([])
   const [collapse, setCollapse] = useState(false)
-  const [currentTime, setCurrentTime] = useState(new Date());
   const histData=[
     {
       label: '10:52',
@@ -85,16 +84,22 @@ const HistoryTab = () => {
       setCollapse(!value)
     }
     const timeOptions = {
+      year : 'numeric',
+      month: "numeric",
+      day : 'numeric',
       hour: '2-digit',
       minute: '2-digit',
       hour12: false,
     };
+    const currentTime = new Date().toLocaleTimeString("ko-KR",timeOptions)
+    const now = new Date()
+    const formattedTime = currentTime.replace(/\./g, '-').replace(/\.$/, '');
+    console.log('날짜!!!!!!!!',new Date())
+    console.log('currentTime!!!!!!!!',currentTime.replace(/\./g, "-"))
+    console.log('formattedTime!!!!!!!!',formattedTime)
     const onFinish = (values) => {
-      const now = new Date().toLocaleTimeString(undefined,timeOptions)
-      console.log(now)
-      console.log(values);
       const newComment ={
-        label:now,
+        label:currentTime,
         dot: <AiOutlineMessage></AiOutlineMessage>,
         children : values.comment
       }

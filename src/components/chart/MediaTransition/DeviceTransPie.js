@@ -1,5 +1,6 @@
 import React from 'react';
 import Echarts from 'echarts-for-react'
+import {EmptyPieChart} from "../EmptyChart"
 
 const MDTransPie =({colors,incomedata})=>{
 
@@ -101,7 +102,10 @@ const MDTransPie =({colors,incomedata})=>{
 
     return(
     <>
+    {incomedata?.length> 0 ?
      <Echarts option={option} style={{width:'100%', height:'400px',marginLeft:"-30px"}}/>
+    : <EmptyPieChart/>
+    }
     </>
     )
 }

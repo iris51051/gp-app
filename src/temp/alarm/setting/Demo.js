@@ -279,7 +279,6 @@ const Demo = () => {
                 <div key={item.key} style={{display:'grid', justifyItems:'center'}}>
                     <p>{item.title}</p>
                     <Select
-                    
                     style={{width:100}}
                     value={selectedValues[item.value]}
                     options={item.children}

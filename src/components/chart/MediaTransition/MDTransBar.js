@@ -1,6 +1,8 @@
 import React from 'react';
 import Echart from 'echarts-for-react';
 
+import {EmptyLineChart} from '../EmptyChart'
+
 const MDTransBar = ({colors, data}) => {
 
   const defaultSeriesOrder = ['ADN PC', 'DABLE', 'FACEBOOK', '구글', '네이버', '카카오', '페이스북'];
@@ -47,7 +49,7 @@ const MDTransBar = ({colors, data}) => {
       {
         type: 'value',
         name: '총 전환수',
-        position: 'left',
+
         splitLine: {
           show: false,
         },
@@ -72,7 +74,7 @@ const MDTransBar = ({colors, data}) => {
       {
         type: 'value',
         name: '총 전환율',
-        position: 'right',
+
         splitLine: {
           show: false,
         },
@@ -124,7 +126,9 @@ const MDTransBar = ({colors, data}) => {
 
   return (
     <>
+    {data?.length===0 ? <EmptyLineChart/> :
       <Echart option={option} style={{ width: '90%', height: 344 }} />
+    }
     </>
   );
 };

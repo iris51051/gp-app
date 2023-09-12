@@ -16,91 +16,91 @@ import { useStateManager } from "react-select";
 
 const { Sider } = Layout;
 const sideItems =[{
-  key: "0",
-  icon: <UserOutlined />,
-  value : "/",
-  label: <Link to="/">통합대시보드</Link>,
-},
-{
-  key: "1",
-  icon: <VideoCameraOutlined />,
-  value : "/temp/modules",
-  label: <Link to="/temp/modules">모듈샘플</Link>,
-},
-{
-  key: "2",
-  icon: <UploadOutlined />,
-  value : "/temp/apitest",
-  label: <Link to="/temp/apitest">API테스트 페이지</Link>,
-},
-{
-  key: "3",
-  icon: <AreaChartOutlined />,
-  value : "/temp/report/Exam",
-  label: '광고 매체사/플랫폼/상품',
-  children: [
-    {
-      key: "3-1",
-      value : "/temp/report/Report1",
-      label: (
-            <Link to="/temp/report/Report1">광고 매체 분석 종합</Link>
-            ),
+    key: "0",
+    icon: <UserOutlined />,
+    value : "/",
+    label: <Link to="/">통합대시보드</Link>,
+  },
+  {
+    key: "1",
+    icon: <VideoCameraOutlined />,
+    value : "/temp/modules",
+    label: <Link to="/temp/modules">모듈샘플</Link>,
+  },
+  {
+    key: "2",
+    icon: <UploadOutlined />,
+    value : "/temp/apitest",
+    label: <Link to="/temp/apitest">API테스트 페이지</Link>,
+  },
+  {
+    key: "3",
+    icon: <AreaChartOutlined />,
+    value : "/temp/report/Exam",
+    label: '광고 매체사/플랫폼/상품',
+    children: [
+        {
+          key: "3-1",
+          value : "/temp/report/Report1",
+          label: (
+                <Link to="/temp/report/Report1">광고 매체 분석 종합</Link>
+                ),
+        },
+        {
+          key: "3-2",
+          value : "/temp/report/Report2",
+          label: (
+                <Link to="/temp/report/Report2">광고 매체 추세</Link>
+                ),
+        },
+      ],
+  },
+  {
+    key: "4",
+    value : "/temp/alarm/History",
+    label: (
+      <Link to="/temp/alarm/History">
+        알림 히스토리
+      </Link>
+    ),
+  },
+  {
+    key: "5",
+    icon: <BellOutlined />,
+    value : "/temp/alarm/setting",
+    label: '알림 설정',
+    children: [
+                {
+                  key: "5-1",
+                  value : "/temp/alarm/setting/ListSet",
+                  label: (
+                  <Link to="/temp/alarm/setting/ListSet">
+                    알림 목록 및 설정
+                    </Link>
+                    ),
+                }, {
+                  key: "5-2",
+                  value : "/temp/alarm/setting/ListSet",
+                  label: (
+                  <Link to="/temp/alarm/setting/ListSet">
+                    알림 수신자 설정
+                    </Link>
+                    ),
+                },
+              ]
     },
     {
-      key: "3-2",
-      value : "/temp/report/Report2",
-      label: (
-            <Link to="/temp/report/Report2">광고 매체 추세</Link>
-            ),
-    },
-  ],
-},
-{
-  key: "4",
-  icon: <BellOutlined />,
-  value : "/temp/alarm",
-  label: '모니터링 알림',
-  children: [
-    {
-      key: "4-1",
-      value : "/temp/alarm/History",
-      label: (
-        <Link to="/temp/alarm/History">
-          알림 히스토리
-        </Link>
-      ),
+      key: "6",
+      icon: <UploadOutlined />,
+      value : "/temp/media/export",
+      label: <Link to="/temp/media/export">매체 데이터 내보내기</Link>,
     },
     {
-      key: "4-2",
-      value : "/temp/alarm/setting",
-      label:  '알림 설정',
-        children: [
-          {
-            key: "4-2-1",
-            value : "/temp/alarm/setting/ListSet",
-            label: (
-              <Link to="/temp/alarm/setting/ListSet">
-                알림 목록 및 설정
-              </Link>
-            ),
-          },
-        ]
+      key: "7",
+      icon: <UploadOutlined />,
+      value :"/temp/media/download",
+      label: <Link to="/temp/media/download">매체 데이터 다운로드</Link>,
     },
-    
-  ],
-},
-{
-  key: "5",
-  icon: <UploadOutlined />,
-  value : "/temp/media/export",
-  label: <Link to="/temp/media/export">매체 데이터 내보내기</Link>,
-},
-{
-  key: "6",
-  icon: <UploadOutlined />,
-  value :"/temp/media/download",
-  label: <Link to="/temp/media/download">매체 데이터 다운로드</Link>,
-},
 ]
 
 

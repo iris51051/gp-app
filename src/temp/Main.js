@@ -129,12 +129,23 @@ const fetchData = async ()=>{
     console.error(e)
   }
 }
-
+const AllpfnoList = Array.from(new Set(adMediaData.map((item)=>item.pfno))).map((item)=>({
+  name:item,
+  value:item,
+}))
+const AllProvider = Array.from(new Set(adMediaData.map((item)=>item.ad_provider))).map((item)=>({
+  name:item,
+  value:item,
+}))
+console.log('AllpfnoList',AllpfnoList)
+console.log('AllProvider',AllProvider)
 
 useEffect(() => {
   setLoading(true)
   const getFilterData= async () => {
     if (currentAd === '0' || currentAd === undefined) {
+      setAdSiteList([...AllpfnoList])
+      setAdProviderList([...AllProvider])
       setLoading(false)
     } else {
       const data = await fetchData();
@@ -154,25 +165,40 @@ useEffect(() => {
 }, [currentAd]);
 
 
+console.log("adSiteList",adSiteList)
 
 
 
   const defaultFilterOptions = {
     Ad: currentAd >0 ? currentAd : AdList,
-    Pfno: adSiteList,
-    AdProvider: adProviderList,
+    Pfno: currentAd >0 ? adSiteList : AllpfnoList,
+    AdProvider: currentAd >0 ? adProviderList : AllProvider,
     date : dateValue,
     vatValue : vatValue
   };
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
+  console.log('currenAd는 숫자냐 글자냐!!!!!!!!!!!',typeof currentAd)
+  console.log('currenAd는 숫자냐 글자냐!!!!!!!!!!!',currentAd===0,currentAd==='0')
   useEffect(() => {
     if (adProviderList.length > 0 && adSiteList.length > 0) {
-      setFilterOptions((prevOptions) => ({
-        ...prevOptions,
-        Pfno: adSiteList,
-        AdProvider: adProviderList,
-      }));
+      if(currentAd === '0' || currentAd ===undefined){
+        console.log('왜 안들어오냐!!!!!!!!!!!!!글자라며!!!!!!!!!!!!!!!!!')
+        setFilterOptions((prevOptions) => ({
+          ...prevOptions,
+          Ad:AdList,
+          Pfno: AllpfnoList,
+          AdProvider: AllProvider,
+        }));
+      }else{
+        console.log('0일 때 들어오면 안된다!!!!!!!!!!!!!!!!!')
+        setFilterOptions((prevOptions) => ({
+          ...prevOptions,
+          Ad:currentAd,
+          Pfno: adSiteList,
+          AdProvider: adProviderList,
+        }));
+      }
     }
   }, [adProviderList, adSiteList]);
 
@@ -185,13 +211,12 @@ useEffect(() => {
   };
 
   //모든 필터 선택된 상태로 초기 로딩.
- 
   const updateFilter = () => {
     if(currentAd === '0' || currentAd ===undefined){
       // Filter the AdData based on the selected adFilter names
       const filteredAd = AdList.filter((item) => adFilter.includes(item.name));
-      const filteredAdSite = adSiteList.filter((item) => siteFilter.includes(item.value));
-      const filteredAdProvider = adProviderList.filter((item)=> mdFilter.includes(item.value));
+      const filteredAdSite = AllpfnoList.filter((item) => siteFilter.includes(item.value));
+      const filteredAdProvider = AllProvider.filter((item)=> mdFilter.includes(item.value));
         setFilterOptions((prevOptions) => ({
           ...prevOptions,
           Ad: filteredAd,
@@ -202,7 +227,6 @@ useEffect(() => {
         }));
     }else{
       const filteredAdSite = adSiteList.filter((item) => siteFilter.includes(item.value));
-
       const filteredAdProvider = adProviderList.filter((item)=> mdFilter.includes(item.value));
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
@@ -221,11 +245,11 @@ useEffect(() => {
     getScoreCardData(); //스코어카드용 데이터 조회
     getScoreCardCompareData();  //스코어카드용 비교 데이터 조회
     getFilteredProviderData();
-    // getCompareData();
     }
-  }, [filterOptions]);
+  }, [filterOptions]); 
 
-
+  console.log("currentAd",currentAd)
+  console.log("메인 필터ㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓ",filterOptions)
   //Filter에 따른 ScoreCard용 데이터
   const getScoreCardData = async ()=>{
     if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`&& filterOptions.AdProvider.length>0){
@@ -472,7 +496,6 @@ useEffect(() => {
   }
 
   useEffect(() => {
-
     if(fetchedData.length>0){
       if (fetchedData && fetchedCompareData) {
         if(vatValue){

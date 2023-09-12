@@ -18,6 +18,9 @@ const MainTab1 = ({filterOptions}) => {
   const [programData, setProgramData] = useState([])
 
   console.log('MainTabbbbbbbbbbbbbbbbbbbb',filterOptions)
+  console.log('MainTabbbbbbbbbbbbbbbbbbbb',providerResult)
+  console.log('MainTabbbbbbbbbbbbbbbbbbbb',deviceResult)
+  console.log('MainTabbbbbbbbbbbbbbbbbbbb',programResult)
   //광고 매체사별 성과 데이터
   const getProgramData = async ()=>{
     if(filterOptions.date[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
@@ -83,6 +86,7 @@ const MainTab1 = ({filterOptions}) => {
 
       }catch(e){
         console.error(e)
+        setProgramResult([])
       }
     }else{
       setProgramResult([])
@@ -152,6 +156,7 @@ const MainTab1 = ({filterOptions}) => {
 
       }catch(e){
         console.error(e)
+        setProviderResult([])
       }
     }else{
       setProviderResult([])
@@ -203,6 +208,7 @@ const MainTab1 = ({filterOptions}) => {
 
       }catch(e){
         console.error(e)
+        setDeviceResult([])
       }
     }else{
       setDeviceResult([])
@@ -243,6 +249,9 @@ const MainTab1 = ({filterOptions}) => {
           setProgramData(programResult)
           setProviderData(providerResult);
         }
+      }else{
+        setProgramData([])
+        setProviderData([]);
       }
   }, [providerResult,programResult,filterOptions]);
 
