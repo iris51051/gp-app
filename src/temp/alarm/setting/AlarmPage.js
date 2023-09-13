@@ -13,6 +13,7 @@ const { Search } = Input;
   const [addGroup, setAddGroup] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  
   const [tableParams, setTableParams] = useState({
     pagination: { current: 1, pageSize: 10, showSizeChanger: false },
     sorter: { field: "", order: "" },
@@ -59,6 +60,18 @@ const { Search } = Input;
       key: "switch",
       dataIndex: "switch",
       align: "center",
+      render: (_, record) => {
+        return (
+          <Switch
+            checkedChildren="ON"
+            unCheckedChildren="OFF"
+            size="small"
+            checked={record.switch === "on"}
+            onChange={() => changeSwitch(record.key)}
+            onClick={() => ClickedSwitch(record.key)}
+          />
+        );
+      },
     },
     {
       title: "수신자 그룹명",
@@ -126,6 +139,7 @@ const { Search } = Input;
       pagination,
       sorter: { field: sorter.field, order: sorter.order },
     });
+    setSelectedRowKeys([])
   };
 
   const filteredData = sortedData.filter((row) => {
@@ -137,6 +151,8 @@ const { Search } = Input;
       return row;
     }
   })
+
+  const [data, setData] = useState(filteredData)
 
   const initialRecipientData = [
     {
@@ -196,29 +212,32 @@ const { Search } = Input;
   };
   const changeSwitch =(value)=>{
     if(value==='on'){
-      const updatedData = filteredData.map((item) => {
+      const updatedData = data.map((item) => {
         if (selectedRowKeys.includes(item.key)) {
           return { ...item, switch: "on" };
         }
         return item;
       });
       console.log('updatedData',updatedData)
-      // setData(updatedData);
+      setData(updatedData)
     }else if(value ==='off'){
-      const updatedData = filteredData.map((item) => {
+      const updatedData = data.map((item) => {
         if (selectedRowKeys.includes(item.key)) {
           return { ...item, switch: "off" };
         }
         return item;
       });
       console.log('updatedData',updatedData)
-      // setData(updatedData);
+      setData(updatedData)
     }
   }
+  console.log("data",data)
+  console.log("filteredData",filteredData)
+  
   const ClickedSwitch=(value)=>{
     console.log('ClickedSwitch',value)
   }
-  console.log('dataSource',dataSource)
+  // console.log('dataSource',dataSource)
   return (
     <>
       <div
@@ -396,7 +415,6 @@ const { Search } = Input;
                               />
                           );
                         }else{
-                          console.log('record',record)
                           return text
                         }
                     }

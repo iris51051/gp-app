@@ -7,11 +7,11 @@ import {
   MinusOutlined,
   ReloadOutlined,
 } from '@ant-design/icons';
-const defalutdata = [
+
+const defaultdata = [
   {
     key: 1,
     id: '101',
-    statistics: 'Discovery',
     totad: 6546831,
     pretotad: 12346831,
     totsale: 43215648,
@@ -34,7 +34,6 @@ const defalutdata = [
   {
     key: 2,
     id: '103',
-    statistics: 'Behavioral',
     totad: 1548642,
     pretotad: 0,
     totsale: 45684321,
@@ -57,7 +56,6 @@ const defalutdata = [
   {
     key: 3,
     id: '102',
-    statistics: 'Behavioral',
     totad: 1548642,
     pretotad: 1048642,
     totsale: 45684321,
@@ -77,11 +75,9 @@ const defalutdata = [
       }
     },
   },
-
   {
     key: 4,
     id: '104',
-    statistics: 'Behavioral',
     totad: 1548642,
     pretotad: 1048642,
     totsale: 0,
@@ -104,7 +100,6 @@ const defalutdata = [
   {
     key: 5,
     id: '105',
-    statistics: 'Behavioral',
     totad: 1548642,
     pretotad: 1048642,
     totsale: 45684321,
@@ -125,11 +120,36 @@ const defalutdata = [
     },
   },
 ];
+for(let i=6; i<100; i++){
+  const data =  {
+    key: i,
+    id: `${i}`,
+    totad: 6546831+i,
+    pretotad: 12346831+i,
+    totsale: 43215648+i,
+    pretotsale: 23215648+i,
+    get roas() {
+      if (this.totad > 0 && this.totsale > 0) {
+        return ((this.totad / this.totsale) * 100).toFixed(0);
+      } else {
+        return 0;
+      }
+    },
+    get preroas() {
+      if (this.pretotad > 0 && this.pretotsale > 0) {
+        return ((this.pretotad / this.pretotsale) * 100).toFixed(0);
+      } else {
+        return 0;
+      }
+    },
+  }
+  defaultdata.push(data)
+}
 const App = () => {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
   const [searchText, setSearchText] = useState('');
-  const [data, setData] = useState(defalutdata);
+  const [data, setData] = useState(defaultdata);
 
   const handleChange = (pagination, filters, sorter) => {
     setFilteredInfo(filters);
@@ -137,7 +157,7 @@ const App = () => {
   };
 
   const clearAll = () => {
-    setData(defalutdata);
+    setData(defaultdata);
     setSortedInfo({});
   };
 
@@ -370,6 +390,7 @@ const App = () => {
         itemValue.toString().toLowerCase().includes(value.toLowerCase())
       );
     });
+    console.log('onSearch',filteredData)
 
     setFilteredInfo({});
     setSortedInfo({});

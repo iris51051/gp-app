@@ -16,11 +16,7 @@ const MainTab1 = ({filterOptions}) => {
   const [programResult, setProgramResult] = useState([])
   const [providerData, setProviderData] = useState([])
   const [programData, setProgramData] = useState([])
-
-  console.log('MainTabbbbbbbbbbbbbbbbbbbb',filterOptions)
-  console.log('MainTabbbbbbbbbbbbbbbbbbbb',providerResult)
-  console.log('MainTabbbbbbbbbbbbbbbbbbbb',deviceResult)
-  console.log('MainTabbbbbbbbbbbbbbbbbbbb',programResult)
+  
   //광고 매체사별 성과 데이터
   const getProgramData = async ()=>{
     if(filterOptions.date[0] !==`${format(new Date(),"yyyy-MM-dd")}`){

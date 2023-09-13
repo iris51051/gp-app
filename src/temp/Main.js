@@ -178,12 +178,9 @@ console.log("adSiteList",adSiteList)
   };
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
-  console.log('currenAd는 숫자냐 글자냐!!!!!!!!!!!',typeof currentAd)
-  console.log('currenAd는 숫자냐 글자냐!!!!!!!!!!!',currentAd===0,currentAd==='0')
   useEffect(() => {
     if (adProviderList.length > 0 && adSiteList.length > 0) {
       if(currentAd === '0' || currentAd ===undefined){
-        console.log('왜 안들어오냐!!!!!!!!!!!!!글자라며!!!!!!!!!!!!!!!!!')
         setFilterOptions((prevOptions) => ({
           ...prevOptions,
           Ad:AdList,
@@ -191,7 +188,6 @@ console.log("adSiteList",adSiteList)
           AdProvider: AllProvider,
         }));
       }else{
-        console.log('0일 때 들어오면 안된다!!!!!!!!!!!!!!!!!')
         setFilterOptions((prevOptions) => ({
           ...prevOptions,
           Ad:currentAd,

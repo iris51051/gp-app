@@ -3,6 +3,7 @@ import { Breadcrumb,Select,Switch,Dropdown,Table,Button } from "antd";
 import dayjs from 'dayjs';
 
 import SearchableTable from "../../../components/table/SearchableTable"
+import SearchableTable2 from "../../../components/table/SearchableTable2"
 import AddAlarm from "./AddAlarm"
 import Demo from "./Demo"
 import { Link } from 'react-router-dom';
@@ -485,7 +486,8 @@ export const ListSet =()=>{
                 <span style={{fontSize:20,fontWeight:1000, marginRight:10}}>맞춤 알림</span>
                 <span>사용자가 정의한 맞춤 알림 항목입니다.</span>
             </div>
-            <SearchableTable column={CustomColumn}  IncomeData={CustomData}/>
+            {/* <SearchableTable column={CustomColumn}  IncomeData={CustomData}/> */}
+            <SearchableTable2 columns={CustomColumn}  IncomeData={CustomData}/>
             <div>
             <Button>
             <Link to="/Demo">새 알림 등록</Link>
