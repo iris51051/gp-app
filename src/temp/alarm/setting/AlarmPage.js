@@ -1,22 +1,65 @@
 import React, { useState } from "react";
-import Practice from "../layout/Practice";
-import { Button, Table, Select, Input, Breadcrumb, Form } from "antd";
-import "../css/alarm.css";
-import { ManageDropdown } from "../components/Dropdown";
-import RecipientRow from "../components/RecipientRow";
+import { Button, Table, Select, Input, Breadcrumb, Form, Dropdown,Switch } from "antd";
+import RecipientRow from "./RecipientRow";
+
+import {
+  SettingOutlined
+} from "@ant-design/icons";
 const { Search } = Input;
 
-export const AlarmPage = () => {
+ const AlarmPage = () => {
   // const [form] = Form.useForm();
   const [onOff, setOnOff] = useState(true);
   const [addGroup, setAddGroup] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [tableParams, setTableParams] = useState({
     pagination: { current: 1, pageSize: 10, showSizeChanger: false },
     sorter: { field: "", order: "" },
   });
   const { sorter } = tableParams;
+  const ManageDropdown=()=>{
+    const option=[
+      {
+          key:1,
+          label:'수정',
+          value:'edit'
+      },
+      {
+          key:2,
+          label:'복사',
+          value:'copy'
+      },
+      {
+          key:3,
+          label:'삭제',
+          value:'delete'
+      },
+    ]
+    return (
+      <>
+            <Dropdown
+                menu={{
+                    items:option,
+                }}
+                
+                trigger='click'
+                placement="bottomRight"
+                arrow
+                >
+                <Button icon={<SettingOutlined/>}></Button>
+                </Dropdown>
+                </>
+    )
+
+  }
   const columns = [
+    {
+      title: "ON/OFF",
+      key: "switch",
+      dataIndex: "switch",
+      align: "center",
+    },
     {
       title: "수신자 그룹명",
       key: "groupNm",
@@ -45,13 +88,18 @@ export const AlarmPage = () => {
     },
   ];
   const dataSource = [];
-  for (let i = 0; i < 100; i++) {
-    const dummyObj = {
-      key: i,
-      groupNm: `마케팅${i}팀`,
-      constructor: "김서연",
-    };
-    dataSource.push(dummyObj);
+  
+  const team = ['기획','마케팅','홍보','기술','개발','디자인']
+  for(let i =0; i<team.length; i++){
+    for (let j = 1; j < 21; j++) {
+      const dummyObj = {
+        key: dataSource.length+1,
+        switch: j%2===1? 'on':'off',
+        groupNm: `${team[i]}${j}팀`,
+        constructor: "김서연",
+      };
+      dataSource.push(dummyObj);
+    }
   }
   let sortedData = [...dataSource];
   if (sorter.field && sorter.order) {
@@ -79,15 +127,17 @@ export const AlarmPage = () => {
       sorter: { field: sorter.field, order: sorter.order },
     });
   };
-  const filterdData = sortedData.filter((row) => {
-    if (searchText == "") return row;
+
+  const filteredData = sortedData.filter((row) => {
+    if (searchText === "") return row;
     else if (
       row.groupNm.toLowerCase().includes(searchText.toLowerCase()) ||
       row.constructor.toLowerCase().includes(searchText.toLowerCase())
     ) {
       return row;
     }
-  });
+  })
+
   const initialRecipientData = [
     {
       id: 1,
@@ -144,9 +194,33 @@ export const AlarmPage = () => {
       );
     }
   };
-
+  const changeSwitch =(value)=>{
+    if(value==='on'){
+      const updatedData = filteredData.map((item) => {
+        if (selectedRowKeys.includes(item.key)) {
+          return { ...item, switch: "on" };
+        }
+        return item;
+      });
+      console.log('updatedData',updatedData)
+      // setData(updatedData);
+    }else if(value ==='off'){
+      const updatedData = filteredData.map((item) => {
+        if (selectedRowKeys.includes(item.key)) {
+          return { ...item, switch: "off" };
+        }
+        return item;
+      });
+      console.log('updatedData',updatedData)
+      // setData(updatedData);
+    }
+  }
+  const ClickedSwitch=(value)=>{
+    console.log('ClickedSwitch',value)
+  }
+  console.log('dataSource',dataSource)
   return (
-    <Practice>
+    <>
       <div
         style={{
           fontSize: "14px",
@@ -252,11 +326,6 @@ export const AlarmPage = () => {
                 >
                   수신자 그룹 등록
                 </Button>
-                {/* <ReceiverEnrollModal
-              isModalOpen={isModalOpen}
-              handleOk={handleOk}
-              handleCancel={handleCancel}
-            /> */}
                 <Button
                   type="default"
                   style={{
@@ -271,22 +340,20 @@ export const AlarmPage = () => {
                 >
                   삭제
                 </Button>
-                <div className="can-toggle" style={{ marginRight: "10px" }}>
-                  <input
-                    id="vat_tobble_switch"
-                    type="checkbox"
-                    checked={onOff}
-                    onChange={(e) => setOnOff(e.target.checked)}
-                  />
-                  <label htmlFor="vat_toggle_swtich">
-                    <div
-                      className="can-toggle__switch"
-                      data-checked="ON"
-                      data-unchecked="OFF"
-                      onClick={handleCheckedChange}
-                    ></div>
-                  </label>
-                </div>
+                <Button
+                  style={{borderRadius:0,}}
+                  className='checkedbtn'
+                  onClick={()=>changeSwitch('on')}
+                  >
+                    ON
+                  </Button>
+                  <Button
+                  style={{borderRadius:0,marginRight:10}}
+                  className='uncheckbtn'
+                  onClick={()=>changeSwitch('off')}
+                  >
+                    OFF
+                  </Button>
               </div>
               <div className="fr">
                 <Select
@@ -308,9 +375,33 @@ export const AlarmPage = () => {
               </div>
               <div>
                 <Table
-                  rowSelection={{ type: "checkbox" }}
-                  dataSource={filterdData}
-                  columns={columns}
+                    rowSelection={{
+                    selectedRowKeys, // Step 1: Pass the selected row keys
+                    onChange: (selectedKeys) => setSelectedRowKeys(selectedKeys), // Step 1: Update selected row keys
+                  }}
+                  dataSource={filteredData}
+                  columns={columns.map((col) => ({
+                    ...col,
+                    onCell: (record,text) => {
+                        if (record.switch === 'switch') {
+                          return (
+                            <Switch
+                              key={record.key}
+                              checkedChildren="ON"
+                              unCheckedChildren="OFF"
+                              size='small'
+                              checked={record.switch === 'on'}
+                              onChange={() => changeSwitch(record.key)}
+                              onClick={() => ClickedSwitch(record.key)}
+                              />
+                          );
+                        }else{
+                          console.log('record',record)
+                          return text
+                        }
+                    }
+                  }))}
+                  showSorterTooltip={false}
                   pagination={tableParams.pagination}
                   style={{ paddingTop: "6px" }}
                   onChange={handleTableChange}
@@ -320,6 +411,7 @@ export const AlarmPage = () => {
           )}
         </div>
       </div>
-    </Practice>
+    </>
   );
 };
+export default AlarmPage

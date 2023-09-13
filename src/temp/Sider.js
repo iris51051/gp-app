@@ -80,9 +80,9 @@ const sideItems =[{
                     ),
                 }, {
                   key: "5-2",
-                  value : "/temp/alarm/setting/ListSet",
+                  value : "/temp/alarm/setting/AlarmPage",
                   label: (
-                  <Link to="/temp/alarm/setting/ListSet">
+                  <Link to="/temp/alarm/setting/AlarmPage">
                     알림 수신자 설정
                     </Link>
                     ),

@@ -27,8 +27,6 @@ const Demo = () => {
     
 
     const SelectRender=(alarmType)=>{
-        console.log('alarmType',alarmType)
-
         const selectorData =[
             {
                 key:1,

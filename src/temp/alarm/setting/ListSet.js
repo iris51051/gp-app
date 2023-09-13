@@ -232,7 +232,7 @@ export const ListSet =()=>{
       const StandardData = [
         {
             key:1,
-            switch:(<Switch defaultChecked size='small'/>),
+            switch:(<Switch checkedChildren="ON" unCheckedChildren="OFF" defaultChecked size='small'/>),
             group: '기본 알림',
             alarmname:'AD-ADC',
             domain:'bizspring',
@@ -349,7 +349,6 @@ export const ListSet =()=>{
           dataIndex: 'manage',
           width: '10%',
           align:'center',
-          sorter: (a, b) => a.manage.localeCompare(b.manage), 
       },
       ]
       const CustomOptions =[
@@ -428,7 +427,35 @@ export const ListSet =()=>{
           manage: manageDrop()
       }
       ]
-
+      for(let i=3; i<200; i++){
+        const dummy = {
+          key:i,
+          switch:i%2===1 ? 'on':'off',
+          group: `카카오 광고${i}`,
+          alarmname:'순위권 이탈 알림',
+          domain:<>
+                [A 비즈스프링]<br/>bizspring.co.kr
+          </>,
+          condition:(
+              <>
+                  카카오<br/> 순위권이 3위를 벗어날 경우<br/>
+              </>
+          ),
+          method :<>
+                  이메일<br/>
+          </>,
+          receiver:'마케팅3팀',
+          period:(
+              <>
+                  매일 14시<br/>(주말제외)
+              </>
+          ),
+          constructor:i,
+          mkdate:'2022/07/15',
+          manage: manageDrop()
+        }
+        CustomData.push(dummy)
+      }
     return (
       <>
       <div style={{marginTop:10,marginBottom:10}}>
@@ -451,7 +478,7 @@ export const ListSet =()=>{
                 <span style={{fontSize:20,fontWeight:1000, marginRight:10}}>기본 알림</span>
                 <span>광고 운영, 유입/탐색, 전환 데이터 항목을 분류하여 정의된 SCORING으로 조건 설정없이 알림을 받을 수 있습니다.</span>
             </div>
-            <Table style={{marginTop:16}}className='StandardDataTable' bordered columns={StandardColumn} dataSource={StandardData} />
+            <Table style={{marginTop:16}} className='StandardDataTable' bordered columns={StandardColumn} dataSource={StandardData} />
         </div>
         <div className='WhiteBox'>
             <div>

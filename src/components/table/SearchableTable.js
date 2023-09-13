@@ -96,7 +96,6 @@ const changeSwitch =(value)=>{
     });
     setData(updatedData);
   }
-
 }
 const ClickedSwitch = (key) => {
   const updatedData = data.map((item) => {
@@ -185,11 +184,13 @@ const ClickedSwitch = (key) => {
                 if (col.dataIndex === 'switch') {
                   return (
                     <Switch
-                    size='small'
+                      checkedChildren="ON"
+                      unCheckedChildren="OFF"
+                      size='small'
                       checked={record.switch === 'on'}
                       onChange={() => changeSwitch(record.key)}
                       onClick={() => ClickedSwitch(record.key)}
-                    />
+                       />
                   );
                 }else{
                   return text
@@ -197,7 +198,6 @@ const ClickedSwitch = (key) => {
             }
           }))}
             bordered
-            sorter
             dataSource={data}
             showSorterTooltip={false}
             pagination={tableParams.pagination}
