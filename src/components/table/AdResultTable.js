@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Table, Input } from 'antd';
 import { utils as XLSXUtils, writeFile } from 'xlsx';
 import {
@@ -382,20 +382,48 @@ const App = () => {
   const rowClassName = (record, index) => {
     return index % 2 === 0 ? 'even-row' : 'odd-row';
   };
-  const onSearch = (value) => {
-    setSearchText(value);
-    const filteredData = data.filter((item) => {
+  // const onSearch = (value) => {
+  //   setSearchText(value);
+  //   const filteredData = data.filter((item) => {
+  //     const itemValues = Object.values(item);
+  //     return itemValues.some((itemValue) =>
+  //       itemValue.toString().toLowerCase().includes(value.toLowerCase())
+  //     );
+  //   });
+  //   setFilteredInfo({});
+  //   setSortedInfo({});
+  //   setData(filteredData);
+  // };
+  // const onSearch = (value) => {
+  //   setSearchText(value);
+  //   if (value === "") {
+  //     // If the search value is empty, reset the data to defaultdata
+  //     setData(defaultdata);
+  //   } else {
+  //     // If there is a search value, filter the defaultdata
+  //     const filteredData = defaultdata.filter((item) => {
+  //       const itemValues = Object.values(item);
+  //       return itemValues.some((itemValue) =>
+  //         itemValue.toString().toLowerCase().includes(value.toLowerCase())
+  //       );
+  //     });
+  //     setData(filteredData);
+  //   }
+  // };
+  
+useEffect(() => {
+  if (searchText === "") {
+    setData(defaultdata);
+  } else {
+    const filteredData = defaultdata.filter((item) => {
       const itemValues = Object.values(item);
       return itemValues.some((itemValue) =>
-        itemValue.toString().toLowerCase().includes(value.toLowerCase())
+        itemValue.toString().toLowerCase().includes(searchText.toLowerCase())
       );
     });
-    console.log('onSearch',filteredData)
-
-    setFilteredInfo({});
-    setSortedInfo({});
     setData(filteredData);
-  };
+  }
+}, [searchText])
 
   //Excel 파일로 다운로드
   const handleDownload = () => {
@@ -429,7 +457,8 @@ const App = () => {
           <div style={{ display: 'flex' }}>
             <Search
               placeholder="검색"
-              onSearch={onSearch}
+              // onSearch={onSearch}
+              onChange={(event) => setSearchText(event.target.value)}
               className="searchBtn"
             />
             <Button className="btn excelBtn" onClick={handleDownload}>

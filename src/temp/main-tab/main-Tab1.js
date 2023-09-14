@@ -389,7 +389,10 @@ const MainTab1 = ({filterOptions}) => {
       </div>
       <div>
         <h4 className="MDResult">광고 매체사별 성과</h4>
-        <MDResultTable Incomedata={programData}/>
+        <MDResultTable
+         Incomedata={programData}
+          
+         />
       </div>
 
       <div className="fotterChartCompdiv">
