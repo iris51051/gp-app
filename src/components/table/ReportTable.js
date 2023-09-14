@@ -15,7 +15,7 @@ RightOutlined
 export const ReportTable =React.memo(({Incomedata,ConvType})=> {
   const [showingTablePlatform, setShowingTablePlatform] = useState([]);
   const [showingTableProgram, setShowingTableProgram] = useState([]);
-  const [itemsPerPage] = useState(10); // 페이지당 표시할 항목 수
+  const [itemsPerPage] = useState(5); // 페이지당 표시할 항목 수
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 번호
   const [DataType, setDataType] = useState('MEDIA')
   const [sortConfig, setSortConfig] = useState({
@@ -250,18 +250,12 @@ const renderTitle=(title)=>{
       platformEntry.children.push(programEntry);
   }
 
-  const totalPages = Math.ceil(TableData.length / itemsPerPage);
-  const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
 
 // Calculate sum totals
-  TableData.forEach(providerEntry => {
-    providerEntry.children.forEach(platformEntry => {
-        let platformSum = {};
-
+TableData.forEach(providerEntry => {
+  providerEntry.children.forEach(platformEntry => {
+      let platformSum = {};
         platformEntry.children.forEach(programEntry => {
             for (const prop in programEntry) {
                 if (
@@ -297,11 +291,8 @@ const renderTitle=(title)=>{
         });
 
     });
-
-
-
-      providerEntry.children.forEach(platformEntry => {
-        let providerSum = {};
+    let providerSum = {};
+    providerEntry.children.forEach(platformEntry => {
         platformEntry.children.forEach(programEntry => {
             for (const prop in programEntry) {
                 if (
@@ -334,11 +325,65 @@ const renderTitle=(title)=>{
         });
       })
   });
-console.log(TableData);
-  
 
+ 
 
-  const sum = TableData.reduce(
+  const showTablePlatform = (key) => {
+
+    setShowingTablePlatform((prevShowingPlatform) => {
+      if (!prevShowingPlatform.includes(key)) {
+        return [...prevShowingPlatform, key];
+      } else {
+        const mainkey=key.toString()[0]
+        setShowingTableProgram((prevShowingProgram) => {
+          return prevShowingProgram.filter((item) => item[0] !== mainkey);
+        });
+        return prevShowingPlatform.filter((item) => item !== key);
+      }
+    });
+  };
+
+  const showTableProgram = (key) => {
+    setShowingTableProgram((prevShowingProgram) => {
+      if (!prevShowingProgram.includes(key)) {
+        return [...prevShowingProgram, key];
+      } else {
+        return prevShowingProgram.filter((item) => item !== key);
+      }
+    });
+  };
+
+  const sortedTableData = [...TableData].sort((a, b) => {
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+    if (!sortConfig.key){
+      return 0;
+    } else if(sortConfig.key==='ad_provider'){
+      if (sortConfig.direction === 'asc') {
+        return aValue.localeCompare(bValue);
+      } else {
+        return bValue.localeCompare(aValue);
+      }
+    }else{  
+      if (sortConfig.direction === 'asc') {
+        return aValue - bValue;
+      } else {
+        return bValue - aValue;
+      }
+    }
+  });
+  //테이블 페이지 네이션
+  const totalPages = Math.ceil(TableData.length / itemsPerPage);
+  const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+  const startIndex = (currentPage - 1) * itemsPerPage; // 현재 페이지의 시작 인덱스
+  const endIndex = startIndex + itemsPerPage; // 현재 페이지의 끝 인덱스
+  const currentTableData = sortedTableData.slice(startIndex, endIndex); // 현재 페이지에 표시할 데이터
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const sum = currentTableData.reduce(
     (total, current) => {
       total.m_impr += current.m_impr;
       total.m_click += current.m_click;
@@ -354,11 +399,9 @@ console.log(TableData);
   );
 
   const calculate = (key) => {
-    if (key === 'ad_provider') {
-      return '총합계';
-    }
+
      //sum으로 집계된 데이터에 key값이 있을 경우
-     else if (sum.hasOwnProperty(key)) {
+    if (sum.hasOwnProperty(key)) {
       if(sum[key]===0){
         return '-'
       }else if (key === 'm_cost' || key === 'm_rvn' ||key ==='rvn') {
@@ -408,43 +451,14 @@ console.log(TableData);
     }
   };
 
-  const showTablePlatform = (key) => {
-
-    setShowingTablePlatform((prevShowingPlatform) => {
-      if (!prevShowingPlatform.includes(key)) {
-        return [...prevShowingPlatform, key];
-      } else {
-        const mainkey=key.toString()[0]
-        setShowingTableProgram((prevShowingProgram) => {
-          return prevShowingProgram.filter((item) => item[0] !== mainkey);
-        });
-        return prevShowingPlatform.filter((item) => item !== key);
-      }
-    });
-  };
-
-  const showTableProgram = (key) => {
-    setShowingTableProgram((prevShowingProgram) => {
-      if (!prevShowingProgram.includes(key)) {
-        return [...prevShowingProgram, key];
-      } else {
-        return prevShowingProgram.filter((item) => item !== key);
-      }
-    });
-  };
-
-  const sortedTableData = [...TableData].sort((a, b) => {
-    if (!sortConfig.key) return 0;
-
-    const aValue = a[sortConfig.key];
-    const bValue = b[sortConfig.key];
-
-    if (sortConfig.direction === 'asc') {
-      return aValue - bValue;
+  const currentPageData = columns.map((column) => {
+    if (column.key === 'ad_provider') {
+      return '총합계';
     } else {
-      return bValue - aValue;
+      return calculate(column.key);
     }
   });
+
 
   const requestSort = (key) => {
     let direction = 'desc';
@@ -487,6 +501,7 @@ console.log(TableData);
     }
   };
 
+
   return (
     <>
     <div>
@@ -501,17 +516,17 @@ console.log(TableData);
                 width: `${item.width}`, 
                 textAlign: 'center' ,
                 padding: '10px 8px',
-                cursor: !['ad_provider', 'ad_platform', 'ad_program'].includes(item.key) ? 'pointer' : 'default',
+                cursor: !['ad_platform', 'ad_program'].includes(item.key) ? 'pointer' : 'default',
                 }}
                 key={item.key}
                 onClick={() => {
-                if (!['ad_provider', 'ad_platform', 'ad_program'].includes(item.key)) {
+                if (!['ad_platform', 'ad_program'].includes(item.key)) {
                     requestSort(item.dataIndex);
                 }
                 }}
             >
                 <span style={{ verticalAlign: 'middle' }}>{item.title}</span>
-                {['ad_provider', 'ad_platform', 'ad_program'].includes(item.key) ? (
+                {['ad_platform', 'ad_program'].includes(item.key) ? (
                 sortConfig.key === item.dataIndex && (
                     sortConfig.direction === 'asc' ? (
                     <CaretUpOutlined style={{ fontSize: '10px' }} />
@@ -540,7 +555,7 @@ console.log(TableData);
         </thead>
         <tbody>
         {/* 광고 매체사 데이터 */}
-          {sortedTableData.map((item) => (
+        {currentTableData.map((item) => (
             <React.Fragment key={item.key}>
               <tr>
                 {columns.map((column) => (
@@ -637,7 +652,7 @@ console.log(TableData);
             </React.Fragment>
           ))}
           <tr className="total">
-            {columns.map((column) => (
+            {columns.map((column, index) => (
               <td
                 className="BottomTd"
                 style={{
@@ -645,20 +660,21 @@ console.log(TableData);
                 }}
                 key={column.key}
               >
-                {calculate(column.key)}
+                {currentPageData[index]}
               </td>
             ))}
           </tr>
         </tbody>
       </table>
-      <div className="pagination" style={{display:'flex', justifyContent:'flex-end', marginTop:'10px'}}>
-      <div style={{display:'flex', justifyContent:'center', height:'30px'}}>
-        <Button
-          style={{border:'none',background:'none'}}
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage ===1}
+      {/* 페이지네이션 컨트롤 */}
+      <div className="pagination" style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', height: '30px' }}>
+          <Button
+            style={{ border: 'none', background: 'none' }}
+            onClick={() => handlePageChange(currentPage - 1)} // 이전 페이지로 이동
+            disabled={currentPage === 1} // 첫 번째 페이지일 경우 비활성화
           >
-          <LeftOutlined />
+            <LeftOutlined />
           </Button>
           {pageNumbers.map((pageNumber) => (
             <button
@@ -666,28 +682,28 @@ console.log(TableData);
                 border: pageNumber === currentPage ? '1px solid #4096ff' : 'none',
                 borderRadius: '10px',
                 background: 'none',
-                boxShadow : 'none',
-                display:'flex',
-                justifyContent:'center',
-                alignItems:'center',
-                width:'28px'
-                }}
+                boxShadow: 'none',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '28px',
+              }}
               key={pageNumber}
-              onClick={() => handlePageChange(pageNumber)}
-          >
-                      <span style={{color:pageNumber === currentPage ? '#4096ff' : 'black',fontSize:14}}>{pageNumber}</span>
-          </button>
+              onClick={() => handlePageChange(pageNumber)} // 페이지 번호 클릭 시 해당 페이지로 이동
+            >
+              <span style={{ color: pageNumber === currentPage ? '#4096ff' : 'black', fontSize: 14 }}>{pageNumber}</span>
+            </button>
           ))}
           <Button
-          style={{border:'none',background:'none',boxShadow:'none'}}
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage >= totalPages}
+            style={{ border: 'none', background: 'none', boxShadow: 'none' }}
+            onClick={() => handlePageChange(currentPage + 1)} // 다음 페이지로 이동
+            disabled={currentPage >= totalPages} // 마지막 페이지일 경우 비활성화
           >
-          <RightOutlined />
+            <RightOutlined />
           </Button>
-          </div>
+        </div>
       </div>
     </>
-  )
+  );
 });
 export default ReportTable;

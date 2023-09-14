@@ -8,43 +8,39 @@ import { Link } from 'react-router-dom';
 
 import AddAlarm from "../../temp/alarm/setting/AddAlarm"
 
-const SearchableTable = ({column,IncomeData}) => {
+const SearchableTable = ({columns,IncomeData}) => {
+  const [filteredInfo, setFilteredInfo] = useState({});
+  const [sortedInfo, setSortedInfo] = useState({});
   const [searchText, setSearchText] = useState('');
   const [data, setData] = useState(IncomeData);
   const [searchOptions, setSearchOptions] = useState()
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [tableParams, setTableParams] = useState({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
-  });
-  
-  const clearAll = () => {
-    setData(IncomeData);
+
+  const handleChange = (pagination, filters, sorter) => {
+    setFilteredInfo(filters);
+    setSortedInfo(sorter);
   };
 
   const { Search } = Input;
 
-  const onSearch = (value) => {
-    if(value===""){
-      clearAll()
-    }else{
-      setSearchText(value);
-      const filteredData = data.filter((item) => {
+  useEffect(() => {
+    if (searchText === "") {
+      setData(IncomeData);
+    } else {
+      const filteredData = IncomeData.filter((item) => {
         const itemValues = Object.values(item);
         return itemValues.some((itemValue) =>
-          itemValue.toString().toLowerCase().includes(value.toLowerCase())
+          itemValue.toString().toLowerCase().includes(searchText.toLowerCase())
         );
       });
       setData(filteredData);
     }
-  };
+  }, [searchText])
 
   const pageOption=[
     {
       value: 10,
-      label: '10',
+      label: '50',
     },
     {
       value: 20,
@@ -67,16 +63,6 @@ const SearchableTable = ({column,IncomeData}) => {
       label: '100',
     },
   ]
-  const pageChange =(value)=>{
-    const newValue = {
-      current: 1,
-      pageSize: value,
-    }
-
-    setTableParams(newValue)
-  }
-
-
 
 const changeSwitch =(value)=>{
   if(value==='on'){
@@ -147,61 +133,28 @@ const ClickedSwitch = (key) => {
           </div>
 
           <div style={{ display: 'flex' }}>
-          <Button 
-          style={{marginRight:10}}
-          onClick={clearAll}>
-              <ReloadOutlined />
-            </Button>
           <Select
           style={{marginRight:10}}
           options={searchOptions}
           >
 
           </Select>
-            <Search
-            allowClear
-            style={{marginRight:10}}
+          <Search
               placeholder="검색"
-              onSearch={onSearch}
+              onChange={(event) => setSearchText(event.target.value)}
               className="searchBtn"
             />
-            <Select
-            style={{width:70}}
-              defaultValue={10}
-              options={pageOption}
-              onChange={pageChange}
-            ></Select>
+
           </div>
         </div>
         <Table
-            rowSelection={{
-              selectedRowKeys, // Step 1: Pass the selected row keys
-              onChange: (selectedKeys) => setSelectedRowKeys(selectedKeys), // Step 1: Update selected row keys
-            }}
-            columns={column.map((col) => ({
-            ...col,
-            render: (text, record) => {
-                if (col.dataIndex === 'switch') {
-                  return (
-                    <Switch
-                      checkedChildren="ON"
-                      unCheckedChildren="OFF"
-                      size='small'
-                      checked={record.switch === 'on'}
-                      onChange={() => changeSwitch(record.key)}
-                      onClick={() => ClickedSwitch(record.key)}
-                       />
-                  );
-                }else{
-                  return text
-                }
-            }
-          }))}
-            bordered
-            dataSource={data}
-            showSorterTooltip={false}
-            pagination={tableParams.pagination}
-            size='small'
+          className='ADResultTable'
+          id="table"
+          columns={columns}
+          dataSource={data}
+          onChange={handleChange}
+          showSorterTooltip={false}
+          size='small'
         />
       </div>
     </>

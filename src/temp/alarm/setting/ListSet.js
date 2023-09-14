@@ -3,7 +3,6 @@ import { Breadcrumb,Select,Switch,Dropdown,Table,Button } from "antd";
 import dayjs from 'dayjs';
 
 import SearchableTable from "../../../components/table/SearchableTable"
-import SearchableTable2 from "../../../components/table/SearchableTable2"
 import AddAlarm from "./AddAlarm"
 import Demo from "./Demo"
 import { Link } from 'react-router-dom';
@@ -282,7 +281,27 @@ export const ListSet =()=>{
             dataIndex: 'group',
             width: '10%',
             align:'center',
-            sorter: (a, b) => a.group.localeCompare(b.group), 
+            sorter: (a, b) => {
+              // Extract the strings without numbers
+              const aGroup = a.group || ''; // Ensure 'a.group' is not null or undefined
+              const bGroup = b.group || ''; // Ensure 'b.group' is not null or undefined
+        
+              // Extract the strings without numbers
+              const aStr = aGroup.replace(/\d+/g, '');
+              const bStr = bGroup.replace(/\d+/g, '');
+        
+              // Compare the strings alphabetically
+              const strComparison = aStr.localeCompare(bStr);
+        
+              // If the strings are equal, compare the numeric parts
+              if (strComparison === 0) {
+                const aNum = parseInt(aGroup.match(/\d+/)?.[0] || '0');
+                const bNum = parseInt(bGroup.match(/\d+/)?.[0] || '0');
+                return aNum - bNum;
+              }
+        
+              return strComparison;
+            },
         },{
             key:'alarmname',
             title : '알림 이름',
@@ -336,7 +355,13 @@ export const ListSet =()=>{
             dataIndex: 'constructor',
             width: '10%',
             align:'center',
-            sorter: (a, b) => a.constructor.localeCompare(b.constructor), 
+            sorter: (a, b) => {
+              // "receiver" 속성을 문자열로 변환하고 숫자만 추출하여 비교
+              const aNum = parseInt(a.receiver.match(/\d+/)[0]);
+              const bNum = parseInt(b.receiver.match(/\d+/)[0]);
+        
+              return aNum - bNum;
+            },
         },{
             key:'mkdate',
             title : '생성일시',
@@ -486,8 +511,7 @@ export const ListSet =()=>{
                 <span style={{fontSize:20,fontWeight:1000, marginRight:10}}>맞춤 알림</span>
                 <span>사용자가 정의한 맞춤 알림 항목입니다.</span>
             </div>
-            {/* <SearchableTable column={CustomColumn}  IncomeData={CustomData}/> */}
-            <SearchableTable2 columns={CustomColumn}  IncomeData={CustomData}/>
+            <SearchableTable columns={CustomColumn}  IncomeData={CustomData}/>
             <div>
             <Button>
             <Link to="/Demo">새 알림 등록</Link>

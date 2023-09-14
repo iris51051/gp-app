@@ -77,8 +77,28 @@ const { Search } = Input;
       title: "수신자 그룹명",
       key: "groupNm",
       dataIndex: "groupNm",
-      sorter: true,
       align: "center",
+      sorter: (a, b) => {
+        // Extract the strings without numbers
+        const aGroup = a.groupNm || ''; // Ensure 'a.group' is not null or undefined
+        const bGroup = b.groupNm || ''; // Ensure 'b.group' is not null or undefined
+  
+        // Extract the strings without numbers
+        const aStr = aGroup.replace(/\d+/g, '');
+        const bStr = bGroup.replace(/\d+/g, '');
+  
+        // Compare the strings alphabetically
+        const strComparison = aStr.localeCompare(bStr);
+  
+        // If the strings are equal, compare the numeric parts
+        if (strComparison === 0) {
+          const aNum = parseInt(aGroup.match(/\d+/)?.[0] || '0');
+          const bNum = parseInt(bGroup.match(/\d+/)?.[0] || '0');
+          return aNum - bNum;
+        }
+  
+        return strComparison;
+      },
     },
     {
       title: "수신자",

@@ -816,7 +816,7 @@ export const MdResult =React.memo(({Incomedata})=> {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-// Calculate sum totals
+// 광고매체사별 존재하는 광고상품의 데이터를 각 항목별로 합산하여 광고매체사에 추가
   TableData.forEach(providerEntry => {
     let platformSum = {};
     providerEntry.children.forEach(programEntry => {
@@ -851,8 +851,50 @@ export const MdResult =React.memo(({Incomedata})=> {
           });
 
     });
+    
 
-  const sum = TableData.reduce(
+
+
+
+  const showTablePlatform = (key) => {
+    setShowingTablePlatform((prevShowingPlatform) => {
+      if (!prevShowingPlatform.includes(key)) {
+        return [...prevShowingPlatform, key];
+      } else {
+        const mainkey=key.toString()[0]
+        setShowingTableProgram((prevShowingProgram) => {
+          return prevShowingProgram.filter((item) => item[0] !== mainkey);
+        });
+        return prevShowingPlatform.filter((item) => item !== key);
+      }
+    });
+  };
+
+  const sortedTableData = [...TableData].sort((a, b) => {
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+    if (!sortConfig.key){
+      return 0;
+    } else if(sortConfig.key==='ad_provider'){
+      if (sortConfig.direction === 'asc') {
+        return aValue.localeCompare(bValue);
+      } else {
+        return bValue.localeCompare(aValue);
+      }
+    }else{  
+      if (sortConfig.direction === 'asc') {
+        return aValue - bValue;
+      } else {
+        return bValue - aValue;
+      }
+    }
+  });
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const itemsToDisplay = sortedTableData.slice(startIndex, endIndex);
+
+  const sum = itemsToDisplay.reduce(
     (total, current) => {
       total.m_impr += current.m_impr;
       total.m_click += current.m_click;
@@ -868,11 +910,8 @@ export const MdResult =React.memo(({Incomedata})=> {
   );
 
   const calculate = (key) => {
-    if (key === 'ad_provider') {
-      return '총합계';
-    }
      //sum으로 집계된 데이터에 key값이 있을 경우
-     else if (sum.hasOwnProperty(key)) {
+    if (sum.hasOwnProperty(key)) {
       if(sum[key]===0){
         return '-'
       }else if (key === 'm_cost' || key === 'm_rvn' ||key ==='rvn') {
@@ -922,37 +961,11 @@ export const MdResult =React.memo(({Incomedata})=> {
     }
   };
 
-  const showTablePlatform = (key) => {
-    setShowingTablePlatform((prevShowingPlatform) => {
-      if (!prevShowingPlatform.includes(key)) {
-        return [...prevShowingPlatform, key];
-      } else {
-        const mainkey=key.toString()[0]
-        setShowingTableProgram((prevShowingProgram) => {
-          return prevShowingProgram.filter((item) => item[0] !== mainkey);
-        });
-        return prevShowingPlatform.filter((item) => item !== key);
-      }
-    });
-  };
-
-  const sortedTableData = [...TableData].sort((a, b) => {
-    const aValue = a[sortConfig.key];
-    const bValue = b[sortConfig.key];
-    if (!sortConfig.key){
-      return 0;
-    } else if(sortConfig.key==='ad_provider'){
-      if (sortConfig.direction === 'asc') {
-        return aValue.localeCompare(bValue);
-      } else {
-        return bValue.localeCompare(aValue);
-      }
-    }else{  
-      if (sortConfig.direction === 'asc') {
-        return aValue - bValue;
-      } else {
-        return bValue - aValue;
-      }
+  const currentPageData = columns.map((column) => {
+    if (column.key === 'ad_provider') {
+      return '총합계';
+    } else {
+      return calculate(column.key);
     }
   });
 
@@ -995,10 +1008,7 @@ export const MdResult =React.memo(({Incomedata})=> {
     }
   };
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const itemsToDisplay = sortedTableData.slice(startIndex, endIndex);
-  console.log('itemsToDisplay데이터요!!!!!!!!!!!!!!!!!!',itemsToDisplay)
+
 
   return (
     <>
@@ -1108,8 +1118,8 @@ export const MdResult =React.memo(({Incomedata})=> {
             )}
           </React.Fragment>
         ))}
-          <tr className="total">
-            {columns.map((column) => (
+        <tr className="total">
+            {columns.map((column, index) => (
               <td
                 className="BottomTd"
                 style={{
@@ -1117,7 +1127,7 @@ export const MdResult =React.memo(({Incomedata})=> {
                 }}
                 key={column.key}
               >
-                {calculate(column.key)}
+                {currentPageData[index]}
               </td>
             ))}
           </tr>
