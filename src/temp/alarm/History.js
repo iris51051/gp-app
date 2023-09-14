@@ -4,7 +4,7 @@ import format from "date-fns/format";
 import subDays from "date-fns/subDays";
 import addDays from "date-fns/addDays";
 
-import HistoryTab from './History/HistoryTab';
+import HistoryTab from './History-tab/historyTab';
 import Calendar from '../../components/calendar'
 
 

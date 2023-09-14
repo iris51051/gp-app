@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Button, Table, Select, Input, Breadcrumb, Form, Dropdown,Switch } from "antd";
 import RecipientRow from "./RecipientRow";
 
@@ -9,15 +9,18 @@ const { Search } = Input;
 
  const AlarmPage = () => {
   // const [form] = Form.useForm();
+  const [filteredInfo, setFilteredInfo] = useState({});
+  const [sortedInfo, setSortedInfo] = useState({});
   const [onOff, setOnOff] = useState(true);
   const [addGroup, setAddGroup] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   
   const [tableParams, setTableParams] = useState({
-    pagination: { current: 1, pageSize: 10, showSizeChanger: false },
+    pagination: { current: 1, pageSize: 10, showSizeChanger: true },
     sorter: { field: "", order: "" },
   });
+
   const { sorter } = tableParams;
   const ManageDropdown=()=>{
     const option=[
@@ -134,45 +137,38 @@ const { Search } = Input;
       dataSource.push(dummyObj);
     }
   }
-  let sortedData = [...dataSource];
-  if (sorter.field && sorter.order) {
-    sortedData = [...dataSource].sort((a, b) => {
-      const isAsc = sorter.order === "ascend";
-      const compareResult = a[sorter.field].localeCompare(b[sorter.field]);
-      return isAsc ? compareResult : -compareResult;
-    });
-  }
 
-  const handlePageSize = (selectedOption) => {
+  const [data, setData] = useState(dataSource)
+
+  const handlePageChange = (page, pageSize) => {
     setTableParams((prevParams) => ({
       ...prevParams,
       pagination: {
         ...prevParams.pagination,
-        current: 1,
-        pageSize: selectedOption,
       },
     }));
   };
-  const handleTableChange = (pagination, _, sorter) => {
-    setTableParams({
-      ...tableParams,
-      pagination,
-      sorter: { field: sorter.field, order: sorter.order },
-    });
+  const handleChange = (pagination, filters, sorter) => {
+    setFilteredInfo(filters);
+    setSortedInfo(sorter);
     setSelectedRowKeys([])
   };
 
-  const filteredData = sortedData.filter((row) => {
-    if (searchText === "") return row;
-    else if (
-      row.groupNm.toLowerCase().includes(searchText.toLowerCase()) ||
-      row.constructor.toLowerCase().includes(searchText.toLowerCase())
-    ) {
-      return row;
+  useEffect(() => {
+    if (searchText === "") {
+      setData(dataSource);
+    } else {
+      const filteredData = dataSource.filter((item) => {
+        const itemValues = Object.values(item);
+        return itemValues.some((itemValue) =>
+          itemValue.toString().toLowerCase().includes(searchText.toLowerCase())
+        );
+      });
+      setData(filteredData);
     }
-  })
+  }, [searchText])
 
-  const [data, setData] = useState(filteredData)
+
 
   const initialRecipientData = [
     {
@@ -251,8 +247,7 @@ const { Search } = Input;
       setData(updatedData)
     }
   }
-  console.log("data",data)
-  console.log("filteredData",filteredData)
+
   
   const ClickedSwitch=(value)=>{
     console.log('ClickedSwitch',value)
@@ -260,26 +255,29 @@ const { Search } = Input;
   // console.log('dataSource',dataSource)
   return (
     <>
-      <div
-        style={{
-          fontSize: "14px",
-          paddingBottom: "0px",
-          marginBottom: "50px", // 임시
-          marginRight: 0,
-          padding: "15px 10px 9px",
-          marginLeft: "-25.5px",
-        }}
-      >
-        <div style={{ width: "50%", float: "left", paddingLeft: "15px" }}>
-          <Breadcrumb
-            separator=">"
-            items={[
-              { title: "모니터링 알림" },
-              { title: "알림 설정" },
-              { title: "알림 수신자 설정" },
-            ]}
-          />
-        </div>
+    <div>
+
+      <div>
+        <div
+          style={{
+            fontSize: "14px",
+            paddingBottom: "0px",
+            marginBottom: "50px", // 임시
+            marginRight: 0,
+            padding: "15px 10px 9px",
+            marginLeft: "-25.5px",
+          }}
+        >
+            <div style={{ width: "50%", float: "left", paddingLeft: "15px" }}>
+              <Breadcrumb
+                separator=">"
+                items={[
+                  { title: "모니터링 알림" },
+                  { title: "알림 설정" },
+                  { title: "알림 수신자 설정" },
+                ]}
+              />
+            </div>
       </div>
       <div style={{ marginRight: "-15px", marginLeft: "-15px" }}>
         <div
@@ -404,7 +402,7 @@ const { Search } = Input;
                     { value: 100, label: "100" },
                   ]}
                   style={{ width: 80, float: "right" }}
-                  onChange={handlePageSize}
+                  onChange={handlePageChange}
                 ></Select>
                 <div style={{ float: "left", marginRight: "10px" }}>
                   <Search
@@ -414,42 +412,26 @@ const { Search } = Input;
               </div>
               <div>
                 <Table
-                    rowSelection={{
-                    selectedRowKeys, // Step 1: Pass the selected row keys
-                    onChange: (selectedKeys) => setSelectedRowKeys(selectedKeys), // Step 1: Update selected row keys
-                  }}
-                  dataSource={filteredData}
-                  columns={columns.map((col) => ({
-                    ...col,
-                    onCell: (record,text) => {
-                        if (record.switch === 'switch') {
-                          return (
-                            <Switch
-                              key={record.key}
-                              checkedChildren="ON"
-                              unCheckedChildren="OFF"
-                              size='small'
-                              checked={record.switch === 'on'}
-                              onChange={() => changeSwitch(record.key)}
-                              onClick={() => ClickedSwitch(record.key)}
-                              />
-                          );
-                        }else{
-                          return text
-                        }
-                    }
-                  }))}
-                  showSorterTooltip={false}
-                  pagination={tableParams.pagination}
-                  style={{ paddingTop: "6px" }}
-                  onChange={handleTableChange}
+                  rowSelection={{
+            selectedRowKeys, // Step 1: Pass the selected row keys
+            onChange: (selectedKeys) => setSelectedRowKeys(selectedKeys), // Step 1: Update selected row keys
+          }}
+          id="table"
+          columns={columns}
+          dataSource={data}
+          onChange={handleChange}
+          showSorterTooltip={false}
+          pagination={tableParams.pagination}
+          size='small'
                 />
               </div>
             </>
           )}
+          </div>
         </div>
       </div>
-    </>
+      </div>
+      </>
   );
 };
 export default AlarmPage

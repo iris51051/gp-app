@@ -382,34 +382,7 @@ const App = () => {
   const rowClassName = (record, index) => {
     return index % 2 === 0 ? 'even-row' : 'odd-row';
   };
-  // const onSearch = (value) => {
-  //   setSearchText(value);
-  //   const filteredData = data.filter((item) => {
-  //     const itemValues = Object.values(item);
-  //     return itemValues.some((itemValue) =>
-  //       itemValue.toString().toLowerCase().includes(value.toLowerCase())
-  //     );
-  //   });
-  //   setFilteredInfo({});
-  //   setSortedInfo({});
-  //   setData(filteredData);
-  // };
-  // const onSearch = (value) => {
-  //   setSearchText(value);
-  //   if (value === "") {
-  //     // If the search value is empty, reset the data to defaultdata
-  //     setData(defaultdata);
-  //   } else {
-  //     // If there is a search value, filter the defaultdata
-  //     const filteredData = defaultdata.filter((item) => {
-  //       const itemValues = Object.values(item);
-  //       return itemValues.some((itemValue) =>
-  //         itemValue.toString().toLowerCase().includes(value.toLowerCase())
-  //       );
-  //     });
-  //     setData(filteredData);
-  //   }
-  // };
+
   
 useEffect(() => {
   if (searchText === "") {

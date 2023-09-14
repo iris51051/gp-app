@@ -1,6 +1,6 @@
 import React,{useState} from 'react'
 import { Breadcrumb,Select,Switch,Dropdown,Table,Button } from "antd";
-import dayjs from 'dayjs';
+
 
 import SearchableTable from "../../../components/table/SearchableTable"
 import AddAlarm from "./AddAlarm"
@@ -103,6 +103,29 @@ export const ListSet =()=>{
         marginRight:10,
         width: 200
       }
+      
+      const StandardOptions =[
+        {
+            key:1,
+            label:'히스토리',
+            value:'history'
+        },
+        {
+            key:2,
+            label:'알림항목',
+            value:'history'
+        },
+        {
+            key:3,
+            label:'복사',
+            value:'history'
+        },
+        {
+            key:4,
+            label:'설정',
+            value:'history'
+        },
+      ]
 
       const StandardColumn=[
         {
@@ -110,7 +133,8 @@ export const ListSet =()=>{
             title: 'ON/OFF',
             dataIndex: 'switch',
             width: '5%',
-            align:'center'
+            align:'center',
+
         },{
             key:2,
             title : '알림 그룹',
@@ -169,37 +193,9 @@ export const ListSet =()=>{
             title : '관리',
             dataIndex: 'manage',
             width: '10%',
-            align:'center'
-        },
-      ]
-
-      const StandardOptions =[
-        {
-            key:1,
-            label:'히스토리',
-            value:'history'
-        },
-        {
-            key:2,
-            label:'알림항목',
-            value:'history'
-        },
-        {
-            key:3,
-            label:'복사',
-            value:'history'
-        },
-        {
-            key:4,
-            label:'설정',
-            value:'history'
-        },
-      ]
-      const manageDrop =(value)=>{
-        if(value ==='standard'){
-          return (
-            <>
-            <Dropdown
+            align:'center',
+            render: () => (
+              <Dropdown
                 menu={{
                     items:StandardOptions,
                 }}
@@ -210,25 +206,10 @@ export const ListSet =()=>{
                 >
                 <Button icon={<SettingOutlined/>}></Button>
                 </Dropdown>
-                </>
-          )
-        }else{
-          return (
-            <>
-            <Dropdown
-                menu={{
-                    items:CustomOptions,
-                }}
-                trigger='click'
-                placement="bottomRight"
-                arrow
-                >
-                <Button icon={<SettingOutlined/>}></Button>
-                </Dropdown>
-                </>
-          )
-        }
-      }
+            ),
+        },
+      ]
+
       const StandardData = [
         {
             key:1,
@@ -249,156 +230,35 @@ export const ListSet =()=>{
                 </>
             ),
             constructor:'BizSpring',
-            manage:manageDrop('standard')
+
         }
       ]
-      const childrenSorter=(column)=>(a,b)=>{
-          const strA=a[column].props.children.join("")
-          const strB=b[column].props.children.join("")
-          return strA.localeCompare(strB)
-      }
-      function dateSorter(a, b) {
-        const dateA = dayjs(a.mkdate);
-        const dateB = dayjs(b.mkdate);
-        
-        if (dateA.isBefore(dateB)) return -1;
-        if (dateA.isAfter(dateB)) return 1;
-        return 0;
+      for(let i=2; i<30; i++){
+        const dummy =  {
+          key:i,
+          switch:(<Switch checkedChildren="ON" unCheckedChildren="OFF" defaultChecked size='small'/>),
+          group: `기본알림${i}`,
+          alarmname:`AD-ADC${i}`,
+          domain:'bizspring',
+          condition:(
+              <>
+                  광고<br/>유입/탐색<br/>전환
+              </>
+          ),
+          method :'이메일',
+          receiver:`마케팅${i}팀`,
+          period:(
+              <>
+                  매일 9시<br/>(주말제외)
+              </>
+          ),
+          constructor:`BizSpring${i}`,
+
+        }
+        StandardData.push(dummy)
       }
 
-      const CustomColumn=[
-
-        {
-            key:'switch',
-            title: 'ON/OFF',
-            dataIndex: 'switch',
-            width: '5%',
-            align:'center'
-            
-        },{
-            key:'group',
-            title : '알림 그룹',
-            dataIndex: 'group',
-            width: '10%',
-            align:'center',
-            sorter: (a, b) => {
-              // Extract the strings without numbers
-              const aGroup = a.group || ''; // Ensure 'a.group' is not null or undefined
-              const bGroup = b.group || ''; // Ensure 'b.group' is not null or undefined
-        
-              // Extract the strings without numbers
-              const aStr = aGroup.replace(/\d+/g, '');
-              const bStr = bGroup.replace(/\d+/g, '');
-        
-              // Compare the strings alphabetically
-              const strComparison = aStr.localeCompare(bStr);
-        
-              // If the strings are equal, compare the numeric parts
-              if (strComparison === 0) {
-                const aNum = parseInt(aGroup.match(/\d+/)?.[0] || '0');
-                const bNum = parseInt(bGroup.match(/\d+/)?.[0] || '0');
-                return aNum - bNum;
-              }
-        
-              return strComparison;
-            },
-        },{
-            key:'alarmname',
-            title : '알림 이름',
-            dataIndex: 'alarmname',
-            width: '10%',
-            align:'center',
-            sorter: (a, b) => a.alarmname.localeCompare(b.alarmname), 
-        },{
-            key:'domain',
-            title:(
-                <>
-                    [사이트명]<br/>
-                    도메인
-                </>
-            ),
-            dataIndex: 'domain',
-            width: '10%',
-            align:'center',
-            sorter : childrenSorter('domain'),
-          },{
-            key:'condition',
-            title : '조건',
-            dataIndex: 'condition',
-            width: '13%',
-            align:'center',
-            sorter: childrenSorter('condition'), 
-        },{
-            key:'method',
-            title : '수신 방법',
-            dataIndex: 'method',
-            width: '9%',
-            align:'center',
-            sorter: childrenSorter('method'), 
-        },{
-            key:'receiver',
-            title : '수신자',
-            dataIndex: 'receiver',
-            width: '7%',
-            align:'center',
-            sorter: (a, b) => a.receiver.localeCompare(b.receiver), 
-        },{
-            key:'period',
-            title : '주기',
-            dataIndex: 'period',
-            width: '10%',
-            align:'center',
-            sorter: childrenSorter('period'), 
-        },{
-            key:'constructor',
-            title : '생성자',
-            dataIndex: 'constructor',
-            width: '10%',
-            align:'center',
-            sorter: (a, b) => {
-              // "receiver" 속성을 문자열로 변환하고 숫자만 추출하여 비교
-              const aNum = parseInt(a.receiver.match(/\d+/)[0]);
-              const bNum = parseInt(b.receiver.match(/\d+/)[0]);
-        
-              return aNum - bNum;
-            },
-        },{
-            key:'mkdate',
-            title : '생성일시',
-            dataIndex: 'mkdate',
-            width: '10%',
-            align:'center',
-            sorter: dateSorter, 
-        },{
-          key:'manage',
-          title : '관리',
-          dataIndex: 'manage',
-          width: '10%',
-          align:'center',
-      },
-      ]
-      const CustomOptions =[
-        {
-            key:1,
-            label:'히스토리',
-            value:'history'
-        },
-        {
-            key:2,
-            label:'알림항목',
-            value:'history'
-        },
-        {
-            key:3,
-            label:'복사',
-            value:'history'
-        },
-        {
-            key:4,
-            label:'삭제',
-            value:'history'
-        },
-      ]
+      
       const CustomData = [
         {
             key:1,
@@ -425,7 +285,7 @@ export const ListSet =()=>{
             ),
             constructor:'김서연',
             mkdate:'2021/01/01',
-            manage:manageDrop()
+
         },  {
           key:2,
           switch:'off',
@@ -450,7 +310,7 @@ export const ListSet =()=>{
           ),
           constructor:'팀 쿡',
           mkdate:'2022/07/15',
-          manage: manageDrop()
+
       }
       ]
       for(let i=3; i<200; i++){
@@ -478,7 +338,6 @@ export const ListSet =()=>{
           ),
           constructor:i,
           mkdate:'2022/07/15',
-          manage: manageDrop()
         }
         CustomData.push(dummy)
       }
@@ -511,7 +370,7 @@ export const ListSet =()=>{
                 <span style={{fontSize:20,fontWeight:1000, marginRight:10}}>맞춤 알림</span>
                 <span>사용자가 정의한 맞춤 알림 항목입니다.</span>
             </div>
-            <SearchableTable columns={CustomColumn}  IncomeData={CustomData}/>
+            <SearchableTable IncomeData={CustomData}/>
             <div>
             <Button>
             <Link to="/Demo">새 알림 등록</Link>
