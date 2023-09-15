@@ -8,7 +8,9 @@ const Bottom = ({collapse})=>{
         <Footer
         collapsed={collapse}
         style={{
-          zIndex:1,
+          position: 'fixed',
+          top:'93%',
+          zIndex:0,
           backgroundColor: 'white',
           borderTop: '1px solid rgba(0, 0, 0, 0.08)',
           marginLeft: collapse===true ? 0 : 240,

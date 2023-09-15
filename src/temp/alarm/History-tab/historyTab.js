@@ -1,193 +1,325 @@
-import React,{useState} from 'react'
-import { Radio,Button,Timeline,Input,Form } from "antd";
-import {FrownOutlined,MehOutlined,SmileOutlined} from '@ant-design/icons'
-import {FaRegFrownOpen} from "react-icons/fa";
-import {AiOutlineMessage} from "react-icons/ai";
+import {
+  Breadcrumb,
+  Radio,
+  Button,
+  Timeline,
+  ConfigProvider,
+  Input,
+  Tabs,
+  Form,
+  Dropdown
+} from "antd";
+import dayjs from 'dayjs';
+import React, { useState } from "react";
+import {
+  SettingOutlined
+} from '@ant-design/icons';
+import {
+  FaFaceFrown,
+  FaFaceFrownOpen,
+  FaFaceMeh,
+  FaFaceSmile,
+} from "react-icons/fa6";
+import { FaCommentAlt } from "react-icons/fa";
+
+import "../alarm.css";
+
+const options = [
+  { label: "기본", value: "basic" },
+  { label: "맞춤", value: "custom" },
+];
+const options2 = [
+  { key: "1", label: "Low", value: "low", bg: "green" },
+  { key: "2", label: "Medium", value: "medium", bg: "#ffdc29" },
+  { key: "3", label: "High", value: "high", bg: "orange" },
+  { key: "4", label: "Critical", value: "critical", bg: "red" },
+];
+const data = [
+  {
+    time: "2023-08-21 16:00",
+    importance: "critical",
+    content:
+      "매출액이 지난주 월요일(동일 요일 & 동일 시간) 대비 860,000원에서 817,000원으로 5% 감소하였습니다.",
+  },
+  {
+    time: "2023-08-21 13:10",
+    importance: "low",
+    content:
+      "매출액이 지난주 월요일(동일 요일 & 동일 시간) 대비 860,000원에서 817,000원으로 5% 감소하였습니다.",
+  },
+  {
+    time: "2023-08-21 12:55",
+    importance: "medium",
+    content:
+      "매출액이 지난주 월요일(동일 요일 & 동일 시간) 대비 860,000원에서 817,000원으로 5% 감소하였습니다.",
+  },
+  {
+    time: "2023-08-21 10:52",
+    importance: "critical",
+    content:
+      "https://bizspring.co.kr/company/prd_logger.php 페이지가 404오류로 고객 이탈이 일어나고 있습니다.",
+  },
+];
+
+
+
 
 const HistoryTab = () => {
+  const [value1, setValue1] = useState("basic");
+  const [stateFilter, setStateFilter] = useState(['low', 'medium', 'high', 'critical']);
+  const [alarmHistory, setAlarmHistory] = useState(data);
+  const [addComment, setAddComment] = useState(false);
   const [form] = Form.useForm();
-  const [statList, setStatList] = useState([])
-  const [collapse, setCollapse] = useState(false)
-  const histData=[
-    {
-      label: '10:52',
-      dot:<FrownOutlined className='criticFace'/>,
-      children: 'Network problems being solved',
-    },
-    {
-      label: '11:22',
-      dot:<FaRegFrownOpen className='highFace'/>,
-      children: 'Network problems being solved',
-    },
-    {
-      label: '12:55',
-      dot:<SmileOutlined className='lowFace'/>,
-      children: 'Technical testing',
-    },
-    {
-      label: '13:10',
-      dot:<MehOutlined className='mediumFace'/>,
-      children: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    },
-    {
-      label: '16:00',
-      dot:<FrownOutlined className='criticFace'/>,
-      children: (
-        <div>
-        <span className="timeLineConetent">aaaaaaaaaaaaaaaaaaaaaaaaa</span>
-        </div>
+  const onChange1 = ({ target: { value } }) => {
+    setValue1(value);
+  };
+  //24시간,분
+  const now = dayjs(); // 현재 날짜 및 시간 가져오기
+  const formatted = now.format('YYYY-MM-DD HH:mm')
+  const onFinish = (values) => {
+    setAlarmHistory([
+      {
+        time: formatted,
+        importance: "comment",
+        content: values.comments,
+        name: "서혜정",
+      },
+      ...alarmHistory,
+    ]);
+    form.resetFields();
+    setAddComment(false);
+  };
+  console.log('stateFilter',stateFilter)
+  const handleStateFilter = (option) => {
+    if (stateFilter.includes(option)) {
+      setStateFilter(stateFilter.filter((item) => item !== option));
+    } else {
+      setStateFilter([...stateFilter, option]);
+    }
+  };
+  const filterdData = () => {
+    if (stateFilter.length === 0) return alarmHistory;
+    else
+      return alarmHistory.filter((item) =>
+        stateFilter.includes(item.importance)
+      );
+  };
+
+  const items = filterdData().map((item, index, array) => {
+    const iconColors = {
+      low: "green",
+      medium: "#ffdc29",
+      high: "orange",
+      critical: "red",
+    };
+    const iconStyle = {
+      border: "2px solid black",
+      borderRadius: "50%",
+      backgroundColor: "#000",
+      color: iconColors[item.importance],
+      fontSize: "40px",
+      boxShadow: "0 0 5px",
+    };
+    let icon;
+    if (item.importance === "low") {
+      icon = <FaFaceSmile style={iconStyle} />;
+    } else if (item.importance === "medium") {
+      icon = <FaFaceMeh style={iconStyle} />;
+    } else if (item.importance === "high") {
+      icon = <FaFaceFrownOpen style={iconStyle} />;
+    } else if (item.importance === "critical") {
+      icon = <FaFaceFrown style={iconStyle} />;
+    } else if (item.importance === "comment") {
+      icon = (
+        <span
+          style={{
+            height: "40px",
+            boxSizing: "border-box",
+            borderRadius: "50%",
+            width: "40px",
+            background: "#eee",
+            lineHeight: "40px",
+            display: "block",
+          }}
+        >
+          <FaCommentAlt style={{ color: "gray" }} />
+        </span>
+      );
+    }
+    const isLastItem = index === array.length - 1;
+    const AlarmCommentDropdown=()=>{
+      return(
+        <>
+        <Dropdown
+          menu={{
+            items: [{
+              key:1,
+              label:'삭제',
+              value:'delete'
+            }]
+          }}
+          trigger='click'
+          placement="bottomRight"
+          arrow
+        >
+          <Button icon={<SettingOutlined />}></Button>
+        </Dropdown>
+        </>
       )
     }
-  ]
-  const [historyData, setHistoryData] = useState(histData)
-    const statData=[
-      {
-        key:'1',
-        value : 'low',
-        bg : 'green',
-        title: 'Low',
-
-      },{
-        key:'2',
-        value : 'medium',
-        bg : 'yellow',
-        title: 'Medium',
-
-      },      {
-        key:'3',
-        value : 'high',
-        bg : 'orange',
-        title: 'High',
-
-      },      {
-        key:'4',
-        value : 'critical',
-        bg : 'red',
-        title: 'Critical',
-
-      }
-    ]
-
-    const selectStat =(value)=>{
-      if(statList.includes((value))){
-        const newValue = statList.filter((item)=>item!==value)
-        setStatList([...newValue])
-      }else{
-        const newValue = [...statList,value]
-        setStatList([...newValue])
-      }
-    }
-    console.log(statList)
-
-    const showComment=()=>{
-      const value = collapse;
-      setCollapse(!value)
-    }
-    const timeOptions = {
-      year : 'numeric',
-      month: "numeric",
-      day : 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    };
-    const currentTime = new Date().toLocaleTimeString("ko-KR",timeOptions)
-    const now = new Date()
-    const formattedTime = currentTime.replace(/\./g, '-').replace(/\.$/, '');
-    console.log('날짜!!!!!!!!',new Date())
-    console.log('currentTime!!!!!!!!',currentTime.replace(/\./g, "-"))
-    console.log('formattedTime!!!!!!!!',formattedTime)
-    const onFinish = (values) => {
-      const newComment ={
-        label:currentTime,
-        dot: <AiOutlineMessage></AiOutlineMessage>,
-        children : values.comment
-      }
-      setHistoryData((item)=>[...item,newComment])
-      form.resetFields();
-      showComment();
-    };
-    console.log('historyData',historyData)
-  return (
-    <>
-    <div style={{display:'flex'}}>
-    <Radio.Group  defaultValue="default" buttonStyle="solid">
-      <Radio.Button value="default">기본</Radio.Button>
-      <Radio.Button value="custom">맞춤</Radio.Button>
-    </Radio.Group>
-
-    
-    <table style={{padding:10, marginLeft:20}}>
-        <thead/>
-        <tbody>
-            <tr style={{display:'flex'}}>
-              <td>
-              {statData.map((item) => (
-                <Radio.Button
-                  className="statButton"
-                  key={item.key}
-                  value={item.key}
-                  checked={statList.includes(item.key)}
-                  onClick={(e) => selectStat(e.target.value)}
-                >
-                    <div style={{ width: 5, height: 10, backgroundColor: item.bg, display: 'inline-block', marginRight: '5px' }} />
-                    <span style={{ marginLeft: 5, display: 'inline' }}>{item.title}</span>
-                </Radio.Button>
-              ))}
-              </td>
-            </tr>
-        </tbody>
-    </table>
-    <Button style={{marginLeft:'auto'}}> 다운로드</Button>
-    </div>
-    <div style={{marginTop:20,marginBottom:30,display:'flex', width:'auto',backgroundColor:'#f5f6f7'}}>
-                aaaaaaaaaaaaaaaaaaa
-    </div>
-    <div className='HistoryTime'
-    style={{marginTop:20,display:'grid',justifyContent:'start'}}>
-      <Timeline
-      reverse='true'
-        style={{display:'inline-block',marginRight:'auto',width:'auto'}}
-        mode='left'
-        items={historyData}
-      />
-      <span style={{width:100}}onClick={showComment}>Add a comment</span>
-      {collapse ===true ? 
-        (
-          <>
-          <Form
-          form={form}
-            name="basic"
-            onFinish={onFinish}
-          >
-            <Form.Item
-              name="comment"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            wrapperCol={{
-              offset: 8,
-              span: 16,
+    return {
+      dot: icon,
+      label: item.time.split(" ")[1],
+      children: (
+        <>
+          <div
+            style={{
+              padding: "10px 25px",
+              fontSize: "15px",
+              background: "#edf1f5",
+              // border: "1px solid rgb(221, 221, 221)",
             }}
           >
-            <Button type="primary" htmlType="submit">
-              확인
-            </Button>
-          </Form.Item>
-        </Form>
+            {item.importance === "comment" && (
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontWeight: "bold" }}>서혜정</span>
+                <AlarmCommentDropdown />
+              </div>
+            )}
+            {item.content}
+          </div>
+          {isLastItem && (
+            <div style={{ marginTop: "20px" }}>
+              <div
+                style={{ cursor: "pointer" }}
+                onClick={() => setAddComment((prev) => !prev)}
+              >
+                <FaCommentAlt style={{ color: "#4096ff" }} />{" "}
+                <span style={{ color: "#4096ff", fontWeight: 600 }}>
+                  Add a comment
+                </span>
+              </div>
+              {addComment === true && (
+                <div
+                  style={{
+                    width: "300px",
+                    marginTop: "10px",
+                  }}
+                >
+                  <Form form={form} onFinish={onFinish}>
+                    <Form.Item name="comments" style={{ marginBottom: 0 }}>
+                      <Input placeholder="코멘트를 입력하세요" />
+                    </Form.Item>
+                    <Form.Item>
+                      <Button
+                        type="primary"
+                        size="small"
+                        style={{ marginTop: "7px", width: "90px" }}
+                        htmlType="submit"
+                      >
+                        확인
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </div>
+              )}
+            </div>
+          )}
         </>
-        )
-       : ""}
+      ),
+    };
+  });
+
+  return (
+    <>
+      <div style={{ marginRight: "-15px", marginLeft: "-15px" }}>
+        <div
+          style={{
+            paddingLeft: "15px",
+            paddingRight: "15px",
+            position: "relative",
+            minHeight: "1px",
+            float: "left",
+            width: "100%",
+          }}
+        >
+          {/* 탭 */}
+          <div>
+          <div>
+                    <ConfigProvider
+                      theme={{
+                        token: {
+                          colorPrimary: "#41b3f9",
+                          colorBgContainer: "rgb(243, 243, 247)",
+                          colorBorder: "rgb(243, 243, 247)",
+                        },
+                      }}
+                    >
+                      <Radio.Group
+                        options={options}
+                        onChange={onChange1}
+                        value={value1}
+                        optionType="button"
+                        buttonStyle="solid"
+                      />
+                      <Button.Group style={{ marginLeft: "20px" }}>
+                        {options2.map((option) => (
+                          <Button
+                            key={option.value}
+                            className={
+                              stateFilter.includes(option.value)
+                                ? "statefilter-checked"
+                                : ""
+                            }
+                            onClick={() => handleStateFilter(option.value)}
+                          >
+                            <span style={{ marginRight: "5px" }}>
+                              <div
+                                style={{
+                                  width: 5,
+                                  height: 12,
+                                  backgroundColor: option.bg,
+                                }}
+                              />
+                            </span>{" "}
+                            {option.label}
+                          </Button>
+                        ))}
+                      </Button.Group>
+                    </ConfigProvider>
+                    <Button type="default" style={{ float: "right" }}>
+                      다운로드
+                    </Button>
+                  </div>
+            <div id="tab01" style={{ marginTop: "15px" }}>
+              <div
+                style={{
+                  borderBottom: "2px solid #e8e8e8",
+                  padding: "10px 25px",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  background: "rgb(243, 243, 247)",
+                  marginBottom: "30px",
+                }}
+              >
+                2023-08-21
+              </div>
+              <ConfigProvider
+                theme={{ components: { Timeline: { dotBorderWidth: 0 } } }}
+              >
+                <Timeline
+                  mode="left"
+                  style={{ padding: "10px 25px" }}
+                  items={items}
+                />
+              </ConfigProvider>
+            </div>
+            <div id="tab02"></div>
+          </div>
+        </div>
       </div>
-
     </>
-  )
-}
+  );
+};
 
-export default HistoryTab
+export default HistoryTab;

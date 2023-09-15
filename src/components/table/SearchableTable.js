@@ -1,7 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import { Button, Table, Input,Select,Switch,Dropdown } from 'antd';
 import {
-  ReloadOutlined,
   PlusOutlined,
   SettingOutlined
 } from '@ant-design/icons';
@@ -85,7 +84,7 @@ function dateSorter(a, b) {
         dataIndex: 'alarmname',
         width: '10%',
         align:'center',
-        sorter: (a, b) => a.alarmname.localeCompare(b.alarmname), 
+        sorter: (a, b) => a.alarmname.localeCompare(b.alarmname),
     },{
         key:'domain',
         title:(
@@ -98,6 +97,11 @@ function dateSorter(a, b) {
         width: '10%',
         align:'center',
         sorter : childrenSorter('domain'),
+        render: (_, record) => {
+          return (
+            `[${record.profile_nm}] ${record.site_url}`
+          );
+        },
       },{
         key:'condition',
         title : '조건',

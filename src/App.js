@@ -57,7 +57,8 @@ const App = () => {
               style={{
                 left: collapse ? 0 : 240,
                 width: collapse ? '100%' : '87.4%',
-                marginBottom:100
+                marginBottom:120
+                
               }}
             >
               <Routes>
@@ -75,10 +76,11 @@ const App = () => {
                 <Route path="/Demo" element={<Demo/>}></Route>
               </Routes>
             </Content>
-            <Bottom collapse={collapse}/>
+
           </Layout>
         </Layout>
       </Layout>
+      <Bottom collapse={collapse}/>
     </BrowserRouter>
   );
 };

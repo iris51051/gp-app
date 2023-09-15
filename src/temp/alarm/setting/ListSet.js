@@ -157,19 +157,34 @@ export const ListSet =()=>{
             ),
             dataIndex: 'domain',
             width: '10%',
-            align:'center'
+            align:'center',
+            render: (_, record) => {
+              return (
+                `${record.domain}`
+              );
+            },
         },{
             key:5,
             title : '조건',
             dataIndex: 'condition',
             width: '10%',
-            align:'center'
+            align:'center',
+            render: (_, record) => {
+              return (
+                `${record.condition.join(',')}`
+              );
+            },
         },{
             key:6,
             title : '수신 방법',
             dataIndex: 'method',
             width: '10%',
-            align:'center'
+            align:'center',
+            render: (_, record) => {
+              return (
+                `${record.method.join('-')}`
+              );
+            },
         },{
             key:7,
             title : '수신자',
@@ -181,7 +196,12 @@ export const ListSet =()=>{
             title : '주기',
             dataIndex: 'period',
             width: '10%',
-            align:'center'
+            align:'center',
+            render: (_, record) => {
+              return (
+                `${record.period.join('-')}`
+              );
+            },
         },{
             key:8,
             title : '생성자',
@@ -217,43 +237,26 @@ export const ListSet =()=>{
             group: '기본 알림',
             alarmname:'AD-ADC',
             domain:'bizspring',
-            condition:(
-                <>
-                    광고<br/>유입/탐색<br/>전환
-                </>
-            ),
-            method :'이메일',
+            condition:['광고','유입/탐색','전환'],
+            method :['이메일'],
             receiver:'마케팅1팀',
-            period:(
-                <>
-                    매일 9시<br/>(주말제외)
-                </>
-            ),
+            period:['매일 9시','주말제외'],
             constructor:'BizSpring',
 
         }
       ]
-      for(let i=2; i<30; i++){
+      for(let i=2; i<20; i++){
         const dummy =  {
           key:i,
           switch:(<Switch checkedChildren="ON" unCheckedChildren="OFF" defaultChecked size='small'/>),
           group: `기본알림${i}`,
           alarmname:`AD-ADC${i}`,
           domain:'bizspring',
-          condition:(
-              <>
-                  광고<br/>유입/탐색<br/>전환
-              </>
-          ),
-          method :'이메일',
+          condition:['광고','유입/탐색','전환'],
+          method :['이메일'],
           receiver:`마케팅${i}팀`,
-          period:(
-              <>
-                  매일 9시<br/>(주말제외)
-              </>
-          ),
+          period:['매일 9시','주말제외'],
           constructor:`BizSpring${i}`,
-
         }
         StandardData.push(dummy)
       }
@@ -265,24 +268,12 @@ export const ListSet =()=>{
             switch:'on',
             group: '네이버 광고',
             alarmname:'계정 알림',
-            domain:<>
-                  [비즈스프링]<br/>bizspring.co.kr
-            </>,
-            condition:(
-                <>
-                    네이버<br/> 광고비 잔액 1000원 미만<br/>
-                </>
-            ),
-            method :<>
-                    이메일<br/>
-                    카카오톡<br/>
-            </>,
+            profile_nm : '비즈스프링',
+            site_url:'bizspring.co.kr',
+            condition:['광고','유입/탐색','전환'],
+            method :['이메일','카카오톡'],
             receiver:'마케팅1팀',
-            period:(
-                <>
-                    매일 9시<br/>(주말제외)
-                </>
-            ),
+            period:['매일 9시','주말제외'],
             constructor:'김서연',
             mkdate:'2021/01/01',
 
@@ -291,23 +282,12 @@ export const ListSet =()=>{
           switch:'off',
           group: '카카오 광고',
           alarmname:'순위권 이탈 알림',
-          domain:<>
-                [A 비즈스프링]<br/>bizspring.co.kr
-          </>,
-          condition:(
-              <>
-                  카카오<br/> 순위권이 3위를 벗어날 경우<br/>
-              </>
-          ),
-          method :<>
-                  이메일<br/>
-          </>,
+          profile_nm : '비즈스프링',
+          site_url:'bizspring.co.kr',
+          condition:['카카오','순위권을 벗어난 경우'],
+          method :['이메일'],
           receiver:'마케팅3팀',
-          period:(
-              <>
-                  매일 14시<br/>(주말제외)
-              </>
-          ),
+          period:['매일 14시','주말제외'],
           constructor:'팀 쿡',
           mkdate:'2022/07/15',
 
@@ -317,26 +297,15 @@ export const ListSet =()=>{
         const dummy = {
           key:i,
           switch:i%2===1 ? 'on':'off',
-          group: `카카오 광고${i}`,
-          alarmname:'순위권 이탈 알림',
-          domain:<>
-                [A 비즈스프링]<br/>bizspring.co.kr
-          </>,
-          condition:(
-              <>
-                  카카오<br/> 순위권이 3위를 벗어날 경우<br/>
-              </>
-          ),
-          method :<>
-                  이메일<br/>
-          </>,
-          receiver:'마케팅3팀',
-          period:(
-              <>
-                  매일 14시<br/>(주말제외)
-              </>
-          ),
-          constructor:i,
+          group:  i%2===1 ? `카카오 광고${i}` : '네이버 광고',
+          alarmname: i%2===1 ?'순위권 이탈 알림' : '계정 알림',
+          profile_nm : '비즈스프링',
+          site_url:'bizspring.co.kr',
+          condition:  i%2===1 ? ['카카오','순위권을 벗어난 경우']:['광고','유입/탐색','전환'],
+          method :i%2===1 ? ['이메일']: ['이메일','카카오톡'],
+          receiver:`마케팅${i}팀`,
+          period:i%2===1 ? ['매일 14시','주말제외']:['매일 9시','주말제외'],
+          constructor:`김서연${i}`,
           mkdate:'2022/07/15',
         }
         CustomData.push(dummy)
@@ -371,11 +340,11 @@ export const ListSet =()=>{
                 <span>사용자가 정의한 맞춤 알림 항목입니다.</span>
             </div>
             <SearchableTable IncomeData={CustomData}/>
-            <div>
+            {/* <div>
             <Button>
             <Link to="/Demo">새 알림 등록</Link>
             </Button>     
-            </div>
+            </div> */}
         </div>
       </>
     )

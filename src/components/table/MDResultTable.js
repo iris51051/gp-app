@@ -8,11 +8,13 @@ CaretDownOutlined,
 RightOutlined,
 LeftOutlined
  } from '@ant-design/icons';
-
+ import { useLocation} from "react-router-dom";
 
 
 
 export const MdResult =React.memo(({Incomedata})=> {
+  const location = useLocation();
+  const currentAd = (location.search).split('=')[1]
   const [showingTablePlatform, setShowingTablePlatform] = useState([]);
   const [showingTableProgram, setShowingTableProgram] = useState([]);
   const [itemsPerPage] = useState(10); // 페이지당 표시할 항목 수
@@ -72,7 +74,7 @@ export const MdResult =React.memo(({Incomedata})=> {
   // 테이블 테스트용 더미 데이터
   // Incomdata가 없을 때만 보여짐.
   // =>현재는 전체 광고주에 대한 API가 없어서 전체광고주 선택시 보여짐.
-  if(Incomedata.length===0){
+  if(Incomedata.length===0&&currentAd==='0'){
     const data = [
       {
         "ad_program": "test1",
@@ -1133,42 +1135,45 @@ export const MdResult =React.memo(({Incomedata})=> {
           </tr>
         </tbody>
       </table>
-      <div className="pagination" style={{display:'flex', justifyContent:'flex-end', marginTop:'10px'}}>
-      <div style={{display:'flex', justifyContent:'center', height:'30px'}}>
-        <Button
-            style={{ border: 'none', background: 'none' }}
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-          <LeftOutlined />
-          </Button>
-          {pageNumbers.map((pageNumber) => (
-            <button
-              style={{
-                border: pageNumber === currentPage ? '1px solid #4096ff' : 'none',
-                borderRadius: '10px',
-                background: 'none',
-                boxShadow: 'none',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '28px',
-              }}
-              key={pageNumber}
-              onClick={() => handlePageChange(pageNumber)}
+      {pageNumbers!==0 || pageNumbers !== undefined ?
+        <div className="pagination" style={{display:'flex', justifyContent:'flex-end', marginTop:'10px'}}>
+          <div style={{display:'flex', justifyContent:'center', height:'30px'}}>
+            <Button
+              style={{ border: 'none', background: 'none' }}
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
             >
-              <span style={{ color: pageNumber === currentPage ? 'blue' : 'black' }}>{pageNumber}</span>
-            </button>
-          ))}
-          <Button
-            style={{ border: 'none', background: 'none', boxShadow: 'none' }}
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage >= totalPages}
-          >
-            <RightOutlined />
-          </Button>
+              <LeftOutlined />
+            </Button>
+              {pageNumbers.map((pageNumber) => (
+                <button
+                  style={{
+                    border: pageNumber === currentPage ? '1px solid #4096ff' : 'none',
+                    borderRadius: '10px',
+                    background: 'none',
+                    boxShadow: 'none',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '28px',
+                  }}
+                  key={pageNumber}
+                  onClick={() => handlePageChange(pageNumber)}
+                >
+                  <span style={{ color: pageNumber === currentPage ? 'blue' : 'black' }}>{pageNumber}</span>
+                </button>
+              ))}
+              <Button
+                style={{ border: 'none', background: 'none', boxShadow: 'none' }}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage >= totalPages}
+              >
+                <RightOutlined />
+              </Button>
+          </div>
         </div>
-      </div>
+        : ''
+       }            
     </>
   );
 });

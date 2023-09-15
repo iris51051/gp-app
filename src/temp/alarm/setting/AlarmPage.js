@@ -17,7 +17,7 @@ const { Search } = Input;
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   
   const [tableParams, setTableParams] = useState({
-    pagination: { current: 1, pageSize: 10, showSizeChanger: true },
+    pagination: { current: 1, pageSize: 10, showSizeChanger: false },
     sorter: { field: "", order: "" },
   });
 
@@ -141,14 +141,22 @@ const { Search } = Input;
   const [data, setData] = useState(dataSource)
 
   const handlePageChange = (page, pageSize) => {
+    console.log('page',page)
+    console.log('pageSize',pageSize)
     setTableParams((prevParams) => ({
       ...prevParams,
-      pagination: {
-        ...prevParams.pagination,
-      },
+      pagination: { current: 1, pageSize: page,showSizeChanger:false}
     }));
   };
+
   const handleChange = (pagination, filters, sorter) => {
+    console.log('pagination',pagination)
+    setTableParams((prevParams) => ({
+      ...prevParams,
+      pagination: 
+        pagination
+      ,
+    }));
     setFilteredInfo(filters);
     setSortedInfo(sorter);
     setSelectedRowKeys([])
@@ -180,9 +188,7 @@ const { Search } = Input;
   ];
   const [recipientData, setRecipientData] = useState(initialRecipientData);
 
-  const handleCheckedChange = () => {
-    setOnOff((prevValue) => !prevValue);
-  };
+
 
   const handleAddGroup = () => {
     setAddGroup(!addGroup);
@@ -253,6 +259,7 @@ const { Search } = Input;
     console.log('ClickedSwitch',value)
   }
   // console.log('dataSource',dataSource)
+  console.log('tableParams',tableParams.pagination)
   return (
     <>
     <div>
@@ -346,6 +353,7 @@ const { Search } = Input;
             </>
           ) : (
             <>
+            <div className='WhiteBox'>
               <div className="fl">
                 <Button
                   type="primary"
@@ -357,7 +365,7 @@ const { Search } = Input;
                     position: "relative",
                     display: "inline-block",
                     marginRight: "10px",
-                    zIndex: 1,
+
                   }}
                   onClick={handleAddGroup}
                 >
@@ -424,6 +432,7 @@ const { Search } = Input;
           pagination={tableParams.pagination}
           size='small'
                 />
+              </div>
               </div>
             </>
           )}
