@@ -167,14 +167,14 @@ const { Search } = Input;
       setData(dataSource);
     } else {
       const filteredData = dataSource.filter((item) => {
-        const itemValues = Object.values(item);
+        const itemValues = Object.keys(item).filter(index => index !== 'key').map(index => item[index]);
         return itemValues.some((itemValue) =>
           itemValue.toString().toLowerCase().includes(searchText.toLowerCase())
         );
       });
       setData(filteredData);
     }
-  }, [searchText])
+  }, [searchText]);
 
 
 
@@ -259,7 +259,7 @@ const { Search } = Input;
     console.log('ClickedSwitch',value)
   }
   // console.log('dataSource',dataSource)
-  console.log('tableParams',tableParams.pagination)
+  console.log('data',data)
   return (
     <>
     <div>

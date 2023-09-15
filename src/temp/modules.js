@@ -12,6 +12,7 @@ import  {Calendar}  from "../components/moduleSample/calendar.js";
 import {Datashow} from "../components/moduleSample/Datashow";
 import {FilterTagAdder} from "../components/moduleSample/filterTagAdder";
 
+
 import AdData from "../testData/AdData";
 import AdSiteData from "../testData/AdSiteData";
 import adMediaData from "../testData/AdMediaData";
@@ -108,6 +109,7 @@ const Modules = () => {
       <BarChart colors={colors}/>
       <h4>D.바차트 + 라인차트(Dynamic Chart)</h4>
       <DynamicChart colors={colors}/>
+
     </div>
   );
 };

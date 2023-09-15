@@ -3,12 +3,12 @@ import format from "date-fns/format";
 import addDays from "date-fns/addDays";
 import axios from 'axios';
 
+import LineChart from "../../components/chart/LineChart";
 import AdResultTable from "../../components/table/AdResultTable";
 import MDResultTable from "../../components/table/MDResultTable.js";
 import MDTransBar from "../../components/chart/MediaTransition/MDTransBar.js";
 import MDTransPie from "../../components/chart/MediaTransition/MDTransPie.js";
 import DeviceTransPie from "../../components/chart/MediaTransition/DeviceTransPie.js";
-import LineChart from "../../components/chart/LineChart";
 
 const MainTab1 = ({filterOptions}) => {
   const [providerResult, setProviderResult] = useState([])

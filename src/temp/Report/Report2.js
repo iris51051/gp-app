@@ -1,5 +1,5 @@
 import React,{useCallback, useState, useEffect} from 'react';
-import { Col, Tabs, Row,Space, Typography, Button,Switch,Divider,Select,Spin} from "antd";
+import { Col, Tabs, Row,Space, Typography, Button,Switch,Divider,Select,Spin,Breadcrumb} from "antd";
 import format from "date-fns/format";
 import addDays from "date-fns/addDays";
 import { useLocation} from "react-router-dom";
@@ -22,7 +22,6 @@ import {adProvider} from '../../testData/A_bizData/Ad_Provider';
 //모듈
 import {Providerfilter, AdSitefilter,AdPlatform,AdCampaign,AdType,AdDevice  } from "../../components/filter/filter.js";
 import {Datashow} from "../../components/filter/Datashow";
-import Breadcrumb from "../../components/Breadcrumd";
 import Calendar from "../../components/calendar.js";
 import {MultiLinechart} from "../../components/chart/MultiLinechart";
 import {PieChart} from "../../components/chart/ChartComponent";
@@ -734,7 +733,7 @@ const ExamReport =({colors})=>{
               <div className="TitleBox">
                   <Row className="title-Row">
                     <Col xs={24}>
-                      <Breadcrumb items={items} />
+                      <Breadcrumb separator=">" items={items} />
                     </Col>
                     <Col xs={24}>
                       <div className="active-title">
@@ -770,7 +769,6 @@ const ExamReport =({colors})=>{
                                 <AdDevice options={DeviceList} onValueChange={AdDeviceChange} />
                                 <Datashow onValueChange={ConvTypeChange} />
                                 <Switch checkedChildren="VAT포함" unCheckedChildren="VAT제외" defaultChecked onClick={handleSwitchToggle}/>
-                                {/* <Button className="" type="primary" onClick={updateFilter}>확인</Button> */}
                             </Space>
                     </div>
                 </div>
@@ -817,5 +815,6 @@ const ExamReport =({colors})=>{
         </>
     )
 }
+
 export default ExamReport;
 

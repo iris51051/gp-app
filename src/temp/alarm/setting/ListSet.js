@@ -340,11 +340,6 @@ export const ListSet =()=>{
                 <span>사용자가 정의한 맞춤 알림 항목입니다.</span>
             </div>
             <SearchableTable IncomeData={CustomData}/>
-            {/* <div>
-            <Button>
-            <Link to="/Demo">새 알림 등록</Link>
-            </Button>     
-            </div> */}
         </div>
       </>
     )

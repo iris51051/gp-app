@@ -206,7 +206,7 @@ function dateSorter(a, b) {
       setData(IncomeData);
     } else {
       const filteredData = IncomeData.filter((item) => {
-        const itemValues = Object.values(item);
+        const itemValues = Object.keys(item).filter(index => index !== 'key').map(index => item[index]);
         return itemValues.some((itemValue) =>
           itemValue.toString().toLowerCase().includes(searchText.toLowerCase())
         );

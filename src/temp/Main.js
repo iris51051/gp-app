@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback,useMemo,useTransition  } from "react";
-import { Col, Tabs, Row,Space, Typography, Button,Switch,Tag,Spin} from "antd";
+import { Col, Tabs, Row,Space, Typography, Button,Switch,Tag,Spin,Breadcrumb} from "antd";
 import {PlusSquareOutlined,MinusSquareOutlined,LoadingOutlined } from '@ant-design/icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
@@ -14,7 +14,6 @@ import axios from 'axios';
 import {generateDummyDataByProvider} from '../function/CreateDummyByProvider'
 import {generateDummyDataByDay} from '../function/CreateDummyByDay'
 
-import Breadcrumb from "../components/Breadcrumd";
 import MainTab1 from "./main-tab/main-Tab1";
 import MainTab2 from "./main-tab/main-Tab2";
 import Calendar from "../components/calendar.js";
@@ -590,7 +589,7 @@ console.log("adSiteList",adSiteList)
         <div className="TitleBox">
         <Row className="title-Row">
           <Col xs={24}>
-              <Breadcrumb items={items} />
+              <Breadcrumb separator=">" items={items} />
           </Col>
           <Col xs={24}>
             <div className="active-title">

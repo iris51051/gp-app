@@ -1,11 +1,11 @@
 // App.js
 
 import React, { useEffect,useState } from 'react';
-import fetchData from './DataFetchComponent'; // Replace with the correct path to DataFetchComponent.js
-import authData from './AuthToken'; // Replace with the correct path to DataFetchComponent.js
-import viewList from './viewdata'; // Replace with the correct path to DataFetchComponent.js
-import ClientList from './clientList'; // Replace with the correct path to DataFetchComponent.js
-import getData from './getData'; // Replace with the correct path to DataFetchComponent.js
+import fetchData from './DataFetchComponent';
+import authData from './AuthToken'; 
+import viewList from './viewdata'; 
+import ClientList from './clientList'; 
+import getData from './getData'; 
 
 const Apitest = () => {
   const [testData, setTestData] = useState(null)
