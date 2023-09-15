@@ -55,7 +55,7 @@ const data = [
   },
   {
     time: "2023-08-21 10:52",
-    importance: "critical",
+    importance: "high",
     content:
       "https://bizspring.co.kr/company/prd_logger.php 페이지가 404오류로 고객 이탈이 일어나고 있습니다.",
   },
@@ -89,7 +89,7 @@ const HistoryTab = () => {
     form.resetFields();
     setAddComment(false);
   };
-  console.log('stateFilter',stateFilter)
+
   const handleStateFilter = (option) => {
     if (stateFilter.includes(option)) {
       setStateFilter(stateFilter.filter((item) => item !== option));

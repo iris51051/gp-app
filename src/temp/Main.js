@@ -68,24 +68,20 @@ const Main = () => {
     { title: "대시보드" },
   ];
 
-  const [adFilter, setAdFilter] = useState([]);
-  const [siteFilter, setSiteFilter] = useState([]);
-  const [mdFilter, setMdFilter] = useState([]);
+  const [adFilter, setAdFilter] = useState([]);       //전체 광고주 일 때의 선택된 광고주
+  const [siteFilter, setSiteFilter] = useState([]);   //선택된 사이트
+  const [mdFilter, setMdFilter] = useState([]);       //선택된 매체사 
   const [collapsed1, setCollapsed1] = useState(false);
   const [collapsed2, setCollapsed2] = useState(false);
-  const [vatValue, setVatValue] = useState(true);
+  const [vatValue, setVatValue] = useState(true);     //vat포함 여부
   const [dateValue, setDateValue] = useState([`${format(addDays(new Date(), -7),"yyyy-MM-dd")}`,`${format(new Date(),"yyyy-MM-dd")}`])
   const [CompareDateValue, setCompareDateValue] = useState([`${format(addDays(new Date(), -12),"yyyy-MM-dd")}`,`${format(addDays(new Date(), -6),"yyyy-MM-dd")}`])
-  const [datas, setDatas] = useState([])
-  const [AllAdList, setAllAdList] = useState()
-  const [adProviderList, setAdProviderList] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [fetchedData, setFetchedData] = useState([]) //조회 데이터
-  const [fetchedCompareData, setFetchedCompareData] = useState([])  //비교 데이터
+  const [datas, setDatas] = useState([])              //scoreCard용으로 현재 선택 기간과 직전 기간 데이터 담을 객체
+  const [adProviderList, setAdProviderList] = useState([])    //전체 광고매체사 리스트
+  const [loading, setLoading] = useState(false)               
+  const [fetchedData, setFetchedData] = useState([])  // 현재 기간에 대한 조회된 데이터
+  const [fetchedCompareData, setFetchedCompareData] = useState([])  //직전 기간에 대한 비교 데이터
   const [adSiteList, setAdSiteList] = useState([]);
-  const [dateGap, setDateGap] = useState();
-  const [FilteredProviderData, setFilteredProviderData] = useState([])
-  //광고매체사 옵션
 
 
   //초기 랜더링시 pfno(사이트),ad_provider(광고매체) 조회용 axios
@@ -128,20 +124,24 @@ const fetchData = async ()=>{
     console.error(e)
   }
 }
+//전체 광고주에 대한 하드코딩 사이트 데이터
 const AllpfnoList = Array.from(new Set(adMediaData.map((item)=>item.pfno))).map((item)=>({
   name:item,
   value:item,
 }))
+//전체 광고주에 대한 하드코딩 매체사 데이터
 const AllProvider = Array.from(new Set(adMediaData.map((item)=>item.ad_provider))).map((item)=>({
   name:item,
   value:item,
 }))
-console.log('AllpfnoList',AllpfnoList)
-console.log('AllProvider',AllProvider)
 
+
+//광고주에 대한 pfno,provider 데이터 요청
 useEffect(() => {
   setLoading(true)
   const getFilterData= async () => {
+    //전체 광고주에 대한 api가 없음.
+    //추후 api 수정시에 수정 요망.
     if (currentAd === '0' || currentAd === undefined) {
       setAdSiteList([...AllpfnoList])
       setAdProviderList([...AllProvider])
@@ -167,7 +167,8 @@ useEffect(() => {
 console.log("adSiteList",adSiteList)
 
 
-
+//페이지 첫 로딩시 보여줘야할 filterOption의 기본 데이터
+//모든 filter를 선택한 상태
   const defaultFilterOptions = {
     Ad: currentAd >0 ? currentAd : AdList,
     Pfno: currentAd >0 ? adSiteList : AllpfnoList,
@@ -177,6 +178,9 @@ console.log("adSiteList",adSiteList)
   };
 
   const [filterOptions, setFilterOptions] = useState(defaultFilterOptions);
+
+  //LNB의 광고주 선택을 통한 광고주 변경 시 사이트와 광고매체사 변경에 따른 filterOption 변경
+
   useEffect(() => {
     if (adProviderList.length > 0 && adSiteList.length > 0) {
       if(currentAd === '0' || currentAd ===undefined){
@@ -198,14 +202,16 @@ console.log("adSiteList",adSiteList)
   }, [adProviderList, adSiteList]);
 
 
+  //필터 선택 부분 collapse
   const coll1Change = () => {
     setCollapsed1(!collapsed1);
   };
+  //성과지표(스코어카드) collapse
   const coll2Change = () => {
     setCollapsed2(!collapsed2);
   };
 
-  //모든 필터 선택된 상태로 초기 로딩.
+  //선택 된 필터를 확인 버튼을 눌러 적용
   const updateFilter = () => {
     if(currentAd === '0' || currentAd ===undefined){
       // Filter the AdData based on the selected adFilter names
@@ -234,17 +240,16 @@ console.log("adSiteList",adSiteList)
     }
   };
 
-
+//필터 변경에 따른 데이터 조회
   useEffect(() => {
     if(filterOptions.AdProvider.length>0){
     getScoreCardData(); //스코어카드용 데이터 조회
     getScoreCardCompareData();  //스코어카드용 비교 데이터 조회
-    getFilteredProviderData();
+
     }
   }, [filterOptions]); 
 
-  console.log("currentAd",currentAd)
-  console.log("메인 필터ㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓ",filterOptions)
+
   //Filter에 따른 ScoreCard용 데이터
   const getScoreCardData = async ()=>{
     if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`&& filterOptions.AdProvider.length>0){
@@ -304,11 +309,7 @@ console.log("adSiteList",adSiteList)
         );
         const responseData = response.data.data;
         const generateData = generateDummyDataByDay(responseData, dateValue);
-        // if(filteredData.length===0){
-        //   setFetchedData(dummyData)
-        // }else{
-          return setFetchedData(generateData);
-        // }
+        return setFetchedData(generateData);
       }catch(e){
         console.error(e)
       }
@@ -322,7 +323,7 @@ console.log("adSiteList",adSiteList)
 
   }
 
-  //Filter선택에 따른 비교 데이터
+  //Filter선택에 따른 비교용 직전 동일 기간 데이터 조회
   const getScoreCardCompareData = async ()=>{
     if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}` && filterOptions.AdProvider.length>0){
       const body =JSON.stringify({
@@ -382,31 +383,8 @@ console.log("adSiteList",adSiteList)
 
         return setFetchedCompareData(responseData);
       }catch(e){
-        const dummydata = {
-          m_rvn: 0,
-          m_impr: 0,
-          m_cost: 0,
-          m_odr: 0,
-          m_rgr: 0,
-          land: 0,
-          rvn: 0,
-          m_cart: 0,
-          odr: 0,
-          rgr: 0,
-          m_conv: 0,
-          m_click: 0,
-          m_cpc: 0,
-          m_ctr: 0,
-          m_crt: 0,
-          m_roas: 0,
-          rvn_per_odr: 0,
-          rgr_per_m_click: 0,
-          odr_per_m_cost: 0,
-          roas: 0,
-        }
         console.error(e)
-        return setFetchedCompareData([dummydata]);
-        
+        return setFetchedCompareData(dummyData);
       }
     }else{
       return null;
@@ -414,82 +392,8 @@ console.log("adSiteList",adSiteList)
 
   }
   
-  //MainTab 데이터.
 
-  const getFilteredProviderData = async ()=>{
-    if(dateValue[0] !==`${format(new Date(),"yyyy-MM-dd")}`){
-      const body =JSON.stringify({
-        rptNo: '1000000',
-        lookupTp: 'agg',
-        dimCd: ["ad_provider","ad_program"],
-        where: [
-          {
-            field: 'stat_date',
-            operation: 'between',
-            value: [dateValue[0], dateValue[1]],
-          },{
-            field: 'pfno',
-            operation: 'in',
-            value: filterOptions.Pfno.map((item)=>item.value),
-          },
-          {
-            field: 'ad_provider',
-            operation: 'in',
-            value: filterOptions.AdProvider.map((item)=>item.value),
-          }
-        ],
-        metCd: ["m_rvn",
-        "m_impr",
-        "m_cost",
-        "m_odr",
-        "m_rgr",
-        "land",
-        "rvn",
-        "m_cart",
-        "odr",
-        "rgr",
-        "m_conv",
-        "m_click",
-        "m_cpc",
-        "m_ctr",
-        "m_crt",
-        "m_roas",
-        "rvn_per_odr",
-        "rgr_per_m_click",
-        "odr_per_m_cost",
-        "roas"
-        ],
-        sort: [{ field: 'land', order: 'asc' }],
-        agencySeq: '1',
-        clientSeq: currentAd,
-        pfno:filterOptions.Pfno.map(item=>item.value),
-        size: 10000,
-      })
-      const header = {
-        headers: { 'Content-Type': 'application/json', 'X-Authorization-User': 'blues'}
-      }
-      try{
-        const response = await axios.post(
-          // 'http://223.130.136.182:9080/report/data', 로그인 필요
-          'http://122.99.192.144:9080/report/data',
-          body,
-          header
-        );
-        const responseData = response.data.data;
-        return setFilteredProviderData(responseData);
-
-      }catch(e){
-        console.error(e)
-      }
-    }else{
-      const newDummyData = dummyData.map((data) => ({
-        ...data,
-        "by_day": format(new Date(),'yyyy-MM-dd'),
-      }));
-      setFilteredProviderData(newDummyData)
-    }
-  }
-
+//vat변경과 조회 데이터 변경에 따른 vat 적용
   useEffect(() => {
     if(fetchedData.length>0){
       if (fetchedData && fetchedCompareData) {
@@ -523,21 +427,23 @@ console.log("adSiteList",adSiteList)
     setLoading(false)
   }, [fetchedData, fetchedCompareData,vatValue]);
 
+  //전체 광고주일 때의 광고주 선택
   const adChange = useCallback((value) => {
     const AdfilteredValue = AdList.filter((item) => value.includes(item.value));
       setAdFilter(AdfilteredValue);
   }, []);
-
+  //광고매체사 선택
   const adProviderChange = useCallback((value) => {
+    //filter 선택시에 전체 선택하면 "selectAll"이 포함 되기에 제거
     const filteredValue = value.filter((option) => option !== "selectAll");
     setMdFilter(filteredValue);
   }, []);
 
   const adsiteChange = useCallback((value) => {
+        //filter 선택시에 전체 선택하면 "selectAll"이 포함 되기에 제거
     const AdSitefilteredValue = value.filter(
       (option) => option !== "selectAll"
     );
-    
       setSiteFilter(AdSitefilteredValue);
   }, []);
 
@@ -546,7 +452,7 @@ console.log("adSiteList",adSiteList)
     setDateValue(value);
     //value의 0,1간의 날짜 차이
     const daysDifference = ( new Date(value[1]) - new Date(value[0])) / (1000 * 3600 * 24);
-    setDateGap(daysDifference);
+
     // //비교군의 날짜 산정
     //종료 일시
     const StatEndDate = new Date(value[0]);
@@ -559,12 +465,12 @@ console.log("adSiteList",adSiteList)
   }, []);
 
 
-
+  //vat 전환
   const handleSwitchToggle = (value) => {
     setVatValue(value);
   };
 
-
+  //광고 매체사 선택에 따른 Tag 출력
   const handleRenderTag = () => {
     return (
       <div className="FilterTagsDiv">
